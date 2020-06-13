@@ -1,0 +1,703 @@
+---------- Begin SLURM Prolog ----------
+Job ID:        7164250
+Username:      siliangc
+Accountname:   lc_fs3
+Name:          batchrun.sh
+Partition:     main
+Nodelist:      hpc4665
+TasksPerNode:  1
+CPUsPerTask:   Default[1]
+TMPDIR:        /tmp/7164250.main
+SCRATCHDIR:    /staging/scratch/7164250
+Cluster:       uschpc
+HSDA Account:  false
+---------- 2020-05-04 23:46:10 ---------
+2020-05-05 00:00:03.208403: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcuda.so.1
+2020-05-05 00:00:03.367137: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1561] Found device 0 with properties: 
+pciBusID: 0000:3b:00.0 name: Tesla V100-PCIE-32GB computeCapability: 7.0
+coreClock: 1.38GHz coreCount: 80 deviceMemorySize: 31.72GiB deviceMemoryBandwidth: 836.37GiB/s
+2020-05-05 00:00:03.374330: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1561] Found device 1 with properties: 
+pciBusID: 0000:d8:00.0 name: Tesla V100-PCIE-32GB computeCapability: 7.0
+coreClock: 1.38GHz coreCount: 80 deviceMemorySize: 31.72GiB deviceMemoryBandwidth: 836.37GiB/s
+2020-05-05 00:00:03.702914: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
+2020-05-05 00:00:15.812889: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10
+2020-05-05 00:00:19.355617: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10
+2020-05-05 00:00:29.937283: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10
+2020-05-05 00:00:38.668395: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10
+2020-05-05 00:00:42.860387: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10
+2020-05-05 00:00:56.644806: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2020-05-05 00:00:56.656238: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1703] Adding visible gpu devices: 0, 1
+2020-05-05 00:00:56.673285: I tensorflow/core/platform/cpu_feature_guard.cc:143] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2020-05-05 00:00:56.990834: I tensorflow/core/platform/profile_utils/cpu_utils.cc:102] CPU Frequency: 2100000000 Hz
+2020-05-05 00:00:56.995611: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x561fe3d6e690 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-05-05 00:00:56.995689: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2020-05-05 00:00:57.517617: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x561fe3dd8850 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2020-05-05 00:00:57.517718: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Tesla V100-PCIE-32GB, Compute Capability 7.0
+2020-05-05 00:00:57.517745: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (1): Tesla V100-PCIE-32GB, Compute Capability 7.0
+2020-05-05 00:00:57.551114: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1561] Found device 0 with properties: 
+pciBusID: 0000:3b:00.0 name: Tesla V100-PCIE-32GB computeCapability: 7.0
+coreClock: 1.38GHz coreCount: 80 deviceMemorySize: 31.72GiB deviceMemoryBandwidth: 836.37GiB/s
+2020-05-05 00:00:57.554218: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1561] Found device 1 with properties: 
+pciBusID: 0000:d8:00.0 name: Tesla V100-PCIE-32GB computeCapability: 7.0
+coreClock: 1.38GHz coreCount: 80 deviceMemorySize: 31.72GiB deviceMemoryBandwidth: 836.37GiB/s
+2020-05-05 00:00:57.554279: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
+2020-05-05 00:00:57.554298: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10
+2020-05-05 00:00:57.554317: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10
+2020-05-05 00:00:57.554333: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10
+2020-05-05 00:00:57.554348: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10
+2020-05-05 00:00:57.554363: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10
+2020-05-05 00:00:57.554380: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2020-05-05 00:00:57.560952: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1703] Adding visible gpu devices: 0, 1
+2020-05-05 00:00:57.561009: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
+2020-05-05 00:00:57.569016: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1102] Device interconnect StreamExecutor with strength 1 edge matrix:
+2020-05-05 00:00:57.569033: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1108]      0 1 
+2020-05-05 00:00:57.569041: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1121] 0:   N Y 
+2020-05-05 00:00:57.569047: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1121] 1:   Y N 
+2020-05-05 00:00:57.573939: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1247] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 30233 MB memory) -> physical GPU (device: 0, name: Tesla V100-PCIE-32GB, pci bus id: 0000:3b:00.0, compute capability: 7.0)
+2020-05-05 00:00:57.575690: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1247] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 30233 MB memory) -> physical GPU (device: 1, name: Tesla V100-PCIE-32GB, pci bus id: 0000:d8:00.0, compute capability: 7.0)
+2020-05-05 00:01:14.896492: W tensorflow/core/framework/cpu_allocator_impl.cc:81] Allocation of 16006874880 exceeds 10% of free system memory.
+2020-05-05 00:01:46.959870: W tensorflow/core/framework/cpu_allocator_impl.cc:81] Allocation of 16006874880 exceeds 10% of free system memory.
+2020-05-05 00:02:05.724557: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10
+2020-05-05 00:02:19.090046: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2020-05-05 00:04:23.710705: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:23.711159: W tensorflow/stream_executor/gpu/asm_compiler.cc:73] Couldn't invoke ptxas --version
+2020-05-05 00:04:24.368487: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:24.368851: W tensorflow/stream_executor/gpu/redzone_allocator.cc:314] Internal: Failed to launch ptxas
+Relying on driver to perform ptx compilation. 
+Modify $PATH to customize ptxas location.
+This message will be only logged once.
+2020-05-05 00:04:25.070501: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:25.748806: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:26.419371: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:27.088231: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:27.762555: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:28.434164: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:29.102918: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:29.779240: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:30.447956: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:31.119701: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:31.785588: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:32.457053: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:33.123448: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:33.794040: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:34.460539: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:35.135133: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:35.805716: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:36.474275: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:37.149091: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:37.825302: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:38.493337: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:39.160873: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:39.831289: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:40.504186: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:41.256118: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:41.994775: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:42.738579: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:43.460335: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:44.199043: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:44.947061: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:45.696122: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:46.464353: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:47.198740: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:47.946365: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:48.697987: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:49.454547: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:50.210598: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:50.956254: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:51.705465: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:52.437096: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:53.187377: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:53.937515: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:54.687208: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:55.436263: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:56.167357: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:56.904398: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:57.645097: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:58.376103: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:59.124792: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:04:59.878429: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:00.621335: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:01.360615: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:02.104038: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:02.855784: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:03.604337: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:04.364211: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:05.112764: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:05.836586: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:06.575572: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:07.306821: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:08.051684: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:08.786396: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:09.521202: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:10.266354: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:10.980414: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:11.763788: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:12.433810: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:13.116344: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:13.795268: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:14.476785: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:15.150874: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:15.831796: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:16.503156: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:17.178388: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:17.850810: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:18.524467: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:19.276403: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:20.022342: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:20.770954: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:21.521530: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:22.261573: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:23.010706: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:23.753101: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:24.493348: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:25.229665: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:25.989187: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:26.739371: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:27.500934: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:28.187537: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:28.860795: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:29.539266: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:30.219143: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:30.891591: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:31.571577: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:32.249457: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:32.927647: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:33.601820: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:34.333237: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:35.066242: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:35.805579: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:36.565594: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:37.317319: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:38.051354: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:38.797845: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:39.545341: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:40.299307: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:05:41.050020: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:05.828850: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:06.635989: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:07.457688: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:08.240488: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:09.056675: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:09.850657: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:10.670332: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:11.671692: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:12.421041: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:13.243546: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:14.050417: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:14.893654: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:15.720960: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:16.539723: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:17.335750: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:18.086412: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:18.907528: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:19.741099: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:20.492839: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:21.240820: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:21.993784: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:22.751642: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:23.502433: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:24.314180: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:25.077157: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:25.826163: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:26.617997: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:27.371117: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:28.193240: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:28.943780: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:29.754568: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:30.502404: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:31.307532: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:32.113413: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:32.943396: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:33.749794: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:34.569103: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:35.380528: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:36.195313: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:36.994733: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:37.792342: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:38.619024: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:39.436683: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:40.249097: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:41.096102: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:41.959248: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:42.714377: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:43.464296: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:44.273903: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:45.066104: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:45.813062: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:46.623205: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:47.420192: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:48.218163: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:49.006244: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:49.806299: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:50.563239: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:51.362282: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:52.114595: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:52.864322: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:53.637155: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:54.453430: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:55.217279: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:55.966311: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:56.709579: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:57.463229: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:58.209257: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:58.951478: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:06:59.697960: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:00.438954: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:01.190844: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:01.947584: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:02.894764: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:03.635388: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:04.396844: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:05.215065: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:06.024774: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:06.829428: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:07.646310: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:08.474422: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:09.280986: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:10.082253: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:10.902709: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:11.788564: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:12.541996: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:13.294918: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:14.081864: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:14.851093: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:15.640687: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:16.457333: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:17.212502: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:17.961335: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:18.710462: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:19.477147: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:20.224296: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:20.990346: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:21.791424: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:22.597190: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:23.362337: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:24.160635: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:24.954526: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:25.757080: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:26.556039: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:27.356442: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:28.123321: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:28.888558: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:29.637895: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:30.396880: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:31.152292: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:31.899764: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:32.664881: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:33.432579: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:34.208636: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:34.961461: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:35.711843: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:36.463758: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:37.223781: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:37.964523: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:38.713371: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:39.474940: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:40.223858: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:41.014086: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:41.845395: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:42.603328: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:43.359316: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:44.112564: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:44.865971: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:45.609529: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:46.366352: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:47.117130: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:47.868388: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:48.625152: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:49.375476: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:50.128374: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:50.888001: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:51.635057: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:52.386402: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:53.139584: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:53.897414: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:54.659244: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:55.406922: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:56.159564: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:56.909738: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:57.675429: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:58.426256: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:59.174425: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:07:59.918653: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:00.671793: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:01.414126: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:02.158061: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:02.902068: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:03.643924: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:04.412816: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:05.211793: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:06.007347: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:06.798704: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:16.856763: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:17.664497: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:18.504461: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:19.302625: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:20.120022: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:20.942352: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:21.752568: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:22.583756: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:23.392446: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:24.216633: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:25.020180: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:25.816512: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:26.619564: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:27.424344: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:28.218999: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:29.039795: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:29.833279: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:30.626158: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:31.430108: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:32.251994: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:33.062967: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:33.875759: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:34.668102: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:35.451119: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:36.259387: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:37.071079: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:37.868903: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:38.681565: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:39.490992: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:40.300096: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:41.154399: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:42.051874: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:42.854811: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:43.667311: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:44.468855: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:45.286381: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:46.097743: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:46.905396: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:47.713797: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:48.534415: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:49.334674: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:50.134132: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:50.930227: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:51.761683: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:52.567572: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:53.362420: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:54.194840: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:54.997755: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:55.811868: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:56.604392: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:57.421592: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:58.214923: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:59.039963: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:08:59.842734: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:00.657032: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:01.458423: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:02.269959: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:03.091318: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:03.901824: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:04.688077: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:05.498188: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:06.290533: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:07.096861: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:07.907806: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:08.706732: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:09.537876: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:10.363460: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:11.232634: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:12.078618: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:12.888345: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:13.706271: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:14.524486: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:15.328898: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:16.133769: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:16.939531: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:17.760748: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:18.586924: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:19.393222: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:20.212536: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:21.029932: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:21.836591: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:22.639440: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:23.459405: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:24.284132: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:25.096360: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:25.881084: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:26.690784: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:27.498892: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:28.308192: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:29.116164: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:29.910874: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:30.725250: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:31.547270: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:32.374689: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:33.197537: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+2020-05-05 00:09:34.029467: E tensorflow/core/platform/default/subprocess.cc:208] Start cannot fork() child process: Cannot allocate memory
+Processing Data...
+Processing sequences of length: 1kk
+
+Processing forward host data...
+Processing prokaryote training data from ProkTr#ProkTr#1k_num1_seq12693_codefw.npy
+Processing eukaryote training data from EukTr#EukTr#1k_num1_seq11439_codefw.npy
+Processing reverse host data...
+Processing prokaryote training data from ProkTr#ProkTr#1k_num1_seq12693_codebw.npy
+Processing eukaryote training data from EukTr#EukTr#1k_num1_seq11439_codebw.npy
+Processing plasmid data
+Processing plasmid data - bw
+Processing virus data...
+Processing prokaryotevirus training data from ProkVirusTr#ProkVirusTr#1k_num1_seq13066_codefw.npy
+Processin eukaryotevirus training data from EukVirusTr#EukVirusTr#1k_num1_seq12272_codefw.npy
+Processing virus data...
+Processing prokaryotevirus training data from ProkVirusTr#ProkVirusTr#1k_num1_seq13066_codebw.npy
+Processin eukaryotevirus training data from EukVirusTr#EukVirusTr#1k_num1_seq12272_codebw.npy
+Processing Validation Data...
+Processing Validation Data - bw...
+(62715, 997, 64)
+(62715, 997, 64)
+(62715, 5)
+(7319, 997, 64)
+(7319, 997, 64)
+(7319, 5)
+Model: "model"
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_1 (InputLayer)            [(None, None, 64)]   0                                            
+__________________________________________________________________________________________________
+input_2 (InputLayer)            [(None, None, 64)]   0                                            
+__________________________________________________________________________________________________
+conv1d (Conv1D)                 (None, None, 64)     24640       input_1[0][0]                    
+                                                                 input_2[0][0]                    
+__________________________________________________________________________________________________
+max_pooling1d (MaxPooling1D)    (None, None, 64)     0           conv1d[0][0]                     
+                                                                 conv1d[1][0]                     
+__________________________________________________________________________________________________
+batch_normalization (BatchNorma (None, None, 64)     256         max_pooling1d[0][0]              
+                                                                 max_pooling1d[1][0]              
+__________________________________________________________________________________________________
+conv1d_1 (Conv1D)               (None, None, 128)    24704       batch_normalization[0][0]        
+                                                                 batch_normalization[1][0]        
+__________________________________________________________________________________________________
+max_pooling1d_1 (MaxPooling1D)  (None, None, 128)    0           conv1d_1[0][0]                   
+                                                                 conv1d_1[1][0]                   
+__________________________________________________________________________________________________
+batch_normalization_1 (BatchNor (None, None, 128)    512         max_pooling1d_1[0][0]            
+                                                                 max_pooling1d_1[1][0]            
+__________________________________________________________________________________________________
+conv1d_2 (Conv1D)               (None, None, 256)    65792       batch_normalization_1[0][0]      
+                                                                 batch_normalization_1[1][0]      
+__________________________________________________________________________________________________
+global_max_pooling1d (GlobalMax (None, 256)          0           conv1d_2[0][0]                   
+                                                                 conv1d_2[1][0]                   
+__________________________________________________________________________________________________
+dropout (Dropout)               (None, 256)          0           global_max_pooling1d[0][0]       
+                                                                 global_max_pooling1d[1][0]       
+__________________________________________________________________________________________________
+flatten (Flatten)               (None, 256)          0           dropout[0][0]                    
+                                                                 dropout[1][0]                    
+__________________________________________________________________________________________________
+dense (Dense)                   (None, 500)          128500      flatten[0][0]                    
+                                                                 flatten[1][0]                    
+__________________________________________________________________________________________________
+dropout_1 (Dropout)             (None, 500)          0           dense[0][0]                      
+                                                                 dense[1][0]                      
+__________________________________________________________________________________________________
+dense_1 (Dense)                 (None, 5)            2505        dropout_1[0][0]                  
+                                                                 dropout_1[1][0]                  
+__________________________________________________________________________________________________
+average (Average)               (None, 5)            0           dense_1[0][0]                    
+                                                                 dense_1[1][0]                    
+==================================================================================================
+Total params: 246,909
+Trainable params: 246,525
+Non-trainable params: 384
+__________________________________________________________________________________________________
+Epoch 1/60
+
+Epoch 00001: val_loss improved from inf to 1.11101, saving model to ./models/model_DNA_codon.h5
+628/628 - 233s - loss: 1.1076 - accuracy: 0.5500 - val_loss: 1.1110 - val_accuracy: 0.5523
+Epoch 2/60
+
+Epoch 00002: val_loss improved from 1.11101 to 0.95763, saving model to ./models/model_DNA_codon.h5
+628/628 - 34s - loss: 0.8667 - accuracy: 0.6504 - val_loss: 0.9576 - val_accuracy: 0.6094
+Epoch 3/60
+
+Epoch 00003: val_loss did not improve from 0.95763
+628/628 - 35s - loss: 0.7904 - accuracy: 0.6836 - val_loss: 1.0010 - val_accuracy: 0.6050
+Epoch 4/60
+
+Epoch 00004: val_loss improved from 0.95763 to 0.86984, saving model to ./models/model_DNA_codon.h5
+628/628 - 30s - loss: 0.7358 - accuracy: 0.7094 - val_loss: 0.8698 - val_accuracy: 0.6423
+Epoch 5/60
+
+Epoch 00005: val_loss did not improve from 0.86984
+628/628 - 33s - loss: 0.6889 - accuracy: 0.7262 - val_loss: 0.8945 - val_accuracy: 0.6400
+Epoch 6/60
+
+Epoch 00006: val_loss improved from 0.86984 to 0.79245, saving model to ./models/model_DNA_codon.h5
+628/628 - 34s - loss: 0.6238 - accuracy: 0.7567 - val_loss: 0.7925 - val_accuracy: 0.6879
+Epoch 7/60
+
+Epoch 00007: val_loss did not improve from 0.79245
+628/628 - 34s - loss: 0.5628 - accuracy: 0.7798 - val_loss: 0.9722 - val_accuracy: 0.6327
+Epoch 8/60
+
+Epoch 00008: val_loss improved from 0.79245 to 0.78382, saving model to ./models/model_DNA_codon.h5
+628/628 - 32s - loss: 0.5279 - accuracy: 0.7962 - val_loss: 0.7838 - val_accuracy: 0.6946
+Epoch 9/60
+
+Epoch 00009: val_loss improved from 0.78382 to 0.76584, saving model to ./models/model_DNA_codon.h5
+628/628 - 35s - loss: 0.4853 - accuracy: 0.8141 - val_loss: 0.7658 - val_accuracy: 0.7097
+Epoch 10/60
+
+Epoch 00010: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.4580 - accuracy: 0.8245 - val_loss: 0.8028 - val_accuracy: 0.7045
+Epoch 11/60
+
+Epoch 00011: val_loss did not improve from 0.76584
+628/628 - 30s - loss: 0.4402 - accuracy: 0.8326 - val_loss: 0.8046 - val_accuracy: 0.7218
+Epoch 12/60
+
+Epoch 00012: val_loss did not improve from 0.76584
+628/628 - 36s - loss: 0.4123 - accuracy: 0.8434 - val_loss: 0.8072 - val_accuracy: 0.7322
+Epoch 13/60
+
+Epoch 00013: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.3932 - accuracy: 0.8511 - val_loss: 0.8650 - val_accuracy: 0.7090
+Epoch 14/60
+
+Epoch 00014: val_loss did not improve from 0.76584
+628/628 - 32s - loss: 0.3764 - accuracy: 0.8579 - val_loss: 0.8612 - val_accuracy: 0.7053
+Epoch 15/60
+
+Epoch 00015: val_loss did not improve from 0.76584
+628/628 - 32s - loss: 0.3606 - accuracy: 0.8656 - val_loss: 0.8028 - val_accuracy: 0.7256
+Epoch 16/60
+
+Epoch 00016: val_loss did not improve from 0.76584
+628/628 - 36s - loss: 0.3469 - accuracy: 0.8693 - val_loss: 0.8448 - val_accuracy: 0.7293
+Epoch 17/60
+
+Epoch 00017: val_loss did not improve from 0.76584
+628/628 - 35s - loss: 0.3397 - accuracy: 0.8740 - val_loss: 0.8103 - val_accuracy: 0.7370
+Epoch 18/60
+
+Epoch 00018: val_loss did not improve from 0.76584
+628/628 - 32s - loss: 0.3212 - accuracy: 0.8824 - val_loss: 0.8699 - val_accuracy: 0.7296
+Epoch 19/60
+
+Epoch 00019: val_loss did not improve from 0.76584
+628/628 - 34s - loss: 0.3215 - accuracy: 0.8807 - val_loss: 0.8460 - val_accuracy: 0.7292
+Epoch 20/60
+
+Epoch 00020: val_loss did not improve from 0.76584
+628/628 - 30s - loss: 0.3062 - accuracy: 0.8902 - val_loss: 0.9380 - val_accuracy: 0.7247
+Epoch 21/60
+
+Epoch 00021: val_loss did not improve from 0.76584
+628/628 - 35s - loss: 0.2946 - accuracy: 0.8935 - val_loss: 0.9236 - val_accuracy: 0.7250
+Epoch 22/60
+
+Epoch 00022: val_loss did not improve from 0.76584
+628/628 - 34s - loss: 0.2922 - accuracy: 0.8930 - val_loss: 0.8198 - val_accuracy: 0.7430
+Epoch 23/60
+
+Epoch 00023: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.2856 - accuracy: 0.8977 - val_loss: 0.9655 - val_accuracy: 0.7198
+Epoch 24/60
+
+Epoch 00024: val_loss did not improve from 0.76584
+628/628 - 35s - loss: 0.2742 - accuracy: 0.9012 - val_loss: 0.9256 - val_accuracy: 0.7336
+Epoch 25/60
+
+Epoch 00025: val_loss did not improve from 0.76584
+628/628 - 30s - loss: 0.2739 - accuracy: 0.9028 - val_loss: 0.9308 - val_accuracy: 0.7308
+Epoch 26/60
+
+Epoch 00026: val_loss did not improve from 0.76584
+628/628 - 35s - loss: 0.2649 - accuracy: 0.9058 - val_loss: 0.9327 - val_accuracy: 0.7364
+Epoch 27/60
+
+Epoch 00027: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.2670 - accuracy: 0.9057 - val_loss: 0.9554 - val_accuracy: 0.7392
+Epoch 28/60
+
+Epoch 00028: val_loss did not improve from 0.76584
+628/628 - 32s - loss: 0.2570 - accuracy: 0.9086 - val_loss: 0.9961 - val_accuracy: 0.7314
+Epoch 29/60
+
+Epoch 00029: val_loss did not improve from 0.76584
+628/628 - 34s - loss: 0.2545 - accuracy: 0.9105 - val_loss: 0.9698 - val_accuracy: 0.7367
+Epoch 30/60
+
+Epoch 00030: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.2522 - accuracy: 0.9123 - val_loss: 0.9134 - val_accuracy: 0.7509
+Epoch 31/60
+
+Epoch 00031: val_loss did not improve from 0.76584
+628/628 - 34s - loss: 0.2431 - accuracy: 0.9154 - val_loss: 0.9972 - val_accuracy: 0.7419
+Epoch 32/60
+
+Epoch 00032: val_loss did not improve from 0.76584
+628/628 - 32s - loss: 0.2439 - accuracy: 0.9161 - val_loss: 1.0469 - val_accuracy: 0.7360
+Epoch 33/60
+
+Epoch 00033: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.2401 - accuracy: 0.9168 - val_loss: 1.0374 - val_accuracy: 0.7449
+Epoch 34/60
+
+Epoch 00034: val_loss did not improve from 0.76584
+628/628 - 30s - loss: 0.2348 - accuracy: 0.9197 - val_loss: 1.1002 - val_accuracy: 0.7374
+Epoch 35/60
+
+Epoch 00035: val_loss did not improve from 0.76584
+628/628 - 29s - loss: 0.2348 - accuracy: 0.9204 - val_loss: 0.9931 - val_accuracy: 0.7434
+Epoch 36/60
+
+Epoch 00036: val_loss did not improve from 0.76584
+628/628 - 29s - loss: 0.2302 - accuracy: 0.9209 - val_loss: 0.9632 - val_accuracy: 0.7434
+Epoch 37/60
+
+Epoch 00037: val_loss did not improve from 0.76584
+628/628 - 32s - loss: 0.2267 - accuracy: 0.9225 - val_loss: 1.1642 - val_accuracy: 0.7299
+Epoch 38/60
+
+Epoch 00038: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.2249 - accuracy: 0.9252 - val_loss: 0.9759 - val_accuracy: 0.7475
+Epoch 39/60
+
+Epoch 00039: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.2214 - accuracy: 0.9258 - val_loss: 0.9250 - val_accuracy: 0.7642
+Epoch 40/60
+
+Epoch 00040: val_loss did not improve from 0.76584
+628/628 - 34s - loss: 0.2187 - accuracy: 0.9259 - val_loss: 0.9783 - val_accuracy: 0.7504
+Epoch 41/60
+
+Epoch 00041: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.2238 - accuracy: 0.9243 - val_loss: 1.0224 - val_accuracy: 0.7468
+Epoch 42/60
+
+Epoch 00042: val_loss did not improve from 0.76584
+628/628 - 36s - loss: 0.2158 - accuracy: 0.9271 - val_loss: 1.1026 - val_accuracy: 0.7273
+Epoch 43/60
+
+Epoch 00043: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.2131 - accuracy: 0.9295 - val_loss: 0.9554 - val_accuracy: 0.7572
+Epoch 44/60
+
+Epoch 00044: val_loss did not improve from 0.76584
+628/628 - 30s - loss: 0.2059 - accuracy: 0.9321 - val_loss: 1.0197 - val_accuracy: 0.7584
+Epoch 45/60
+
+Epoch 00045: val_loss did not improve from 0.76584
+628/628 - 30s - loss: 0.2029 - accuracy: 0.9328 - val_loss: 1.0857 - val_accuracy: 0.7400
+Epoch 46/60
+
+Epoch 00046: val_loss did not improve from 0.76584
+628/628 - 31s - loss: 0.2063 - accuracy: 0.9319 - val_loss: 1.0469 - val_accuracy: 0.7576
+Epoch 47/60
+
+Epoch 00047: val_loss did not improve from 0.76584
+628/628 - 31s - loss: 0.2012 - accuracy: 0.9320 - val_loss: 1.1302 - val_accuracy: 0.7572
+Epoch 48/60
+
+Epoch 00048: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.2036 - accuracy: 0.9325 - val_loss: 1.1050 - val_accuracy: 0.7486
+Epoch 49/60
+
+Epoch 00049: val_loss did not improve from 0.76584
+628/628 - 33s - loss: 0.1987 - accuracy: 0.9355 - val_loss: 1.1300 - val_accuracy: 0.7539
+Epoch 00049: early stopping

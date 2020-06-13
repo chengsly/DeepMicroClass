@@ -1,0 +1,1 @@
+name	prokScore	eukScore	plasmidScore	prokVirusScore	eukVirusScore

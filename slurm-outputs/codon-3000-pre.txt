@@ -1,0 +1,289 @@
+---------- Begin SLURM Prolog ----------
+Job ID:        7164215
+Username:      siliangc
+Accountname:   lc_fs3
+Name:          batchrun.sh
+Partition:     main
+Nodelist:      hpc4573
+TasksPerNode:  1
+CPUsPerTask:   Default[1]
+TMPDIR:        /tmp/7164215.main
+SCRATCHDIR:    /staging/scratch/7164215
+Cluster:       uschpc
+HSDA Account:  false
+---------- 2020-05-04 23:41:58 ---------
+2020-05-04 23:54:18.910652: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcuda.so.1
+2020-05-04 23:54:19.068994: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1561] Found device 0 with properties: 
+pciBusID: 0000:3b:00.0 name: Tesla V100-PCIE-32GB computeCapability: 7.0
+coreClock: 1.38GHz coreCount: 80 deviceMemorySize: 31.72GiB deviceMemoryBandwidth: 836.37GiB/s
+2020-05-04 23:54:19.076460: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1561] Found device 1 with properties: 
+pciBusID: 0000:d8:00.0 name: Tesla V100-PCIE-32GB computeCapability: 7.0
+coreClock: 1.38GHz coreCount: 80 deviceMemorySize: 31.72GiB deviceMemoryBandwidth: 836.37GiB/s
+2020-05-04 23:54:19.815089: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
+2020-05-04 23:54:43.631627: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10
+2020-05-04 23:54:50.336925: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10
+2020-05-04 23:55:09.362015: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10
+2020-05-04 23:55:23.780808: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10
+2020-05-04 23:55:31.478266: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10
+2020-05-04 23:55:59.376666: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2020-05-04 23:55:59.387596: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1703] Adding visible gpu devices: 0, 1
+2020-05-04 23:55:59.413140: I tensorflow/core/platform/cpu_feature_guard.cc:143] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2020-05-04 23:55:59.736806: I tensorflow/core/platform/profile_utils/cpu_utils.cc:102] CPU Frequency: 2100000000 Hz
+2020-05-04 23:55:59.741555: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x56234ac4b470 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-05-04 23:55:59.741640: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2020-05-04 23:56:00.214923: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x56234acb5650 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2020-05-04 23:56:00.214999: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Tesla V100-PCIE-32GB, Compute Capability 7.0
+2020-05-04 23:56:00.215026: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (1): Tesla V100-PCIE-32GB, Compute Capability 7.0
+2020-05-04 23:56:00.339212: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1561] Found device 0 with properties: 
+pciBusID: 0000:3b:00.0 name: Tesla V100-PCIE-32GB computeCapability: 7.0
+coreClock: 1.38GHz coreCount: 80 deviceMemorySize: 31.72GiB deviceMemoryBandwidth: 836.37GiB/s
+2020-05-04 23:56:00.341642: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1561] Found device 1 with properties: 
+pciBusID: 0000:d8:00.0 name: Tesla V100-PCIE-32GB computeCapability: 7.0
+coreClock: 1.38GHz coreCount: 80 deviceMemorySize: 31.72GiB deviceMemoryBandwidth: 836.37GiB/s
+2020-05-04 23:56:00.341702: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
+2020-05-04 23:56:00.341718: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10
+2020-05-04 23:56:00.341736: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10
+2020-05-04 23:56:00.341750: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10
+2020-05-04 23:56:00.341764: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10
+2020-05-04 23:56:00.341777: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10
+2020-05-04 23:56:00.341791: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2020-05-04 23:56:00.347573: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1703] Adding visible gpu devices: 0, 1
+2020-05-04 23:56:00.347626: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
+2020-05-04 23:56:00.351332: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1102] Device interconnect StreamExecutor with strength 1 edge matrix:
+2020-05-04 23:56:00.351352: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1108]      0 1 
+2020-05-04 23:56:00.351361: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1121] 0:   N Y 
+2020-05-04 23:56:00.351367: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1121] 1:   Y N 
+2020-05-04 23:56:00.356575: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1247] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 30233 MB memory) -> physical GPU (device: 0, name: Tesla V100-PCIE-32GB, pci bus id: 0000:3b:00.0, compute capability: 7.0)
+2020-05-04 23:56:00.358628: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1247] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 30233 MB memory) -> physical GPU (device: 1, name: Tesla V100-PCIE-32GB, pci bus id: 0000:d8:00.0, compute capability: 7.0)
+2020-05-04 23:56:16.843993: W tensorflow/core/framework/cpu_allocator_impl.cc:81] Allocation of 14183050752 exceeds 10% of free system memory.
+2020-05-04 23:56:37.665955: W tensorflow/core/framework/cpu_allocator_impl.cc:81] Allocation of 14183050752 exceeds 10% of free system memory.
+2020-05-04 23:56:53.594265: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10
+2020-05-04 23:57:19.599696: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+Processing Data...
+Processing sequences of length: 3kk
+
+Processing forward host data...
+Processing prokaryote training data from ProkTr#ProkTr#3k_num1_seq4194_codefw.npy
+Processing eukaryote training data from EukTr#EukTr#3k_num1_seq3584_codefw.npy
+Processing reverse host data...
+Processing prokaryote training data from ProkTr#ProkTr#3k_num1_seq4194_codebw.npy
+Processing eukaryote training data from EukTr#EukTr#3k_num1_seq3584_codebw.npy
+Processing plasmid data
+Processing plasmid data - bw
+Processing virus data...
+Processing prokaryotevirus training data from ProkVirusTr#ProkVirusTr#3k_num1_seq4264_codefw.npy
+Processin eukaryotevirus training data from EukVirusTr#EukVirusTr#3k_num1_seq2087_codefw.npy
+Processing virus data...
+Processing prokaryotevirus training data from ProkVirusTr#ProkVirusTr#3k_num1_seq4264_codebw.npy
+Processin eukaryotevirus training data from EukVirusTr#EukVirusTr#3k_num1_seq2087_codebw.npy
+Processing Validation Data...
+Processing Validation Data - bw...
+(18486, 2997, 64)
+(18486, 2997, 64)
+(18486, 5)
+(1816, 2997, 64)
+(1816, 2997, 64)
+(1816, 5)
+Model: "model"
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_1 (InputLayer)            [(None, None, 64)]   0                                            
+__________________________________________________________________________________________________
+input_2 (InputLayer)            [(None, None, 64)]   0                                            
+__________________________________________________________________________________________________
+conv1d (Conv1D)                 (None, None, 64)     24640       input_1[0][0]                    
+                                                                 input_2[0][0]                    
+__________________________________________________________________________________________________
+max_pooling1d (MaxPooling1D)    (None, None, 64)     0           conv1d[0][0]                     
+                                                                 conv1d[1][0]                     
+__________________________________________________________________________________________________
+batch_normalization (BatchNorma (None, None, 64)     256         max_pooling1d[0][0]              
+                                                                 max_pooling1d[1][0]              
+__________________________________________________________________________________________________
+conv1d_1 (Conv1D)               (None, None, 128)    24704       batch_normalization[0][0]        
+                                                                 batch_normalization[1][0]        
+__________________________________________________________________________________________________
+max_pooling1d_1 (MaxPooling1D)  (None, None, 128)    0           conv1d_1[0][0]                   
+                                                                 conv1d_1[1][0]                   
+__________________________________________________________________________________________________
+batch_normalization_1 (BatchNor (None, None, 128)    512         max_pooling1d_1[0][0]            
+                                                                 max_pooling1d_1[1][0]            
+__________________________________________________________________________________________________
+conv1d_2 (Conv1D)               (None, None, 256)    65792       batch_normalization_1[0][0]      
+                                                                 batch_normalization_1[1][0]      
+__________________________________________________________________________________________________
+global_max_pooling1d (GlobalMax (None, 256)          0           conv1d_2[0][0]                   
+                                                                 conv1d_2[1][0]                   
+__________________________________________________________________________________________________
+dropout (Dropout)               (None, 256)          0           global_max_pooling1d[0][0]       
+                                                                 global_max_pooling1d[1][0]       
+__________________________________________________________________________________________________
+flatten (Flatten)               (None, 256)          0           dropout[0][0]                    
+                                                                 dropout[1][0]                    
+__________________________________________________________________________________________________
+dense (Dense)                   (None, 500)          128500      flatten[0][0]                    
+                                                                 flatten[1][0]                    
+__________________________________________________________________________________________________
+dropout_1 (Dropout)             (None, 500)          0           dense[0][0]                      
+                                                                 dense[1][0]                      
+__________________________________________________________________________________________________
+dense_1 (Dense)                 (None, 5)            2505        dropout_1[0][0]                  
+                                                                 dropout_1[1][0]                  
+__________________________________________________________________________________________________
+average (Average)               (None, 5)            0           dense_1[0][0]                    
+                                                                 dense_1[1][0]                    
+==================================================================================================
+Total params: 246,909
+Trainable params: 246,525
+Non-trainable params: 384
+__________________________________________________________________________________________________
+Epoch 1/60
+
+Epoch 00001: val_loss improved from inf to 1.17691, saving model to ./models/model_DNA_codon.h5
+185/185 - 26s - loss: 1.4024 - accuracy: 0.4460 - val_loss: 1.1769 - val_accuracy: 0.5452
+Epoch 2/60
+
+Epoch 00002: val_loss improved from 1.17691 to 0.93240, saving model to ./models/model_DNA_codon.h5
+185/185 - 23s - loss: 0.9257 - accuracy: 0.6269 - val_loss: 0.9324 - val_accuracy: 0.6101
+Epoch 3/60
+
+Epoch 00003: val_loss improved from 0.93240 to 0.87990, saving model to ./models/model_DNA_codon.h5
+185/185 - 19s - loss: 0.8094 - accuracy: 0.6769 - val_loss: 0.8799 - val_accuracy: 0.6030
+Epoch 4/60
+
+Epoch 00004: val_loss improved from 0.87990 to 0.82002, saving model to ./models/model_DNA_codon.h5
+185/185 - 23s - loss: 0.7440 - accuracy: 0.7029 - val_loss: 0.8200 - val_accuracy: 0.6371
+Epoch 5/60
+
+Epoch 00005: val_loss did not improve from 0.82002
+185/185 - 22s - loss: 0.6925 - accuracy: 0.7268 - val_loss: 0.8620 - val_accuracy: 0.6344
+Epoch 6/60
+
+Epoch 00006: val_loss improved from 0.82002 to 0.75351, saving model to ./models/model_DNA_codon.h5
+185/185 - 22s - loss: 0.6457 - accuracy: 0.7479 - val_loss: 0.7535 - val_accuracy: 0.6696
+Epoch 7/60
+
+Epoch 00007: val_loss improved from 0.75351 to 0.69881, saving model to ./models/model_DNA_codon.h5
+185/185 - 27s - loss: 0.6157 - accuracy: 0.7645 - val_loss: 0.6988 - val_accuracy: 0.6971
+Epoch 8/60
+
+Epoch 00008: val_loss improved from 0.69881 to 0.63277, saving model to ./models/model_DNA_codon.h5
+185/185 - 24s - loss: 0.5859 - accuracy: 0.7735 - val_loss: 0.6328 - val_accuracy: 0.7164
+Epoch 9/60
+
+Epoch 00009: val_loss did not improve from 0.63277
+185/185 - 22s - loss: 0.5588 - accuracy: 0.7862 - val_loss: 0.7421 - val_accuracy: 0.7070
+Epoch 10/60
+
+Epoch 00010: val_loss did not improve from 0.63277
+185/185 - 25s - loss: 0.5291 - accuracy: 0.7957 - val_loss: 0.7105 - val_accuracy: 0.7070
+Epoch 11/60
+
+Epoch 00011: val_loss did not improve from 0.63277
+185/185 - 25s - loss: 0.4941 - accuracy: 0.8136 - val_loss: 0.6551 - val_accuracy: 0.7296
+Epoch 12/60
+
+Epoch 00012: val_loss did not improve from 0.63277
+185/185 - 23s - loss: 0.4735 - accuracy: 0.8216 - val_loss: 0.7915 - val_accuracy: 0.7186
+Epoch 13/60
+
+Epoch 00013: val_loss did not improve from 0.63277
+185/185 - 26s - loss: 0.4309 - accuracy: 0.8410 - val_loss: 0.6592 - val_accuracy: 0.7340
+Epoch 14/60
+
+Epoch 00014: val_loss did not improve from 0.63277
+185/185 - 24s - loss: 0.4012 - accuracy: 0.8513 - val_loss: 0.7143 - val_accuracy: 0.7236
+Epoch 15/60
+
+Epoch 00015: val_loss did not improve from 0.63277
+185/185 - 26s - loss: 0.3699 - accuracy: 0.8631 - val_loss: 0.6445 - val_accuracy: 0.7467
+Epoch 16/60
+
+Epoch 00016: val_loss did not improve from 0.63277
+185/185 - 26s - loss: 0.3097 - accuracy: 0.8893 - val_loss: 0.6553 - val_accuracy: 0.7610
+Epoch 17/60
+
+Epoch 00017: val_loss did not improve from 0.63277
+185/185 - 23s - loss: 0.2638 - accuracy: 0.9085 - val_loss: 0.7094 - val_accuracy: 0.7406
+Epoch 18/60
+
+Epoch 00018: val_loss did not improve from 0.63277
+185/185 - 21s - loss: 0.2373 - accuracy: 0.9196 - val_loss: 0.7493 - val_accuracy: 0.7329
+Epoch 19/60
+
+Epoch 00019: val_loss did not improve from 0.63277
+185/185 - 24s - loss: 0.2124 - accuracy: 0.9305 - val_loss: 0.7063 - val_accuracy: 0.7539
+Epoch 20/60
+
+Epoch 00020: val_loss did not improve from 0.63277
+185/185 - 22s - loss: 0.2022 - accuracy: 0.9335 - val_loss: 0.7314 - val_accuracy: 0.7632
+Epoch 21/60
+
+Epoch 00021: val_loss did not improve from 0.63277
+185/185 - 24s - loss: 0.1886 - accuracy: 0.9403 - val_loss: 0.7808 - val_accuracy: 0.7461
+Epoch 22/60
+
+Epoch 00022: val_loss did not improve from 0.63277
+185/185 - 24s - loss: 0.1665 - accuracy: 0.9486 - val_loss: 0.7330 - val_accuracy: 0.7544
+Epoch 23/60
+
+Epoch 00023: val_loss did not improve from 0.63277
+185/185 - 24s - loss: 0.1725 - accuracy: 0.9448 - val_loss: 0.7369 - val_accuracy: 0.7621
+Epoch 24/60
+
+Epoch 00024: val_loss did not improve from 0.63277
+185/185 - 22s - loss: 0.1605 - accuracy: 0.9496 - val_loss: 0.7254 - val_accuracy: 0.7737
+Epoch 25/60
+
+Epoch 00025: val_loss did not improve from 0.63277
+185/185 - 26s - loss: 0.1482 - accuracy: 0.9568 - val_loss: 0.7713 - val_accuracy: 0.7676
+Epoch 26/60
+
+Epoch 00026: val_loss did not improve from 0.63277
+185/185 - 24s - loss: 0.1346 - accuracy: 0.9624 - val_loss: 0.8333 - val_accuracy: 0.7797
+Epoch 27/60
+
+Epoch 00027: val_loss did not improve from 0.63277
+185/185 - 22s - loss: 0.1522 - accuracy: 0.9513 - val_loss: 0.7293 - val_accuracy: 0.7935
+Epoch 28/60
+
+Epoch 00028: val_loss did not improve from 0.63277
+185/185 - 23s - loss: 0.1464 - accuracy: 0.9563 - val_loss: 0.8293 - val_accuracy: 0.7687
+Epoch 29/60
+
+Epoch 00029: val_loss did not improve from 0.63277
+185/185 - 22s - loss: 0.1391 - accuracy: 0.9605 - val_loss: 0.9203 - val_accuracy: 0.7362
+Epoch 30/60
+
+Epoch 00030: val_loss did not improve from 0.63277
+185/185 - 21s - loss: 0.1320 - accuracy: 0.9628 - val_loss: 0.7705 - val_accuracy: 0.7649
+Epoch 31/60
+
+Epoch 00031: val_loss did not improve from 0.63277
+185/185 - 25s - loss: 0.1267 - accuracy: 0.9635 - val_loss: 0.8862 - val_accuracy: 0.7682
+Epoch 32/60
+
+Epoch 00032: val_loss did not improve from 0.63277
+185/185 - 24s - loss: 0.1161 - accuracy: 0.9671 - val_loss: 0.9885 - val_accuracy: 0.6982
+Epoch 33/60
+
+Epoch 00033: val_loss did not improve from 0.63277
+185/185 - 20s - loss: 0.1308 - accuracy: 0.9605 - val_loss: 0.8208 - val_accuracy: 0.7665
+Epoch 34/60
+
+Epoch 00034: val_loss did not improve from 0.63277
+185/185 - 27s - loss: 0.1152 - accuracy: 0.9688 - val_loss: 0.8003 - val_accuracy: 0.7660
+Epoch 35/60
+
+Epoch 00035: val_loss did not improve from 0.63277
+185/185 - 22s - loss: 0.1350 - accuracy: 0.9609 - val_loss: 0.9144 - val_accuracy: 0.7594
+Epoch 36/60
+
+Epoch 00036: val_loss did not improve from 0.63277
+185/185 - 22s - loss: 0.1154 - accuracy: 0.9706 - val_loss: 0.8656 - val_accuracy: 0.7753
+Epoch 37/60
+
+Epoch 00037: val_loss did not improve from 0.63277
+185/185 - 23s - loss: 0.1119 - accuracy: 0.9687 - val_loss: 0.9784 - val_accuracy: 0.7643
+Epoch 00037: early stopping
