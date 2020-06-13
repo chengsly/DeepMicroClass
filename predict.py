@@ -17,6 +17,7 @@ parser.add_option("-d", "--modelDir", action="store", type="string", dest="model
 parser.add_option("-e", "--encode", action="store", type="string", dest="encoding", help="encoding type, one-hot or codon")
 parser.add_option("-m", "--mode", action="store", type="string", dest="predictionMode", help="prediction mode: single or hybrid")
 parser.add_option("-l", "--length", action="store", type="string", dest="modelLength", help="in single mode, optionally choose one model with length")
+parser.add_option("-o", "--outputDir", action="store", type="string", dest="outputDir", help="output directory for predicted results")
 
 (options, args) = parser.parse_args()
 
@@ -36,8 +37,12 @@ if (options.predictionMode != "single" and options.predictionMode != "hybrid"):
     parser.print_help()
     sys.exit(0)
 
+if (options.outputDir is None):
+    outputDir = os.path.join(os.getcwd(), "DeepEukFinder_resultst")
+else:
+    outputDir = options.outputDir
+
 inputFile = options.inputFile
-outputDir = os.path.join(os.getcwd(), "output")
 if not os.path.exists(outputDir):
     os.makedirs(outputDir)
 
