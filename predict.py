@@ -37,6 +37,11 @@ if (options.predictionMode != "single" and options.predictionMode != "hybrid"):
     parser.print_help()
     sys.exit(0)
 
+if (options.predictionMode == "single" and options.modelLength is None):
+    sys.stderr.write(prog_base + "ERROR: specify a length from 500, 1000, 2000, 3000, 5000 when using single mode")
+    parser.print_help()
+    sys.exit(0)
+    
 if (options.outputDir is None):
     outputDir = os.path.join(os.getcwd(), "DeepEukFinder_resultst")
 else:
@@ -80,29 +85,8 @@ models["5000"] = load_model(os.path.join(modelDir, model5000Name))
 ####################################################################################################
 print("Step 2/3: Encode and predict...")
 encodingModel = EncodingScheme(encoding, "DNA")
-# sliding window predict: for each contig of length L
-# check for its length, if long enough, then use a sliding window of fixed length
-def predict_slide_routine(length, fwdarr, bwdarr):
-    sumEukScore = 0
-    sumEukVirusScore = 0
-    sumPlasmidScore = 0
-    sumProkScore = 0
-    sumProkVirScore = 0
-    
-    seqLen = fwdarr.shape[1]
-    if length > seqLen:
-       print("ERROR: sequence length should be longer than model length\n")
-       exit(0)
-    for i in range(seqLen - length):
-       scores = models[str(length)].predict([fwdarr[:,i:i+length, :], bwdarr[:,i:i+length, :]], batch_size=1)[0]
-       sumEukScore += scores[0]
-       sumEukVirusScore += scores[1]
-       sumPlasmidScore += scores[2]
-       sumProkScore += scores[3]
-       sumProkVirScore += scores[4]       
-    return [sumEukScore, sumEukVirusScore, sumPlasmidScore, sumProkScore, sumProkVirScore]
 
-# helper function for extremely long sequences
+# helper function for single mode prediction
 def predict_chunk_routine(fwdarr, bwdarr):
     sumEukScore = 0
     sumEukVirusScore = 0
@@ -119,39 +103,6 @@ def predict_chunk_routine(fwdarr, bwdarr):
         sumProkScore += scores[3]
         sumProkVirScore += scores[4]
         return [sumEukScore, sumEukVirusScore, sumPlasmidScore, sumProkScore, sumProkVirScore]
-
-
-def predict_slide(seq):
-    # score for each category
-    sumEukScore = 0
-    sumEukVirusScore = 0
-    sumPlasmidScore = 0
-    sumProkScore = 0
-    sumProkVirScore = 0
-
-    encodefw = encodingModel.encodeSeq(seq)
-    seqR = Seq(seq).reverse_complement()
-    encodebw = encodingModel.encodeSeq(seqR)
-
-    fwdarr = np.array([encodefw])
-    bwdarr = np.array([encodebw])
-    
-    print("seq len = {}, encodedlen = {}".format(len(seq), fwdarr.shape))
-    # for extremely long sequences, disregard the sliding window 
-    if len(seq) > 5000:
-        if len(seq) < 10000: # in this case perform a 5000 slidning window
-            return predict_slide_routine(5000, fwdarr, bwdarr)
-        else:
-            return predict_chunk_routine(fwdarr, bwdarr)
-    elif len(seq) > 3000:
-            return predict_slide_routine(3000, fwdarr, bwdarr)
-    elif len(seq) > 2000:
-            return predict_slide_routine(2000, fwdarr, bwdarr)
-    elif len(seq) > 1000:
-            return predict_slide_routine(1000, fwdarr, bwdarr)
-    else:
-        print("short sequence: len ={}".format(len(seq)))
-        return predict_slide_routine(500, fwdarr, bwdarr)
 
 # hybrid mode prediction
 # for each hybrid-encoded sequence, output the total score
@@ -188,27 +139,40 @@ def predict(encodedSeqfw, encodedSeqbw):
 
 
 # single model preodict: predict the whole contig with one model, depending on the length
-def predict_single(seq, length=None):
+def predict_single(seq, length):
+    # set up single mode encoding - normal encoding
     encodefw = encodingModel.encodeSeq(seq)
     seqR = Seq(seq).reverse_complement()
     encodebw = encodingModel.encodeSeq(seqR)
+    seqLength = len(seq)
+    # determine number of iterations for a fixed length chunk.
+    count_iter = seqLength / length
+    remainder_length = seqLength % length
+    if remainder_legnth >= (2/3 * length):
+        count_iter += 1
+    sumEukScore = 0
+    sumEukVirusScore = 0
+    sumPlasmidScore = 0
+    sumProkScore = 0
+    sumProkVirScore = 0
+    for i in range(count_iter):
+        scores = []
+        start_idx = i * length
+        end_idx = i * (length + 1)
+        if end_idx >= seqLength:
+            end_idx = seqLength
+        fwdarr = np.array([encodefw[start_idx:end_idx]])
+        bwdarr = np.array([encodebw[start_idx:end_idx]])
+        scores = models[length].predict([fwdarr, bwdarr], batch_size=1)[0]
+        sumEukScore += scores[0]
+        sumEukVirusScore += scores[1]
+        sumPlasmidScore += scores[2]
+        sumProkScore += scores[3]
+        sumProkVirScore += scores[4]
+    return [sumEukScore, sumEukVirusScore, sumPlasmidScore, sumProkScore, sumProkVirScore]
 
-    fwdarr = np.array([encodefw])
-    bwdarr = np.array([encodebw])
 
-    if(length != None): # single mode with specified length
-        return models[length].predict([fwdarr, bwdarr], batch_size=1)[0]
-    if (len(seq) >= 5000):
-        return models["5000"].predict([fwdarr, bwdarr], batch_size=1)[0]
-    elif len(seq) >= 3000:
-        return models["3000"].predict([fwdarr, bwdarr], batch_size=1)[0]
-    elif len(seq) >= 2000:
-        return models["2000"].predict([fwdarr, bwdarr], batch_size=1)[0]
-    elif len(seq) >= 1000:
-        return models["1000"].predict([fwdarr, bwdarr], batch_size=1)[0]
-    else:
-        return models["500"].predict([fwdarr, bwdarr], batch_size=1)[0]
-
+# steps for reading input file and start predictions
 scores = []
 names = []
 
