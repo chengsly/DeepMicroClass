@@ -3,7 +3,7 @@
 dependencies: install using anaconda, using the tentative name, "DeepEukFinder".
 
 ```sh
-conda create --name def python=3.7
+conda create --name def python=3.6
 conda activate def
 pip install tensorflow==1.15 keras==2.2.4 numpy scipy pandas sklearn biopython
 pip install 'h5py==2.10.0' --force-reinstall
