@@ -1,6 +1,6 @@
 ### Installation
 
-dependencies: install using anaconda, using the tentative name, "DeepEukFinder".
+dependencies: install using anaconda, using the tentative name, "DeepMicrobeFinder".
 
 ```sh
 conda create --name def python=3.6
