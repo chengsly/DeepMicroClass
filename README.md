@@ -94,3 +94,24 @@ example usage:
 ```sh
 python encode.py -i <input_dir> -e one-hot -l 3000 -t DNA -o <output_dir>
 ```
+
+### Prediction File Format 
+
+Each row of the output prediction file contains the scores from the neural network for class label assignment. The higher the score, the more likely the class label for a given sequence.  
+- Sequence Name: the name of the sequence in the input fasta file 
+- Eukaryote: the score the neural network model assigns to this sequence being Eukaryote. 
+- EukaryoteVirus: the score for this sequence being EukaryoteVirus 
+- Plasmid: the score for this sequence being Plasmid 
+- Prokaryote: the score for this sequence being prokaryote
+- ProkaryoteVirus: the score for this sequence being ProkaryoteVirus  
+
+As an example:
+```
+Sequence Name   Eukaryote       EukaryoteVirus  Plasmid Prokaryote      ProkaryoteVirus
+NC_008199#3k#12001#15000        0.0001718740027172454   1.2298997305038642e-05  0.1367506879128939      0.4601334227976679      5.402931783348322
+```
+
+To assign a label to a given sequence, we find the maximum of all the assigned scores. In the above case, ProkaryoteVirus has the highest score, so the sequence is assigned as belonging to the class ProkaryoteVirus. 
+
+
+
