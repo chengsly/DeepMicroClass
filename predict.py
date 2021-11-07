@@ -16,7 +16,7 @@ parser.add_option("-i", "--in", action = "store", type="string", dest="inputFile
 parser.add_option("-d", "--modelDir", action="store", type="string", dest="modelDir", help="model directory for prediction")
 parser.add_option("-e", "--encode", action="store", type="string", dest="encoding", help="encoding type, one-hot or codon")
 parser.add_option("-m", "--mode", action="store", type="string", dest="predictionMode", help="prediction mode: single or hybrid")
-parser.add_option("-l", "--length", action="store", type="string", dest="modelLength", help="in single mode, optionally choose one model with length")
+parser.add_option("-l", "--length", action="store", type="int", dest="modelLength", help="in single mode, optionally choose one model with length")
 parser.add_option("-o", "--outputDir", action="store", type="string", dest="outputDir", help="output directory for predicted results")
 
 (options, args) = parser.parse_args()
@@ -146,9 +146,9 @@ def predict_single(seq, length):
     encodebw = encodingModel.encodeSeq(seqR)
     seqLength = len(seq)
     # determine number of iterations for a fixed length chunk.
-    count_iter = seqLength / length
+    count_iter = seqLength // length
     remainder_length = seqLength % length
-    if remainder_legnth >= (2/3 * length):
+    if remainder_length >= (2/3 * length):
         count_iter += 1
     sumEukScore = 0
     sumEukVirusScore = 0
@@ -158,12 +158,12 @@ def predict_single(seq, length):
     for i in range(count_iter):
         scores = []
         start_idx = i * length
-        end_idx = i * (length + 1)
+        end_idx = (i+1) * (length + 1)
         if end_idx >= seqLength:
             end_idx = seqLength
         fwdarr = np.array([encodefw[start_idx:end_idx]])
         bwdarr = np.array([encodebw[start_idx:end_idx]])
-        scores = models[length].predict([fwdarr, bwdarr], batch_size=1)[0]
+        scores = models[str(length)].predict([fwdarr, bwdarr], batch_size=1)[0]
         sumEukScore += scores[0]
         sumEukVirusScore += scores[1]
         sumPlasmidScore += scores[2]
