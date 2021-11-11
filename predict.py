@@ -158,7 +158,7 @@ def predict_single(seq, length):
     for i in range(count_iter):
         scores = []
         start_idx = i * length
-        end_idx = (i+1) * (length + 1)
+        end_idx = (i+1) * length
         if end_idx >= seqLength:
             end_idx = seqLength
         fwdarr = np.array([encodefw[start_idx:end_idx]])
