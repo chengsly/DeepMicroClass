@@ -43,7 +43,7 @@ if (options.predictionMode == "single" and options.modelLength is None):
     sys.exit(0)
     
 if (options.outputDir is None):
-    outputDir = os.path.join(os.getcwd(), "DeepEukFinder_resultst")
+    outputDir = os.path.join(os.getcwd(), "DeepMicrobeFinder_results")
 else:
     outputDir = options.outputDir
 
