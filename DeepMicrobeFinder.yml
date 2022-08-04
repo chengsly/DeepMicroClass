@@ -1,0 +1,15 @@
+name: DeepMicrobeFinder
+
+channels:
+  - conda-forge
+  - etetoolkits
+  - bioconda
+
+dependencies:
+  - cudatoolkit=11.2
+  - cudnn=8.1.0
+  - pandas
+  - numpy
+  - biopython
+  - ete3
+  - tensorflow
