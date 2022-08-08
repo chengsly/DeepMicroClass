@@ -1,5 +1,3 @@
-from re import S
-from telnetlib import EXOPL
 from Bio import SeqIO
 import pandas as pd
 import os
@@ -29,8 +27,8 @@ os.makedirs(EUK_VIR_DIR, exist_ok=True)
 
 for record in SeqIO.parse(VHDB_FASTA_PATH, "fasta"):
     if record.id in prok_vir:
-        dir = PROK_VIR_DIR
+        directory = PROK_VIR_DIR
     elif record.id in euk_vir:
-        dir = EUK_VIR_DIR
-    output_path = os.path.join(dir, f"{record.id}.fa")
+        directory = EUK_VIR_DIR
+    output_path = os.path.join(directory, f"{record.id}.fa")
     SeqIO.write(record, output_path, "fasta")
