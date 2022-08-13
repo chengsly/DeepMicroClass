@@ -44,7 +44,8 @@ def seq2intseq(seq, contig_length=None):
 
 
 def int2onehot(array):
-    n = np.max(array) + 1
+    # n = np.max(array) + 1
+    n = 5
     return np.eye(int(n))[array.astype(int)]
 
 
