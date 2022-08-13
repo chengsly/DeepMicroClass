@@ -8,6 +8,8 @@ from Bio.Data import CodonTable
 from Bio.Seq import Seq
 import numpy as np
 import os
+import utils
+import pgzip
 
 class EncodingScheme:
     def __init__(self,encode, seqType,  modelurl=None):
@@ -29,20 +31,22 @@ class EncodingScheme:
         return seq_code
 
     def encodeOneHotDNA(self, seq):
-        seq_code = list()
-        for i in range(len(seq)):
-            upperChar = seq[i].upper()
-            if upperChar == 'A':
-                seq_code.append(constants.ENCODE_A)
-            elif upperChar == 'C':
-                seq_code.append(constants.ENCODE_C)
-            elif upperChar == 'G':
-                seq_code.append(constants.ENCODE_G)
-            elif upperChar == 'T':
-                seq_code.append(constants.ENCODE_T)
-            else:
-                seq_code.append(constants.ENCODE_UNK)
-        return seq_code
+        # seq_code = list()
+        # for i in range(len(seq)):
+        #     upperChar = seq[i].upper()
+        #     if upperChar == 'A':
+        #         seq_code.append(constants.ENCODE_A)
+        #     elif upperChar == 'C':
+        #         seq_code.append(constants.ENCODE_C)
+        #     elif upperChar == 'G':
+        #         seq_code.append(constants.ENCODE_G)
+        #     elif upperChar == 'T':
+        #         seq_code.append(constants.ENCODE_T)
+        #     else:
+        #         seq_code.append(constants.ENCODE_UNK)
+        # # return seq_code
+        # return np.vstack(seq_code)
+        return utils.seq2onehot(seq)[:, :4]
 
  
     def encodeOneHotProtein(self, seq):
@@ -155,7 +159,7 @@ class EncodingScheme:
         NCBIName = os.path.splitext((os.path.basename(fileName)))[0]
         with open(fileName, 'r') as faLines :
             code = []
-            codeR = []
+            # codeR = []
             seqname = []
             head = ''
             lineNum = 0
@@ -185,9 +189,9 @@ class EncodingScheme:
                             seqname.append(seq)
                             seq_code = self.encodeSeq(seq)
                             code.append(seq_code)
-                            seqR = Seq(seq).reverse_complement()
-                            seqR_code = self.encodeSeq(seqR)
-                            codeR.append(seqR_code)
+                            # seqR = Seq(seq).reverse_complement()
+                            # seqR_code = self.encodeSeq(seqR)
+                            # codeR.append(seqR_code)
                             count += 1
                         pos = posEnd
                         posEnd = pos + contigLength
@@ -213,9 +217,9 @@ class EncodingScheme:
                         seqname.append(seq)
                         seq_code = self.encodeSeq(seq)
                         code.append(seq_code)
-                        seqR = Seq(seq).reverse_complement()
-                        seqR_code = self.encodeSeq(seqR)
-                        codeR.append(seqR_code)
+                        # seqR = Seq(seq).reverse_complement()
+                        # seqR_code = self.encodeSeq(seqR)
+                        # codeR.append(seqR_code)
                         count += 1
                     pos = posEnd
                     posEnd = pos + contigLength
@@ -224,10 +228,14 @@ class EncodingScheme:
         if len(code) > 0 :
             print("In block: last")
             codeFileNamefw = contigType+"#"+NCBIName+"#"+str(contigLengthk)+"k_seq"+str(len(code))+"_codefw.npy"
-            codeFileNamebw = contigType+"#"+NCBIName+"#"+str(contigLengthk)+"k_seq"+str(len(codeR))+"_codebw.npy"
+            # codeFileNamebw = contigType+"#"+NCBIName+"#"+str(contigLengthk)+"k_seq"+str(len(code))+"_codebw.npy"
             print("encoded sequences are saved in {}".format(codeFileNamefw))
-            np.save( os.path.join(outDir, codeFileNamefw), np.array(code))
-            np.save( os.path.join(outDir, codeFileNamebw), np.array(codeR) )
+            
+            # np.save( os.path.join(outDir, codeFileNamefw), np.array(code))
+            with pgzip.open(os.path.join(outDir, f'{codeFileNamefw}.gz'), mode='w', thread=16) as handle:
+                np.save(handle, np.stack(code))
+
+            # np.save( os.path.join(outDir, codeFileNamebw), np.array(codeR) )
         print("total number of whole sequences encoded: {}".format(len(counts)))
         print("total number of sequence chunks: {}".format(sum(counts)))
         return names,counts

@@ -2,7 +2,7 @@ name: DeepMicrobeFinder
 
 channels:
   - conda-forge
-  - etetoolkits
+  - etetoolkit
   - bioconda
 
 dependencies:
@@ -13,3 +13,6 @@ dependencies:
   - biopython
   - ete3
   - tensorflow
+  - tqdm
+  - scikit-learn
+  - keras

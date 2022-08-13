@@ -44,10 +44,11 @@ DUMMY_VEC_EMBEDDING = [0.01] * 100
 ALLOWED_CHARS_DNA = ['A', 'C', 'T', 'G']
 ALLOWED_CHARS_PROTEIN = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I',
                          'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V']
-ENCODE_A = [1,0,0,0]
-ENCODE_C = [0,1,0,0]
-ENCODE_G = [0,0,1,0]
-ENCODE_T = [0,0,0,1]
+import numpy as np
+ENCODE_A = np.array([1,0,0,0], dtype=np.int8)
+ENCODE_C = np.array([0,1,0,0], dtype=np.int8)
+ENCODE_G = np.array([0,0,1,0], dtype=np.int8)
+ENCODE_T = np.array([0,0,0,1], dtype=np.int8)
 ENCODE_UNK = [1/4, 1/4, 1/4, 1/4]
 
 # Codon
