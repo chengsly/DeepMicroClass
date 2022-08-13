@@ -26,6 +26,8 @@ kernels = [6, 3, 2]
 ndense = 500
 epochs = 50
 
+tf.config.threading.set_inter_op_parallelism_threads(16)
+
 #########################
 #         ARGS          #
 #########################
@@ -190,15 +192,18 @@ eukTr = np.load(os.path.join(inputDir, eukTrFileName), allow_pickle=True)
 # Host - bw
 print("Processing reverse host data...")
 print("Processing prokaryote training data from {}".format(prokTrFileName_bw))
-prokTr_bw = np.load(os.path.join(inputDir, prokTrFileName_bw), allow_pickle=True)
+# prokTr_bw = np.load(os.path.join(inputDir, prokTrFileName_bw), allow_pickle=True)
+prokTr_bw = prokTr[:, ::-1, ::-1]
 print("Processing eukaryote training data from {}".format(eukTrFileName_bw))
-eukTr_bw = np.load(os.path.join(inputDir, eukTrFileName_bw), allow_pickle=True)
+# eukTr_bw = np.load(os.path.join(inputDir, eukTrFileName_bw), allow_pickle=True)
+eukTr_bw = eukTr[:, ::-1, ::-1]
 
 # Plasmid 
 print("Processing plasmid data")
 plasmidTr = np.load(os.path.join(inputDir, plasmidTrFileName), allow_pickle=True)
 print("Processing plasmid data - bw")
-plasmidTr_bw = np.load(os.path.join(inputDir, plasmidTrFileName_bw), allow_pickle=True)
+# plasmidTr_bw = np.load(os.path.join(inputDir, plasmidTrFileName_bw), allow_pickle=True)
+plasmidTr_bw = plasmidTr[:, ::-1, ::-1]
 
 # Virus - fw
 print("Processing virus data...")
@@ -210,9 +215,11 @@ eukVirusTr = np.load(os.path.join(inputDir, eukVirusTrFileName), allow_pickle=Tr
 # Virus - bw
 print("Processing virus data...")
 print("Processing prokaryotevirus training data from {}".format(prokVirusTrFileName_bw))
-prokVirusTr_bw = np.load(os.path.join(inputDir, prokVirusTrFileName_bw), allow_pickle=True)
+# prokVirusTr_bw = np.load(os.path.join(inputDir, prokVirusTrFileName_bw), allow_pickle=True)
+prokVirusTr_bw = prokVirusTr[:, ::-1, ::-1]
 print("Processin eukaryotevirus training data from {}".format(eukVirusTrFileName_bw))
-eukVirusTr_bw = np.load(os.path.join(inputDir, eukVirusTrFileName_bw), allow_pickle=True)
+# eukVirusTr_bw = np.load(os.path.join(inputDir, eukVirusTrFileName_bw), allow_pickle=True)
+eukVirusTr_bw = eukVirusTr[:, ::-1, ::-1]
 
 # VirusTr = np.concatenate((prokVirusTr, EukVirusTr), axis=0)
 # print("Finished Processing Virus of shape {}".format(VirusTr.shape))
@@ -228,11 +235,16 @@ prokVirusVal = np.load(os.path.join(inputDir, prokVirusValFileName), allow_pickl
 eukVirusVal = np.load(os.path.join(inputDir, eukVirusValFileName), allow_pickle=True)
 
 print("Processing Validation Data - bw...")
-prokVal_bw = np.load(os.path.join(inputDir, prokValFileName_bw), allow_pickle=True)
-eukVal_bw = np.load(os.path.join(inputDir, eukValFileName_bw), allow_pickle=True)
-plasmidVal_bw = np.load(os.path.join(inputDir, plasmidValFileName_bw), allow_pickle=True)
-prokVirusVal_bw = np.load(os.path.join(inputDir, prokVirusValFileName_bw), allow_pickle=True)
-eukVirusVal_bw = np.load(os.path.join(inputDir, eukVirusValFileName_bw), allow_pickle=True)
+# prokVal_bw = np.load(os.path.join(inputDir, prokValFileName_bw), allow_pickle=True)
+# eukVal_bw = np.load(os.path.join(inputDir, eukValFileName_bw), allow_pickle=True)
+# plasmidVal_bw = np.load(os.path.join(inputDir, plasmidValFileName_bw), allow_pickle=True)
+# prokVirusVal_bw = np.load(os.path.join(inputDir, prokVirusValFileName_bw), allow_pickle=True)
+# eukVirusVal_bw = np.load(os.path.join(inputDir, eukVirusValFileName_bw), allow_pickle=True)
+prokVal_bw = prokVal[:, ::-1, ::-1]
+eukVal_bw = eukVal[:, ::-1, ::-1]
+plasmidVal_bw = plasmidVal[:, ::-1, ::-1]
+prokVirusVal_bw = prokVirusVal[:, ::-1, ::-1]
+eukVirusVal_bw = eukVirusVal[:, ::-1, ::-1]
 
 # Training Data
 labelsTr = ["Prokaryote"] * prokTr.shape[0] + ["Eukaryote"] * eukTr.shape[0] + \
