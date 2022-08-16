@@ -92,7 +92,7 @@ Options:
 
 example usage:
 ```sh
-python encode.py -i <input_dir> -e one-hot -l 3000 -t DNA -o <output_dir>
+python training.py -i <input_dir> -e one-hot -l 3000 -t DNA -o <output_dir>
 ```
 
 ### Prediction File Format 
