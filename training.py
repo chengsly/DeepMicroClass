@@ -9,6 +9,7 @@ import optparse
 import utils
 import os, sys
 from sklearn import preprocessing
+from tqdm.keras import TqdmCallback
 
 
 ####################################################################################################################################
@@ -27,6 +28,10 @@ ndense = 500
 epochs = 50
 
 tf.config.threading.set_inter_op_parallelism_threads(16)
+gpus = tf.config.experimental.list_physical_devices('GPU')
+for gpu in gpus:
+  tf.config.experimental.set_memory_growth(gpu, True)
+tf.compat.v1.disable_eager_execution()
 
 #########################
 #         ARGS          #
@@ -186,6 +191,13 @@ prokVirusValFileName_bw = utils.getBackwardName(prokVirusValFileName)
 print("Processing forward host data...")
 print("Processing prokaryote training data from {}".format(prokTrFileName))
 prokTr = np.load(os.path.join(inputDir, prokTrFileName), allow_pickle=True)
+
+import math
+prok_idx = np.zeros(prokTr.shape[0], dtype=bool)
+prok_idx[:math.floor(prokTr.shape[0]/10)] = True
+prokTr = prokTr[prok_idx, :, :]
+print(f'prok train #: {prokTr.shape[0]}')
+
 print("Processing eukaryote training data from {}".format(eukTrFileName))
 eukTr = np.load(os.path.join(inputDir, eukTrFileName), allow_pickle=True)
 
@@ -229,6 +241,11 @@ eukVirusTr_bw = eukVirusTr[:, ::-1, ::-1]
 # Validation
 print("Processing Validation Data...")
 prokVal = np.load(os.path.join(inputDir, prokValFileName), allow_pickle=True)
+prok_idx = np.zeros(prokVal.shape[0], dtype=bool)
+prok_idx[:math.floor(prokVal.shape[0]/10)] = True
+prokVal = prokVal[prok_idx, :, :]
+print(f'prok val #: {prokVal.shape[0]}')
+
 eukVal = np.load(os.path.join(inputDir, eukValFileName), allow_pickle=True)
 plasmidVal = np.load(os.path.join(inputDir, plasmidValFileName), allow_pickle=True)
 prokVirusVal = np.load(os.path.join(inputDir, prokVirusValFileName), allow_pickle=True)
@@ -292,12 +309,19 @@ print(Y_val.shape)
 #                                             Training                                                                     #
 ############################################################################################################################
 
-batch_size=100
+from sklearn.utils import class_weight
+
+weight = class_weight.compute_class_weight(class_weight='balanced', classes=np.unique(Y_tr_shuf.argmax(axis=1)), y=Y_tr_shuf.argmax(axis=1))
+weight = dict(enumerate(weight))
+
+batch_size=512
 pool_len1 = int((1000-500+1))
 
 model = buildModelBidirectionalPass()
 
 model.fit(x = [X_tr_shuf, X_tr_shuf_bw], y = Y_tr_shuf, 
-            batch_size=batch_size, epochs=60, verbose=2, 
-            validation_data=([X_val, X_val_bw], Y_val), 
-            callbacks=[checkpointer, earlystopper])
+            batch_size=batch_size, epochs=60, verbose=0, 
+            validation_data=([X_val, X_val_bw], Y_val),
+            callbacks=[checkpointer, earlystopper, TqdmCallback(verbose=2, data_size=X_tr_shuf.shape[0], batch_size=batch_size)],
+            # class_weight=weight,
+            )
