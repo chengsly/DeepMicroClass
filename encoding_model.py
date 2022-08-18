@@ -231,9 +231,9 @@ class EncodingScheme:
             # codeFileNamebw = contigType+"#"+NCBIName+"#"+str(contigLengthk)+"k_seq"+str(len(code))+"_codebw.npy"
             print("encoded sequences are saved in {}".format(codeFileNamefw))
             
-            # np.save( os.path.join(outDir, codeFileNamefw), np.array(code))
-            with pgzip.open(os.path.join(outDir, f'{codeFileNamefw}.gz'), mode='w', thread=16) as handle:
-                np.save(handle, np.stack(code))
+            np.save( os.path.join(outDir, codeFileNamefw), np.array(code))
+            # with pgzip.open(os.path.join(outDir, f'{codeFileNamefw}.gz'), mode='w', thread=16) as handle:
+            #     np.save(handle, np.stack(code))
 
             # np.save( os.path.join(outDir, codeFileNamebw), np.array(codeR) )
         print("total number of whole sequences encoded: {}".format(len(counts)))
