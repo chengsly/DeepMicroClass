@@ -14,7 +14,7 @@ parser.add_argument("--train_ratio", dest="train_ratio", default=0.8, type=float
 parser.add_argument("--threshold", dest="threshold", default=0.01, type=float)
 args = parser.parse_args()
 
-dist = pd.read_table(args.dist, index_col=0, delimiter='\t', engine='c', na_filter=False, low_memory=False)
+dist = pd.read_table(args.dist, index_col=0, delimiter="\t", engine="c", na_filter=False, low_memory=False)
 
 org_records = list(SeqIO.parse(args.input, "fasta"))
 org_id = [record.id for record in org_records]

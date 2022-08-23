@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source activate def
+# source activate def
+eval "$(conda shell.bash hook)"
+conda activate tf2
 
 INPUT_DIR=$1
 LENGTH=$2
