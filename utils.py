@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 def getBackwardName(forwardName):
     if (forwardName[-6:] != "fw.npy"):
@@ -46,11 +47,34 @@ def seq2intseq(seq, contig_length=None):
 def int2onehot(array):
     # n = np.max(array) + 1
     n = 5
-    return np.eye(int(n))[array.astype(int)]
+    output = np.eye(int(n))[array.astype(int)]
+    output[output[:, 4] == 1, :] = 0.25
+    return output
 
 
 def seq2onehot(seq, contig_length=None):
-    assert isinstance(seq, str), "Input should be str"
+    # assert isinstance(seq, str), "Input should be str"
+    seq = str(seq)
     int_seq = seq2intseq(seq, contig_length)
     onehot = int2onehot(int_seq)
     return onehot.astype(np.uint8)
+
+def sample_onehot(genome_onehot, length):
+    """
+    Sample a given length fragment from a genome onehot matrix, if the genome length is shorter than the given length,
+    return a 0-padded matrix
+    :param genome_onehot:
+    :param length:
+    :return:
+    """
+    genome_length = genome_onehot.shape[0]
+    if genome_length > length:
+        start_index = np.random.randint(0, genome_length - length)
+        end_index = start_index + length
+        onehot_sampled = genome_onehot[start_index:end_index, :]
+    elif genome_length == length:
+        onehot_sampled = genome_onehot
+    else:
+        # onehot_sampled = np.vstack((genome_onehot, np.zeros((length - genome_length, genome_onehot.shape[1]))))
+        onehot_sampled = torch.nn.functional.pad(genome_onehot, (0, 0, 0, length - genome_length), "constant", 0)
+    return onehot_sampled

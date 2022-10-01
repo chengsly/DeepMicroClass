@@ -1,5 +1,6 @@
 data/
-DeepMicrobeFinder_results/
+DeepMicrobeFinder_results*/
+log
 
 .vscode/
 
