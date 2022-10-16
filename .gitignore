@@ -5,6 +5,8 @@ tempFolder/
 archive/
 result*
 *.pdf
+*history.md
+tmp*
 
 .vscode/
 

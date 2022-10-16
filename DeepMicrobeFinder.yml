@@ -1,18 +1,21 @@
-name: tf2
+name: DeepMicrobeFinder
 
 channels:
   - conda-forge
   - etetoolkit
   - bioconda
+  - pytorch
 
 dependencies:
-  - cudatoolkit=11.2
-  - cudnn=8.1.0
+  - cudatoolkit=11.3
   - pandas
   - numpy
   - biopython
   - ete3
-  # - tensorflow-gpu
+  - pytorch
+  - pytorch-lightning
+  - torchmetrics
+  - tensorboard
   - tqdm
   - scikit-learn
   - keras
