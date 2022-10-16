@@ -1,4 +1,4 @@
-name: DeepMicrobeFinder
+name: tf2
 
 channels:
   - conda-forge
@@ -12,7 +12,7 @@ dependencies:
   - numpy
   - biopython
   - ete3
-  - tensorflow
+  # - tensorflow-gpu
   - tqdm
   - scikit-learn
   - keras

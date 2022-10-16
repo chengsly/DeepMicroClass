@@ -1,7 +1,7 @@
 #!/bin/sh
 
 eval "$(conda shell.bash hook)"
-conda activate tiara
+conda activate plasflow
 
 # for f in data/sampled_sequence_subsampled/*.fa
 for f in data/sampled_sequence_subsampled_2000/*.fa
@@ -10,5 +10,5 @@ do
     extension="${filename##*.}"
     filename="${filename%.*}"
     echo "Predicting $f"
-    whokaryote.py --contigs $f --outdir "result_other_2000/result_whokaryote/${filename}" --threads 16 --minsize 1 # --prodigal_file "data/result_whokaryote/${filename}/contigs_genes.gff"
+    PlasFlow.py --input $f --output result_other_2000/result_plasflow/$filename
 done

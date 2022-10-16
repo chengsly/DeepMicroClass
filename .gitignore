@@ -1,6 +1,10 @@
 data/
 DeepMicrobeFinder_results*/
 log
+tempFolder/
+archive/
+result*
+*.pdf
 
 .vscode/
 

@@ -58,8 +58,11 @@ metaeuk_classify(){
 
     # database
     REF=/home/db/metaeuk_db/MMETSP_zenodo_3247846_uniclust90_2018_08_seed_valid_taxids
-    metaeuk=/home/software/src/metaeuk/build/bin/metaeuk
-    mmseqs=/home/software/src/MMseqs2/build/bin/mmseqs
+    # metaeuk=/home/software/src/metaeuk/build/bin/metaeuk
+    metaeuk=/home/tianqi/local/bin/metaeuk
+    # mmseqs=/home/software/src/MMseqs2/build/bin/mmseqs
+    mmseqs=/home/tianqi/software/mmseqs/bin/mmseqs
+
 
     # create query db
     $mmseqs createdb ${input_assembly} ${MetaEuk_RESULTS}/queryContigDB

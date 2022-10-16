@@ -3,12 +3,11 @@
 eval "$(conda shell.bash hook)"
 conda activate tiara
 
-# for f in data/sampled_sequence_subsampled/*.fa
-for f in data/sampled_sequence_subsampled_2000/*.fa
+for f in data/sampled_sequence_subsampled/*.fa
 do
     filename=$(basename -- "$f")
     extension="${filename##*.}"
     filename="${filename%.*}"
     echo "Predicting $f"
-    tiara -i $f -o "data/result_tiara_2000/${filename}.txt" -t 16 -m 0 # -p 0.2 0.3
+    scripts/parallel_prodigal.sh $f "data/result_whokaryote/${filename}" 16 data/tmp
 done

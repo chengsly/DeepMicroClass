@@ -1,19 +1,20 @@
 import os, sys, optparse
-# import keras
-from tensorflow.keras.models import load_model
 from encoding_model import EncodingScheme
 from Bio import SeqIO
 from Bio.Seq import Seq
 import numpy as np
 import constants
 import multiprocessing
-import tensorflow as tf
 
-tf.config.threading.set_inter_op_parallelism_threads(16)
-gpus = tf.config.experimental.list_physical_devices('GPU')
-for gpu in gpus:
-  tf.config.experimental.set_memory_growth(gpu, True)
-tf.compat.v1.disable_eager_execution()
+import pytorch_lightning as pl
+from DMF import DMF, LightningDMF, DMFTransformer, LightningDMF_2class, DMF_2class
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+import utils
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 prog_base = os.path.split(sys.argv[0])[1]
@@ -70,22 +71,18 @@ mode = options.predictionMode
 modelDir = options.modelDir
 print("Step 1/3: Loading models from {}".format(options.modelDir))
 models = {}
-model500Name = [x for x in os.listdir(modelDir) if "500.h5" in x][0]
-model2000Name = [x for x in os.listdir(modelDir) if "2000.h5" in x][0]
-model1000Name = [x for x in os.listdir(modelDir) if "1000.h5" in x][0]
-model3000Name = [x for x in os.listdir(modelDir) if "3000.h5" in x][0]
-model5000Name = [x for x in os.listdir(modelDir) if "5000.h5" in x][0]
 
-if model500Name is None or model2000Name is None or model1000Name is None or model3000Name is None or model5000Name is None:
-    print("ERROR: models for length 500, 1000, 2000, 3000, 5000 must be present")
-    exit(0)
+# model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint_new/epoch=149-step=38400-val_f1=0.946-val_acc=0.946.ckpt', model=DMF(), map_location=device)
+model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DMF(), map_location=device)
+# model = LightningDMF_2class.load_from_checkpoint('data/pt_logs/checkpoint/last.ckpt', model=DMF_2class(), map_location=device)
+model.to(device)
+model.eval()
 
-models["500"] = load_model(os.path.join(modelDir, model500Name))
-models["1000"] = load_model(os.path.join(modelDir, model1000Name))
-models["2000"] = load_model(os.path.join(modelDir, model2000Name))
-models["3000"] = load_model(os.path.join(modelDir, model3000Name))
-models["5000"] = load_model(os.path.join(modelDir, model5000Name))
-
+models['500'] = model
+models['1000'] = model
+models['2000'] = model
+models['3000'] = model
+models['5000'] = model
 
 ####################################################################################################
 #                                      STEP 2                                                      #
@@ -94,7 +91,7 @@ print("Step 2/3: Encode and predict...")
 encodingModel = EncodingScheme(encoding, "DNA")
 
 # helper function for single mode prediction
-def predict_chunk_routine(fwdarr, bwdarr):
+def predict_chunk_routine(fwdarr):
     sumEukScore = 0
     sumEukVirusScore = 0
     sumPlasmidScore = 0
@@ -103,19 +100,24 @@ def predict_chunk_routine(fwdarr, bwdarr):
     for i in range(int(len(seq)/5000)): # in this case we care only about 5000 chunks
         startIdx = i * 5000
         endIdx = (i+1) * 5000
-        scores = models["5000"].predict([fwdarr[:,startIdx:endIdx,:], bwdarr[:,startIdx:endIdx,:]], batch_size=1)[0]
-        sumEukScore += scores[0]
-        sumEukVirusScore += scores[1]
-        sumPlasmidScore += scores[2]
-        sumProkScore += scores[3]
-        sumProkVirScore += scores[4]
+        scores = models["5000"](fwdarr[:,startIdx:endIdx,:])
+        sumEukScore +=  1-scores[0]
+        # sumEukVirusScore += scores[1]
+        sumPlasmidScore += scores[0]
+        # sumProkScore += scores[3]
+        # sumProkVirScore += scores[4]
+        # sumEukScore += scores[0]
+        # sumEukVirusScore += scores[1]
+        # sumPlasmidScore += scores[2]
+        # sumProkScore += scores[3]
+        # sumProkVirScore += scores[4]
         return [sumEukScore, sumEukVirusScore, sumPlasmidScore, sumProkScore, sumProkVirScore]
 
 # hybrid mode prediction
 # for each hybrid-encoded sequence, output the total score
 # greedy principle: always use the longest model if possible
 # scores from strong predictors have more weight
-def predict(encodedSeqfw, encodedSeqbw):
+def predict(encodedSeqfw):
     # input is hybrid encoded: each item has different length
     sumEukScore = 0
     sumEukVirusScore = 0
@@ -125,19 +127,23 @@ def predict(encodedSeqfw, encodedSeqbw):
     for i in range(len(encodedSeqfw)):
         scores=[]
         fwdarr = np.array([encodedSeqfw[i]])
-        bwdarr = np.array([encodedSeqbw[i]])
-        # fwdarr = fwdarr[:,:,:,np.newaxis]
-        # bwdarr = bwdarr[:,:,:,np.newaxis]
-        if (len(encodedSeqfw[i]) == 5000):
-            scores = 5 * models["5000"].predict([fwdarr,bwdarr], batch_size=1)[0]
-        elif len(encodedSeqfw[i]) == 3000:
-            scores = 3 * models["3000"].predict([fwdarr,bwdarr], batch_size=1)[0]
-        elif len(encodedSeqfw[i]) == 2000:
-            scores = 2 * models["2000"].predict([fwdarr,bwdarr], batch_size=1)[0]
-        elif len(encodedSeqfw[i]) == 1000:
-            scores = 1 * models["1000"].predict([fwdarr,bwdarr], batch_size=1)[0]
-        else:
-            scores = 0.5 * models["500"].predict([fwdarr,bwdarr], batch_size=1)[0]  
+        # print(fwdarr.shape)
+        # fwdarr = utils.mutate_onehot(fwdarr, 0, 0.005)
+        # fwdarr = fwdarr[None, :, :]
+        with torch.no_grad():
+            fwdarr = torch.from_numpy(fwdarr).float()[:,None,:,:].to(device)
+            # fwdarr = fwdarr[:,:,:,np.newaxis]
+            # bwdarr = bwdarr[:,:,:,np.newaxis]
+            if (len(encodedSeqfw[i]) == 5000):
+                scores = 5 * F.softmax(models["5000"](fwdarr), dim=1)[0]
+            elif len(encodedSeqfw[i]) == 3000:
+                scores = 3 * F.softmax(models["3000"](fwdarr), dim=1)[0]
+            elif len(encodedSeqfw[i]) == 2000:
+                scores = 2 * F.softmax(models["2000"](fwdarr), dim=1)[0]
+            elif len(encodedSeqfw[i]) == 1000:
+                scores = 1 * F.softmax(models["1000"](fwdarr), dim=1)[0]
+            else:
+                scores = 0.5 * F.softmax(models["500"](fwdarr), dim=1)[0]  
         sumEukScore += scores[0]
         sumEukVirusScore += scores[1]
         sumPlasmidScore += scores[2]
@@ -151,8 +157,6 @@ def predict(encodedSeqfw, encodedSeqbw):
 def predict_single(seq, length):
     # set up single mode encoding - normal encoding
     encodefw = encodingModel.encodeSeq(seq)
-    seqR = Seq(seq).reverse_complement()
-    encodebw = encodingModel.encodeSeq(seqR)
     seqLength = len(seq)
     # determine number of iterations for a fixed length chunk.
     count_iter = seqLength // length
@@ -171,8 +175,7 @@ def predict_single(seq, length):
         if end_idx >= seqLength:
             end_idx = seqLength
         fwdarr = np.array([encodefw[start_idx:end_idx]])
-        bwdarr = np.array([encodebw[start_idx:end_idx]])
-        scores = models[str(length)].predict([fwdarr, bwdarr], batch_size=1)[0]
+        scores = models[str(length)](fwdarr, batch_size=1)[0]
         sumEukScore += scores[0]
         sumEukVirusScore += scores[1]
         sumPlasmidScore += scores[2]
@@ -197,6 +200,7 @@ with open(inputFile, 'r') as faLines :
         lineNum += 1
         if flag == 0 and line[0] == '>' :
             head = line.strip()[1:]
+            print(head)
             continue
         elif line[0] != '>' :
             seq = seq + line.strip()
@@ -223,7 +227,8 @@ with open(inputFile, 'r') as faLines :
                         names.append(head)
                     else:
                         encodefw, encodebw = encodingModel.encodeContig(seq)
-                        pred_score = predict(encodefw, encodebw)
+                        # encodefw = utils.seq2onehot(seq)
+                        pred_score = predict(encodefw)
                         scores.append(pred_score)
                         names.append(head)
             else :
@@ -258,7 +263,7 @@ with open(inputFile, 'r') as faLines :
                     names.append(head)
                 else:
                     encodefw, encodebw = encodingModel.encodeContig(seq)
-                    pred_score = predict(encodefw, encodebw)
+                    pred_score = predict(encodefw)
                     scores.append(pred_score)
                     names.append(head)
 

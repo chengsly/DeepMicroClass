@@ -15,6 +15,8 @@ os.makedirs(args.output_dir, exist_ok=True)
 
 input_list = [fn for fn in os.listdir(args.input_dir) if fn.endswith(("gz", "fasta", "fna", "fa"))]
 
+plasmid_ids = set(seq.id for seq in SeqIO.parse('data/plsdb/plsdb.fna', "fasta"))
+
 for fasta_file in tqdm(input_list):
     input_fasta_path = os.path.join(args.input_dir, fasta_file)
     if args.use_gzip:
@@ -30,8 +32,8 @@ for fasta_file in tqdm(input_list):
 
     seq_iter = SeqIO.parse(input_handle, format="fasta")
     seq_list = []
-    for seq in seq_iter:
-        if "plasmid" not in seq.description.lower():
+    for seq in tqdm(seq_iter, leave=False):
+        if "plasmid" not in seq.description.lower() and (seq.id not in plasmid_ids):
             seq_list.append(seq)
     SeqIO.write(seq_list, output_handle, "fasta")
 
