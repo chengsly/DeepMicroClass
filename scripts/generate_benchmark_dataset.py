@@ -10,7 +10,6 @@ PROK_PATH = "data/filtered_fasta/prokaryote.fa"
 EUK_PATH = "data/filtered_fasta/euk_MMETSP.fa"
 # PLASMID_PATH = "data/filtered_fasta/plasmid.fa"
 PLASMID_PATH = "data/plasmid/post20_plasmid.fa"
-# PLASMID_PATH = "data/plsdb/plsdb.fna"
 PROKVIR_PATH = "data/filtered_fasta/prok_vir.fa"
 EUKVIR_PATH = "data/filtered_fasta/euk_vir.fa"
 
@@ -56,13 +55,3 @@ for i in range(seq_num.shape[0]):
     sampled_records = [sample(records[j], seq_num[i, j]) for j in range(seq_num.shape[1])]
     output_path = os.path.join(TARGET_PATH, f'{i:02d}_PROK{len(sampled_records[0])}_PROKVIR{len(sampled_records[1])}_PLSMD{len(sampled_records[2])}_EUK{len(sampled_records[3])}_EUKVIR{len(sampled_records[4])}.fa')
     SeqIO.write(sum(sampled_records, []), output_path, 'fasta')
-        
-# dir = 'DeepMicrobeFinder_results'
-# l = os.listdir(dir)
-# for f in l:
-#     splitted = f.split('_')
-#     splitted[2] = splitted[2].replace('PROKVIR', 'EUK')
-#     splitted[4] = splitted[4].replace('EUK', 'PROKVIR')
-#     if len(splitted[0]) == 1:
-#         splitted[0] = f'{int(splitted[0]):02d}'
-#     os.rename(os.path.join(dir, f), os.path.join(dir, '_'.join(splitted)))

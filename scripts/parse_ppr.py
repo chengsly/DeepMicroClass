@@ -64,11 +64,6 @@ for f in results_fn:
     except:
         print(f)
 
-    # print(f)
-    # print(f'Acc: {acc}\tF1: {f1}\tUnknown: {(result==-1).sum()/len(result)}')
-    # print(acc, end=', ')
-    # print(f1, end=', ')
-    # print(target[])
     accs.append(acc)
     f1s.append(f1)
     
