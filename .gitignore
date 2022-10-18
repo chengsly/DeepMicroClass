@@ -7,6 +7,7 @@ result*
 *.pdf
 *history.md
 tmp*
+slurm*
 
 .vscode/
 

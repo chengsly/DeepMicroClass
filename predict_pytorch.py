@@ -72,9 +72,7 @@ modelDir = options.modelDir
 print("Step 1/3: Loading models from {}".format(options.modelDir))
 models = {}
 
-# model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint_new/epoch=149-step=38400-val_f1=0.946-val_acc=0.946.ckpt', model=DMF(), map_location=device)
 model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DMF(), map_location=device)
-# model = LightningDMF_2class.load_from_checkpoint('data/pt_logs/checkpoint/last.ckpt', model=DMF_2class(), map_location=device)
 model.to(device)
 model.eval()
 
