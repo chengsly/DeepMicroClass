@@ -4,8 +4,7 @@ import os
 import re
 from sklearn.metrics import f1_score
 
-# RESULT_DIR = 'data/result_whokaryote'
-RESULT_DIR = 'result_other_2000/result_whokaryote'
+RESULT_DIR = 'data/result_whokaryote'
 
 results_fn = os.listdir(RESULT_DIR)
 results_fn = [f'{f}/whokaryote_predictions_T.tsv' for f in results_fn if not f.startswith('log')]
@@ -28,10 +27,13 @@ def construct_result(df):
         elif row[0] in prok:
             result.append(0)
         else:
-            result.append(-1)
+            result.append(0)
     return np.array(result)
 
+summary_df = pd.DataFrame(columns=['filename', 'f1_score', 'accuracy'])
+
 for f in results_fn:
+    nums = re.findall(r'\d+', f)[1:]
     result = pd.read_table(os.path.join(RESULT_DIR, f), index_col=0)
     
     index = list(result.index)
@@ -59,11 +61,12 @@ for f in results_fn:
 
     try:
         acc = (result==target_binary).sum() / len(target_binary)
-        f1 = f1_score(target_binary[result!=-1], result[result!=-1])
+        # f1 = f1_score(target_binary[result!=-1], result[result!=-1])
+        f1 = f1_score(target_binary, result)
     except:
         print(f)
 
-    # print(f)
-    # print(f'Acc: {acc}\tF1: {f1}\tUnknown: {(result==-1).sum()/len(result)}')
     # print(acc, end=', ')
-    print(f1, end=', ')
+    # print(f1, end=', ')
+    summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums), f1, acc]], columns=['filename', 'f1_score', 'accuracy'])], axis=0)
+summary_df.to_csv('perf_summary/whokaryote.csv', index=False)

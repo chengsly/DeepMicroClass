@@ -4,8 +4,7 @@ import os
 import re
 from sklearn.metrics import f1_score, matthews_corrcoef, confusion_matrix, average_precision_score, balanced_accuracy_score
 
-# RESULT_DIR = 'data/result_tiara'
-RESULT_DIR = 'result_other_2000/result_tiara'
+RESULT_DIR = 'data/result_tiara'
 
 results_fn = os.listdir(RESULT_DIR)
 results_fn = [f for f in results_fn if not f.startswith('log')]
@@ -39,7 +38,10 @@ def construct_euk_array(array):
     euk_array[array==0, 1] = 1
     return euk_array
 
+summary_df = pd.DataFrame(columns=['filename', 'f1_score', 'accuracy'])
+
 for f in results_fn:
+    nums = re.findall(r'\d+', f)[1:]
     result = pd.read_table(os.path.join(RESULT_DIR, f), index_col=0)
     
     index = list(result.index)
@@ -73,6 +75,8 @@ for f in results_fn:
     except:
         print(f)
 
+    summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums), f1, acc]], columns=['filename', 'f1_score', 'accuracy'])])
+
     # print(f)
     # print(f'Acc: {acc}\tF1: {f1}\tUnknown: {(result==-1).sum()/len(result)}')
     # print(f'{f1:.2f}, Unknown: {(result==-1).sum()/len(result):.2f}')
@@ -90,7 +94,7 @@ for f in results_fn:
     # dmf_f1 = f1_score(dmf_target, dmf_euk)
     # print(f'Tiara F1: {f1:.2f}\t DMF F1: {dmf_f1:.2f}')
     # print(f'{f1:.2f}\t{dmf_f1:.2f}')
-    print(acc, end=', ')
+    # print(acc, end=', ')
     # print(f1, end=', ')
     # print(f1_score(target_binary, result), balanced_accuracy_score(target_binary, result), average_precision_score(target_binary, result), matthews_corrcoef(target_binary, result), acc)
     # print(confusion_matrix(target_binary, result, normalize='true'))
@@ -99,3 +103,5 @@ for f in results_fn:
 # b = [0.9299363057324841,0.9271523178807948,0.9219858156028369,0.9448818897637796,0.9561586638830899,0.9521739130434782,0.9634703196347033,0.9690721649484536,0.9588014981273408,0.9542483660130718,0.9527777777777778,0.9674418604651163,0.9580731489741303,0.96875,0.9624505928853755,0.945945945945946,0.9510489510489509,0.9602888086642599,0.9575289575289575,0.9483814523184603,]
 # from scipy.stats import mannwhitneyu
 # mannwhitneyu(a, b)
+
+summary_df.to_csv('perf_summary/tiara.csv', index=False)
