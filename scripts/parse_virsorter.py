@@ -20,6 +20,8 @@ def construct_result(df):
         result.append(1)
     return np.array(result)
 
+summary_df = pd.DataFrame(columns=['filename', 'f1_score', 'accuracy'])
+
 for f in results_fn:
     result = pd.read_table(os.path.join(RESULT_DIR, f, 'final-viral-score.tsv'), index_col=0)
     
@@ -51,7 +53,12 @@ for f in results_fn:
     except:
         print(f)
 
+    nums = re.findall(r'\d+', f)
+    summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums), f1, acc]], columns=['filename', 'f1_score', 'accuracy'])])
+
     # print(f)
     # print(f'Acc: {acc}\tF1: {f1}\tUnknown: {(result==-1).sum()/len(result)}')
     # print(acc, end=', ')
-    print(f1, end=', ')
+    # print(f1, end=', ')
+
+summary_df.to_csv('perf_summary/virsorter2.csv', index=False)
