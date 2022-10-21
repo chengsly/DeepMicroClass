@@ -4,8 +4,8 @@ import os
 import re
 from sklearn.metrics import f1_score, confusion_matrix
 
-# RESULT_DIR = 'data/result_ppr'
-RESULT_DIR = 'result_other_2000/result_ppr'
+RESULT_DIR = 'data/result_ppr'
+# RESULT_DIR = 'result_other_2000/result_ppr'
 
 results_fn = os.listdir(RESULT_DIR)
 results_fn = [f for f in results_fn if not f.endswith('fasta')]
@@ -29,14 +29,17 @@ def construct_result(df, target):
 misclassified = pd.DataFrame(columns=['Prok->Plas', 'ProkVir->Plas', 'Euk->Plas', 'EukVir->Plas', 'Plas->NonPlas'])
 mistakes = []
 
+plasmid_summary_df = pd.DataFrame(columns=['filename', 'f1_score', 'accuracy'])
+prokvirus_summary_df = pd.DataFrame(columns=['filename', 'f1_score', 'accuracy'])
+multiclass_summary_df = pd.DataFrame(columns=['filename', 'f1_score', 'accuracy'])
 accs = []
 f1s = []
 for f in results_fn:
-    result = pd.read_table(os.path.join(RESULT_DIR, f), sep=',')
+    org_result = pd.read_table(os.path.join(RESULT_DIR, f), sep=',')
     
-    index = list(result['Header'])
+    index = list(org_result['Header'])
     index = [i.split()[0] for i in index]
-    result.index = index
+    org_result.index = index
     
     target_pkl = pd.read_pickle(os.path.join(TARGET_DIR, f'{f[:-4]}.fa.pkl'))
     target = np.array([target_pkl.loc[i] for i in index]).flatten()
@@ -44,28 +47,41 @@ for f in results_fn:
     missed = len(target_pkl) - len(target)
     missed_label = []
     for i in target_pkl.index:
-        if i not in result.index:
+        if i not in org_result.index:
             missed_label.append(target_pkl.loc[i, 0])
     missed_label = np.array(missed_label).flatten()
     target = np.concatenate((target, missed_label))
+
 
     target_binary = np.zeros(len(target))
     # target_binary[target==2] = 1
     target_binary[target==4] = 1
 
     # result = construct_result(result, 'plasmid')
-    result = construct_result(result, 'phage')
-    
+    result = construct_result(org_result, 'phage')
     result = np.concatenate((result, np.zeros(missed)))
 
-    try:
-        acc = (result==target_binary).sum() / len(target_binary)
-        f1 = f1_score(target_binary[result!=-1], result[result!=-1])
-    except:
-        print(f)
+    nums = re.findall('\d+', f)
+    prokvirus_summary_df = pd.concat([prokvirus_summary_df, pd.DataFrame([['_'.join(nums), f1_score(target_binary, result), (result==target_binary).sum()/len(result)]], columns=['filename', 'f1_score', 'accuracy'])])
 
-    accs.append(acc)
-    f1s.append(f1)
+    target_binary = np.zeros(len(target))
+    target_binary[target==2] = 1
+    result = construct_result(org_result, 'plasmid')
+    result = np.concatenate((result, np.zeros(missed)))
+    plasmid_summary_df = pd.concat([plasmid_summary_df, pd.DataFrame([['_'.join(nums), f1_score(target_binary, result), (result==target_binary).sum()/len(result)]], columns=['filename', 'f1_score', 'accuracy'])])
+
+    multiclass_summary_df = pd.concat([multiclass_summary_df, pd.DataFrame([['_'.join(nums), f1_score(target, result, average='weighted'), (result==target).sum()/len(result)]], columns=['filename', 'f1_score', 'accuracy'])])
+
+    # try:
+    #     acc = (result==target_binary).sum() / len(target_binary)
+    #     f1 = f1_score(target_binary[result!=-1], result[result!=-1])
+    # except:
+    #     print(f)
+
+
+
+    # accs.append(acc)
+    # f1s.append(f1)
     
     # mistake = [(target[result==1]==3).sum(), (target[result==1]==4).sum(), (target[result==1]==0).sum(), (target[result==1]==1).sum()]
     # mistake.append((target_binary[result==0]==1).sum())
@@ -75,5 +91,8 @@ for f in results_fn:
 # misclassified = pd.DataFrame(mistakes, columns=['Prok->Plas', 'ProkVir->Plas', 'Euk->Plas', 'EukVir->Plas', 'Plas->NonPlas'])
 # misclassified.to_csv('results/misclassified_ppr.csv', index=False)
 
-print(', '.join([str(i) for i in accs]))
-print(', '.join([str(i) for i in f1s]))
+# print(', '.join([str(i) for i in accs]))
+# print(', '.join([str(i) for i in f1s]))
+plasmid_summary_df.to_csv('perf_summary/ppr_plasmid.csv', index=False)
+prokvirus_summary_df.to_csv('perf_summary/ppr_vir.csv', index=False)
+multiclass_summary_df.to_csv('perf_summary/ppr_multiclass.csv', index=False)

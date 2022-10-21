@@ -27,15 +27,6 @@ def construct_vir_array(array):
     euk_array[np.logical_or.reduce((array==0, array==2, array==3)), 0] = 1
     euk_array[np.logical_or(array==1, array==4), 1] = 1
 
-    # euk_array[np.logical_or.reduce((array==0, array==2, array==3, array==1)), 0] = 1
-    # euk_array[array==4, 1] = 1
-
-    # euk_array[np.logical_or.reduce((array==0, array==2, array==4, array==1)), 0] = 1
-    # euk_array[array==3, 1] = 1
-
-    # euk_array[np.logical_or.reduce((array==0, array==1, array==3, array==4)), 0] = 1
-    # euk_array[array==2, 1] = 1
-
     return euk_array
 
 def construct_array(array, target_idx):
@@ -47,7 +38,7 @@ def construct_array(array, target_idx):
 f1_scores = []
 
 summary_df = pd.DataFrame(columns=['filename', 'category', 'f1_score', 'accuracy'])
-categories = ['eukaryote', 'eukaryote_virus', 'plasmid', 'prokaryote', 'prokaryote_virus', 'virus']
+categories = ['eukaryote', 'eukaryote_virus', 'plasmid', 'prokaryote', 'prokaryote_virus', 'virus', 'multiclass']
 
 accs = []
 f1s = []
@@ -79,6 +70,12 @@ for f in results_fn:
         acc = (result_class==target_class).sum()/len(result_class)
         f1 = f1_score(target_class, result_class)
         summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums_str), categories[i], f1, acc]], columns=['filename', 'category', 'f1_score', 'accuracy'])])
+
+    summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums_str), 'multiclass', f1_score(target, result, average='weighted'), (target==result).sum()/len(result)]], columns=['filename', 'category', 'f1_score', 'accuracy'])])
+
+    result_prok = result[np.logical_or.reduce((target==2, target==3, target==4))]
+    target_prok = target[np.logical_or.reduce((target==2, target==3, target==4))]
+    summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums_str), 'prok_groups', f1_score(target_prok, result_prok, average='weighted'), (target_prok==result_prok).sum()/len(result_prok)]], columns=['filename', 'category', 'f1_score', 'accuracy'])])
 
     result = construct_vir_array(result)
     result = result.argmax(axis=1)
