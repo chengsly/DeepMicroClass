@@ -4,8 +4,7 @@ import os
 import re
 from sklearn.metrics import f1_score
 
-# RESULT_DIR = 'data/result_vibrant'
-RESULT_DIR = 'result_other_2000/result_vibrant'
+RESULT_DIR = 'data/result_vibrant'
 
 results_fn = os.listdir(RESULT_DIR)
 # results_fn = [i for i in results_fn if i.startswith('VIBRANT_phages_')]
@@ -21,6 +20,8 @@ def construct_result(df):
     # for i, row in df.iterrows():
     #     result.append(1)
     return np.array(result)
+
+summary_df = pd.DataFrame(columns=['filename', 'f1_score', 'accuracy'])
 
 accs = []
 f1s = []
@@ -60,9 +61,13 @@ for f in results_fn:
     accs.append(acc)
     f1s.append(f1)
 
+    nums = re.findall(r'\d+', f)
+    summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums), f1, acc]], columns=['filename', 'f1_score', 'accuracy'])])
+
     # print(f)
     # print(f'Acc: {acc}\tF1: {f1}\tUnknown: {(result==-1).sum()/len(result)}')
     # print(acc, end=', ')
     # print(f1, end=', ')
-print(', '.join([str(i) for i in accs]))
-print(', '.join([str(i) for i in f1s]))
+# print(', '.join([str(i) for i in accs]))
+# print(', '.join([str(i) for i in f1s]))
+summary_df.to_csv('perf_summary/vibrant.csv', index=False)
