@@ -61,7 +61,7 @@ for f in results_fn:
     result = construct_result(org_result, 'phage')
     result = np.concatenate((result, np.zeros(missed)))
 
-    nums = re.findall('\d+', f)
+    nums = re.findall('\d+', f)[1:]
     prokvirus_summary_df = pd.concat([prokvirus_summary_df, pd.DataFrame([['_'.join(nums), f1_score(target_binary, result), (result==target_binary).sum()/len(result)]], columns=['filename', 'f1_score', 'accuracy'])])
 
     target_binary = np.zeros(len(target))

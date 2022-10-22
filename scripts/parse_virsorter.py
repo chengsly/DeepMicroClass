@@ -53,7 +53,7 @@ for f in results_fn:
     except:
         print(f)
 
-    nums = re.findall(r'\d+', f)
+    nums = re.findall(r'\d+', f)[1:]
     summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums), f1, acc]], columns=['filename', 'f1_score', 'accuracy'])])
 
     # print(f)
