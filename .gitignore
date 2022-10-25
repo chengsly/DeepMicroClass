@@ -4,7 +4,7 @@ log
 tempFolder/
 archive/
 result*
-*.pdf
+
 *history.md
 tmp*
 slurm*
