@@ -1,0 +1,19 @@
+name: r-env
+
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  - r-base
+  - r-essentials
+  - r-car
+  - r-spring
+  - r-car
+  - r-outliers
+  - r-hmisc
+  - r-ggpubr
+  - r-patchwork
+  - r-svglite
+  - jupyter
+  

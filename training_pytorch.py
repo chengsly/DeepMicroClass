@@ -29,39 +29,32 @@ else:
 
 from sklearn.utils import class_weight
 import pandas as pd
-# y = pd.read_table('data/seq_train.csv', sep=',')
-# y = pd.read_table('data/local_training/train.csv', sep=',')
+
 y = pd.read_table('data/train.csv', sep=',')
 y = y['class']
 weight = class_weight.compute_class_weight(class_weight='balanced', classes=np.unique(y), y=y)
 training_weight = weight[y]
 training_weight = torch.from_numpy(training_weight).float().to(device)
 
-# val_y = pd.read_table('data/local_training/test.csv', sep=',')
 val_y = pd.read_table('data/test.csv', sep=',')
 val_y = val_y['class']
 val_weight = weight[val_y]
 val_weight = torch.from_numpy(val_weight).float().to(device)
 
-# weight = class_weight.compute_class_weight(class_weight='balanced', classes=np.unique(Y_tr_shuf.argmax(axis=1)), y=Y_tr_shuf.argmax(axis=1))
-# weight = dict(enumerate(weight))
 weight = torch.tensor(weight, dtype=torch.float).to(device)
 print(weight)
 
 batch_size=256
 
-from DMF import LightningDMF, DMFTransformer
+from DMF import LightningDMF
 
 model = DMF()
-# model = DMFTransformer()
-
 
 from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar
 trainer = pl.Trainer(
     accelerator='gpu',
     precision=16,
     max_epochs=1500,
-    # limit_train_batches=1024,
     default_root_dir=f'data/pt_logs/',
     callbacks=[
         ModelCheckpoint(dirpath=f'data/pt_logs/checkpoint_new/',
@@ -85,13 +78,10 @@ def custom_collate(batch):
 train_dataset = SequenceDataset('data/train.csv', 'data/single_onehot/', preload=False)
 val_dataset = SequenceDataset('data/test.csv', 'data/single_onehot/', preload=False)
 
-# train_dataset = SequenceDataset('data/local_training/train.csv', 'data/local_training/onehot/', preload=False)
-# val_dataset = SequenceDataset('data/local_training/test.csv', 'data/local_training/onehot/', preload=False)
-
 train_dataloaders = DataLoader(
     train_dataset,
     batch_size=batch_size,
-    # shuffle=True,
+    shuffle=True,
     num_workers=16,
     collate_fn=custom_collate,
     sampler=torch.utils.data.sampler.WeightedRandomSampler(training_weight, batch_size * 256)
@@ -100,7 +90,7 @@ train_dataloaders = DataLoader(
 val_dataloaders = DataLoader(
     val_dataset,
     batch_size=batch_size,
-    # shuffle=True,
+    shuffle=True,
     num_workers=16,
     collate_fn=custom_collate,
     sampler=torch.utils.data.sampler.WeightedRandomSampler(val_weight, batch_size * 32)
