@@ -16,4 +16,4 @@ dependencies:
   - r-patchwork
   - r-svglite
   - jupyter
-  
+  - r-xtable
