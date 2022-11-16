@@ -73,6 +73,7 @@ print("Step 1/3: Loading models from {}".format(options.modelDir))
 models = {}
 
 model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DMF(), map_location=device)
+# model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint_new/epoch=729-step=186880-val_f1=0.948-val_acc=0.948.ckpt', model=DMF(), map_location=device)
 model.to(device)
 model.eval()
 
@@ -99,9 +100,7 @@ def predict_chunk_routine(fwdarr):
         startIdx = i * 5000
         endIdx = (i+1) * 5000
         scores = models["5000"](fwdarr[:,startIdx:endIdx,:])
-        sumEukScore +=  1-scores[0]
         # sumEukVirusScore += scores[1]
-        sumPlasmidScore += scores[0]
         # sumProkScore += scores[3]
         # sumProkVirScore += scores[4]
         # sumEukScore += scores[0]

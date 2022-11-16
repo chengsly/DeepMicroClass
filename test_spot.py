@@ -3,8 +3,7 @@ from encoding_model import EncodingScheme
 from Bio import SeqIO
 from Bio.Seq import Seq
 import numpy as np
-import constants
-import multiprocessing
+from scipy.special import softmax
 
 import pytorch_lightning as pl
 from DMF import DMF, LightningDMF
@@ -43,22 +42,24 @@ def custom_collate(batch, contig_len=5000):
     batch = list((utils.sample_onehot(sample[0], contig_len)[None, :, :], sample[1]) for sample in batch)
     if len(batch) == 0:
         return None
-
+name = 'Plants'
 # in_fasta = 'data/SPOT/SPOT_5YrDuraVir_min_5000_newbler_toAmos_minimus2_id0.99_renamed.fa'
-in_fasta = '/home/shengwei/Viromes/04_read_mapping_per_sample/assemblies_per_sample/2SPOviralmetaG_derep.fasta'
+# in_fasta = '/home/shengwei/Viromes/04_read_mapping_per_sample/assemblies_per_sample/2SPOviralmetaG_derep.fasta'
+in_fasta = f'/home/tianqi/dataset/IMGVR_v2/sources/{name}.fasta'
+# in_fasta = '/home/tianqi/dataset/IMGVR_v4_high_confidence/sources/Human.fasta'
+
 
 
 result_df = pd.DataFrame(columns=['id', 'Euk', 'EukVir', 'Plasmid', 'Prok', 'ProkVir'])
 
 for record in tqdm(SeqIO.parse(in_fasta, 'fasta')):
-    # print(record.id)
-    # print(len(record.seq))
-
     onehot = utils.seq2onehot(record.seq)
-    # print(onehot.shape)
-    contig_len = 1000
+    contig_len = 2000
     # onehot = onehot[:onehot.shape[0]//5000*5000, :4].reshape(-1, 5000, 4)
-    onehot = onehot[:onehot.shape[0]//contig_len*contig_len, :4].reshape(-1, contig_len, 4)
+    if onehot.shape[0] < contig_len:
+        continue
+    else:
+        onehot = onehot[:onehot.shape[0]//contig_len*contig_len, :4].reshape(-1, contig_len, 4)
     onehot = onehot[:, None, :, :]
     onehot = torch.from_numpy(onehot).float()
     with torch.no_grad():
@@ -68,11 +69,11 @@ for record in tqdm(SeqIO.parse(in_fasta, 'fasta')):
         except:
             pred = model_cpu(onehot.to('cpu'))
             pred = pred.numpy()
-
+    pred = softmax(pred, axis=1)
     pred = np.mean(pred, axis=0)
     result_df = pd.concat([result_df, pd.DataFrame([[record.id, pred[0], pred[1], pred[2], pred[3], pred[4]]], columns=['id', 'Euk', 'EukVir', 'Plasmid', 'Prok', 'ProkVir'])])
 
 # out_path = 'data/SPOT/SPOT_5YrDuraVir_min_5000_newbler_toAmos_minimus2_id0.99_renamed_pred.csv'
-out_path = 'data/virome/02.csv'
+out_path = f'data/virome/{name}.csv'
 result_df.to_csv(out_path, index=False)
 
