@@ -53,7 +53,15 @@ def int2onehot(array):
 
 
 def seq2onehot(seq, contig_length=None):
-    # assert isinstance(seq, str), "Input should be str"
+    """Convert genome sequence into one-hot matrix
+
+    :param seq: genome sequence
+    :type seq: str or Bio.Seq.Seq
+    :param contig_length: If designated, sample a subsequence with length contig_length from the original sequence, defaults to None
+    :type contig_length: int, optional
+    :return: A one-hot matrix
+    :rtype: np.ndarray
+    """
     seq = str(seq)
     int_seq = seq2intseq(seq, contig_length)
     onehot = int2onehot(int_seq)
