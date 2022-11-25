@@ -14,3 +14,9 @@ bash batch_encode.sh data/local_training/ 1000 one-hot
 bash batch_encode.sh data/local_training/ 2000 one-hot
 bash batch_encode.sh data/local_training/ 3000 one-hot
 bash batch_encode.sh data/local_training/ 5000 one-hot
+
+bash batch_encode.sh data/local_training/ 500 one-hot
+bash batch_encode.sh data/local_training/ 1000 one-hot
+bash batch_encode.sh data/local_training/ 2000 one-hot
+bash batch_encode.sh data/local_training/ 3000 one-hot
+bash batch_encode.sh data/local_training/ 5000 one-hot

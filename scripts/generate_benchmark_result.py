@@ -26,3 +26,4 @@ for f in results_fn:
     df = pd.DataFrame(target, index=ids)
 
     df.to_pickle(os.path.join(TARGET_DIR, f'{f}.pkl'))
+    df.to_pickle(os.path.join(TARGET_DIR, f'{f}.pkl'))
