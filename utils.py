@@ -44,9 +44,11 @@ def seq2intseq(seq, contig_length=None):
         return np.array(list(map(nt2index, str(seq))))
 
 
-def int2onehot(array):
-    # n = np.max(array) + 1
-    n = 5
+def int2onehot(array, num_classes=None):
+    if num_classes is None:
+        n = np.max(array) + 1
+    else:
+        n = num_classes
     output = np.eye(int(n))[array.astype(int)]
     output[output[:, 4] == 1, :] = 0.25
     return output
