@@ -80,87 +80,6 @@ class DMF(nn.Module):
         z = self.fc(z)
         return z
 
-class DMF_3class(nn.Module):
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.codon_transformer = CodonTransformer()
-
-        self.fc = nn.Sequential(
-            nn.Linear(512, 256),
-            nn.PReLU(),
-            nn.Dropout(p=0.2),
-            nn.Linear(256, 3)
-        )
-
-        self.base_channel = nn.Sequential(
-            # nn.Conv2d(1, 64, (6, 4)),
-            # nn.PReLU(),
-            # nn.Flatten(start_dim=2),
-            # # nn.MaxPool1d(3),
-            # nn.AvgPool1d(3),
-            # nn.BatchNorm1d(64),
-            # nn.Conv1d(64, 128, 3),
-            # nn.PReLU(),
-            # # nn.MaxPool1d(3),
-            # nn.AvgPool1d(3),
-            # nn.BatchNorm1d(128),
-            # nn.Conv1d(128, 256, 3),
-            # nn.PReLU(),
-            # nn.BatchNorm1d(256),
-            # nn.AdaptiveAvgPool1d(1),
-            # nn.Flatten(),
-
-            nn.Conv1d(4, 64, 6),
-            nn.PReLU(),
-            nn.MaxPool1d(stride=2, kernel_size=2),
-            nn.BatchNorm1d(64),
-            nn.Conv1d(64, 128, 3),
-            nn.PReLU(),
-            nn.MaxPool1d(stride=1, kernel_size=2),
-            nn.BatchNorm1d(128),
-            nn.Conv1d(128, 256, 2),
-            nn.PReLU(),
-            nn.AdaptiveAvgPool1d(1),
-            nn.Flatten(),
-        )
-
-        self.codon_channel = nn.Sequential(
-            nn.Conv2d(1, 64, (2, 64)),
-            nn.PReLU(),
-            nn.Flatten(start_dim=2),
-            # nn.MaxPool1d(3),
-            nn.AvgPool1d(3),
-            nn.BatchNorm1d(64),
-            nn.Conv1d(64, 128, 3),
-            nn.PReLU(),
-            # nn.MaxPool1d(3),
-            nn.AvgPool1d(3),
-            nn.BatchNorm1d(128),
-            nn.Conv1d(128, 256, 3),
-            nn.PReLU(),
-            nn.BatchNorm1d(256),
-            nn.AdaptiveAvgPool1d(1),
-            nn.Flatten(),
-        )
-
-        self.dropout = nn.Dropout(p=0.2, inplace=True)
-
-    def forward(self, x):
-        x = x.permute(0, 2, 1)
-        interm_forward = self.base_channel(x)
-        # codon = self.codon_transformer(x)
-        # codon = self.codon_channel(codon)
-        rev = torch.flip(x, dims=[-1, -2])
-        interm_backward = self.base_channel(rev)
-        # codon_backward = self.codon_transformer(rev)
-        # codon_backward = self.codon_channel(codon_backward)
-        # z = torch.cat((interm_forward, codon, interm_backward, codon_backward, ), dim=1)
-        z = torch.cat((interm_forward, interm_backward, ), dim=1)
-        z = self.dropout(z)
-        z = self.fc(z)
-        return z
-
 class CodonTransformer(nn.Module):
     def __init__(self) -> None:
         super().__init__()
@@ -222,7 +141,7 @@ class LightningDMF(pl.LightningModule):
         super().__init__()
         self.model = model
         self.weight = weight
-        self.f1_log_handle = open("log/f1_log.txt", "w")
+        # self.f1_log_handle = open("log/f1_log.txt", "w")
         self.num_classes = num_classes
 
     def forward(self, x):
@@ -275,101 +194,6 @@ class LightningDMF(pl.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=1e-3)
-
-class DMF_2class(nn.Module):
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.codon_transformer = CodonTransformer()
-
-        self.fc = nn.Sequential(
-            nn.LazyLinear(512),
-            nn.ReLU(inplace=True),
-            nn.Dropout(p=0.1),
-            nn.Linear(512, 256),
-            nn.ReLU(inplace=True),
-            nn.Dropout(p=0.1),
-            nn.Linear(256, 1)
-        )
-
-        self.base_channel = nn.Sequential(
-            nn.Conv2d(1, 64, (6, 4)),
-            nn.ReLU(inplace=True),
-            nn.Flatten(start_dim=2),
-            nn.MaxPool1d(3),
-            nn.BatchNorm1d(64),
-            nn.Conv1d(64, 128, 3),
-            nn.ReLU(inplace=True),
-            nn.MaxPool1d(3),
-            nn.BatchNorm1d(128),
-            nn.Conv1d(128, 256, 3),
-            nn.ReLU(inplace=True),
-            nn.AdaptiveAvgPool1d(1),
-            nn.Flatten(),
-        )
-
-        self.codon_channel = nn.Sequential(
-            nn.Conv2d(1, 64, (6, 64)),
-            nn.ReLU(inplace=True),
-            nn.Flatten(start_dim=2),
-            nn.MaxPool1d(3),
-            nn.BatchNorm1d(64),
-            nn.Conv1d(64, 128, 3),
-            nn.ReLU(inplace=True),
-            nn.MaxPool1d(3),
-            nn.BatchNorm1d(128),
-            nn.Conv1d(128, 256, 3),
-            nn.ReLU(inplace=True),
-            nn.AdaptiveAvgPool1d(1),
-            nn.Flatten(),
-        )
-
-        self.dropout = nn.Dropout(p=0.1, inplace=True)
-
-    def forward(self, x):
-        interm_forward = self.base_channel(x)
-        codon = self.codon_transformer(x)
-        codon = self.codon_channel(codon)
-        rev = torch.flip(x, dims=[-1, -2])
-        interm_backward = self.base_channel(rev)
-        codon_backward = self.codon_transformer(rev)
-        codon_backward = self.codon_channel(codon_backward)
-        z = torch.cat((interm_forward, codon, interm_backward, codon_backward, ), dim=1)
-        z = self.dropout(z)
-        z = self.fc(z)
-        return z
-
-class LightningDMF_2class(pl.LightningModule):
-    def __init__(self, model, weight=None):
-        super().__init__()
-        self.model = model
-        self.weight = weight
-
-    def forward(self, x):
-        return self.model(x)
-
-    def training_step(self, batch, batch_idx):
-        x, y = batch
-        y_hat = self.model(x).flatten()
-        # loss = F.cross_entropy(y_hat, y)
-        # loss = F.cross_entropy(y_hat, y, weight=self.weight)
-        loss = F.binary_cross_entropy_with_logits(y_hat, y)
-        self.log("train_loss", loss)
-        # self.log('train_acc_epoch', accuracy(F.sigmoid(y_hat), y.int(), num_classes=1), on_step=False, on_epoch=True, prog_bar=True)
-        self.log('train_f1_epoch', f1_score(F.sigmoid(y_hat), y.int()), on_step=False, on_epoch=True, prog_bar=True)
-        return loss
-
-    def validation_step(self, batch, batch_idx):
-        x, y = batch
-        y_hat = self.model(x).flatten()
-        loss = F.binary_cross_entropy_with_logits(y_hat, y)
-        self.log("val_loss", loss, prog_bar=True)
-        # self.log('val_acc', accuracy(F.sigmoid(y_hat), y.int(), num_classes=1), prog_bar=True)
-        self.log('val_f1', f1_score(F.sigmoid(y_hat), y.int()), prog_bar=True)
-        return loss
-
-    def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=1e-4)
 
 class DMF_tfidf(nn.Module):
     def __init__(self) -> None:
