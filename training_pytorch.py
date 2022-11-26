@@ -5,18 +5,29 @@ import optparse
 import utils
 import os, sys
 from sklearn import preprocessing
+from typing import Union
+import argparse
+import time
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader, TensorDataset
-from DMF import DMF
+from DMF import DMF, DMFTransformer, LightningDMF
+from pytorch_lightning import seed_everything
 
 
 ####################################################################################################################################
 #                                                      Set up                                                                      #
 ####################################################################################################################################
+parser = argparse.ArgumentParser()
+parser.add_argument('--input', dest='input')
+parser.add_argument('-l', '--log_prefix', dest='log_prefix', default='log')
+
+args = parser.parse_args()
+log_prefix = args.log_prefix
+
 if torch.cuda.is_available():
     device = torch.device("cuda")
     torch.backends.cudnn.benchmark = True
@@ -27,8 +38,12 @@ else:
 TRAINING_DATASET_CSV = 'data/train.csv'
 VAL_DATASET_CSV = 'data/val.csv'
 ONEHOT_PATH = 'data/single_onehot'
-BATCH_SIZE=256
-CHECKPOINT_DIR = 'data/pt_logs/checkpoint'
+BATCH_SIZE=128
+LOG_DIR = f'data/pt_logs/{log_prefix}_{time.strftime("%Y-%m-%d-%H_%M", time.localtime())}'
+CHECKPOINT_DIR = f'{LOG_DIR}/checkpoint'
+
+if not os.path.exists(CHECKPOINT_DIR):
+    os.makedirs(CHECKPOINT_DIR)
 ############################################################################################################################
 #                                             Training                                                                     #
 ############################################################################################################################
@@ -49,18 +64,17 @@ val_weight = weight[val_y]
 val_weight = torch.from_numpy(val_weight).float().to(device)
 
 weight = torch.tensor(weight, dtype=torch.float).to(device)
-print(weight)
+print(f'Class weight: {weight}')
 
-from DMF import LightningDMF
-
-model = DMF()
+# model = DMF()
+model = DMFTransformer()
 
 from pytorch_lightning.callbacks import ModelCheckpoint
 trainer = pl.Trainer(
     accelerator='gpu',
     precision=16,
     max_epochs=1500,
-    default_root_dir=f'data/pt_logs/',
+    default_root_dir=LOG_DIR,
     callbacks=[
         ModelCheckpoint(
             dirpath=CHECKPOINT_DIR,
@@ -74,7 +88,7 @@ trainer = pl.Trainer(
 
 from SequenceData import SequenceDataset
 from torch.utils.data import default_collate
-def custom_collate(batch):
+def custom_collate(batch, contig_len:Union[list, int, None]=None):
     batch = list(filter(lambda x: x is not None, batch))
     # possible_contig_len = [500, 1000, 2000, 3000, 5000]
     # contig_len = possible_contig_len[np.random.randint(0, len(possible_contig_len))]
@@ -88,7 +102,7 @@ val_dataset = SequenceDataset(VAL_DATASET_CSV, ONEHOT_PATH, preload=False)
 train_dataloaders = DataLoader(
     train_dataset,
     batch_size=BATCH_SIZE,
-    shuffle=True,
+    # shuffle=True,
     num_workers=16,
     collate_fn=custom_collate,
     sampler=torch.utils.data.sampler.WeightedRandomSampler(training_weight, BATCH_SIZE * 256)
@@ -97,7 +111,7 @@ train_dataloaders = DataLoader(
 val_dataloaders = DataLoader(
     val_dataset,
     batch_size=BATCH_SIZE,
-    shuffle=True,
+    # shuffle=True,
     num_workers=16,
     collate_fn=custom_collate,
     sampler=torch.utils.data.sampler.WeightedRandomSampler(val_weight, BATCH_SIZE * 32)
