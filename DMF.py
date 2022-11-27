@@ -141,8 +141,8 @@ class LightningDMF(pl.LightningModule):
         super().__init__()
         self.model = model
         self.weight = weight
-        # self.f1_log_handle = open("log/f1_log.txt", "w")
         self.num_classes = num_classes
+        self.save_hyperparameters()
 
     def forward(self, x):
         return self.model(x)
@@ -151,10 +151,7 @@ class LightningDMF(pl.LightningModule):
         x, y = batch
         y_hat = self.model(x)
         loss = F.cross_entropy(y_hat, y)
-        # loss = F.cross_entropy(y_hat, y, weight=self.weight)
-        # loss = F.binary_cross_entropy_with_logits(y_hat, y, pos_weight=self.weight[1])
         self.log("train_loss", loss)
-        # self.log('train_acc_step', accuracy(y_hat, y.int(), average='macro'), on_step=True, on_epoch=False, prog_bar=True)
         self.log('train_acc_epoch', accuracy(y_hat, y.int(), average='macro', num_classes=self.num_classes), on_step=False, on_epoch=True, prog_bar=True)
         self.log('train_f1_epoch', f1_score(y_hat, y.int(), average='macro', num_classes=self.num_classes), on_step=False, on_epoch=True, prog_bar=True)
         return loss
@@ -168,14 +165,9 @@ class LightningDMF(pl.LightningModule):
         x, y = batch
         y_hat = self.model(x)
         loss = F.cross_entropy(y_hat, y)
-        # loss = F.cross_entropy(y_hat, y, weight=self.weight)
-        # loss = F.binary_cross_entropy_with_logits(y_hat, y, pos_weight=self.weight[1])
         self.log("val_loss", loss, prog_bar=True)
         self.log('val_acc', accuracy(y_hat, y.int(), average='macro', num_classes=self.num_classes), prog_bar=True)
         self.log('val_f1', f1_score(y_hat, y.int(), average='macro', num_classes=self.num_classes), prog_bar=True)
-        # print(f1_score(y_hat, y.int(), average=None, num_classes=5), end='\r')
-        self.f1_log_handle.write(f'{f1_score(y_hat, y.int(), average=None, num_classes=self.num_classes)}\n')
-        # self.log('val_f1_plasmid', f1_score(y_hat, y.int(), average=None, num_classes=5)[2], prog_bar=False, on_step=False, on_epoch=True)
         return loss
     
     def test_step(self, batch, batch_idx):
