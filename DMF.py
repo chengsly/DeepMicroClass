@@ -137,11 +137,15 @@ class KMerTransformer(nn.Module):
         return x
 
 class LightningDMF(pl.LightningModule):
-    def __init__(self, model, weight=None, num_classes=5):
+    def __init__(self, model, weight=None, num_classes=5, lr=1e-3, weight_decay=1e-5, **kwargs):
         super().__init__()
         self.model = model
         self.weight = weight
         self.num_classes = num_classes
+
+        self.lr = lr
+        self.weight_decay = weight_decay
+
         self.save_hyperparameters()
 
     def forward(self, x):
@@ -185,7 +189,7 @@ class LightningDMF(pl.LightningModule):
         return loss, acc, auc
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=1e-3)
+        return torch.optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
 
 class DMF_tfidf(nn.Module):
     def __init__(self) -> None:
