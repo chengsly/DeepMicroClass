@@ -316,3 +316,16 @@ class PositionalEncoding(nn.Module):
         """
         x = x + self.pe[:x.size(0)]
         return self.dropout(x)
+
+class DMCLSTM(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.lstm = nn.LSTM(128, 128, num_layers=2, batch_first=True, bidirectional=True)
+        self.fc = nn.Linear(256, 5)
+        self.dropout = nn.Dropout(p=0.5, inplace=True)
+
+    def forward(self, x):
+        x, _ = self.lstm(x)
+        x = self.dropout(x)
+        x = self.fc(x)
+        return x
