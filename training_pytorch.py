@@ -15,12 +15,14 @@ import torch.nn.functional as F
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader, TensorDataset
 from DMF import DMF, DMFTransformer, LightningDMF
-from pytorch_lightning import seed_everything
+from pytorch_lightning import seed_everything, loggers
 
 
 ####################################################################################################################################
 #                                                      Set up                                                                      #
 ####################################################################################################################################
+seed_everything(42)
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--input', dest='input')
 parser.add_argument('-l', '--log_prefix', dest='log_prefix', default='log')
@@ -44,6 +46,9 @@ CHECKPOINT_DIR = f'{LOG_DIR}/checkpoint'
 
 if not os.path.exists(CHECKPOINT_DIR):
     os.makedirs(CHECKPOINT_DIR)
+
+logger = loggers.WandbLogger(project='deepmicroclass')
+
 ############################################################################################################################
 #                                             Training                                                                     #
 ############################################################################################################################
@@ -66,15 +71,18 @@ val_weight = torch.from_numpy(val_weight).float().to(device)
 weight = torch.tensor(weight, dtype=torch.float).to(device)
 print(f'Class weight: {weight}')
 
-# model = DMF()
-model = DMFTransformer()
+model = DMF()
+# model = DMFTransformer()
+
+logger.watch(model, log='all')
 
 from pytorch_lightning.callbacks import ModelCheckpoint
 trainer = pl.Trainer(
     accelerator='gpu',
     precision=16,
-    max_epochs=1500,
+    max_epochs=500,
     default_root_dir=LOG_DIR,
+    logger=logger,
     callbacks=[
         ModelCheckpoint(
             dirpath=CHECKPOINT_DIR,

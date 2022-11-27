@@ -4,6 +4,7 @@ log
 tempFolder/
 archive/
 result*
+wandb/
 
 *history.md
 tmp*
