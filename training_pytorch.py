@@ -5,7 +5,7 @@ import optparse
 import utils
 import os, sys
 from sklearn import preprocessing
-from typing import Union
+from typing import Optional, Union
 import argparse
 import time
 
@@ -14,8 +14,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader, TensorDataset
-from DMF import DMF, DMFTransformer, LightningDMF
+from DMF import DMF, DMFTransformer, LightningDMF, DMCLSTM
 from pytorch_lightning import seed_everything, loggers
+from sklearn.utils import class_weight
+import pandas as pd
+from SequenceData import SequenceDataset
 
 
 ####################################################################################################################################
@@ -44,17 +47,14 @@ BATCH_SIZE=128
 LOG_DIR = f'data/pt_logs/{log_prefix}_{time.strftime("%Y-%m-%d-%H_%M", time.localtime())}'
 CHECKPOINT_DIR = f'{LOG_DIR}/checkpoint'
 
-if not os.path.exists(CHECKPOINT_DIR):
-    os.makedirs(CHECKPOINT_DIR)
+# if not os.path.exists(CHECKPOINT_DIR):
+#     os.makedirs(CHECKPOINT_DIR)
 
-logger = loggers.WandbLogger(project='deepmicroclass')
+logger = loggers.WandbLogger(project='deepmicroclass', log_model=True)
 
 ############################################################################################################################
 #                                             Training                                                                     #
 ############################################################################################################################
-
-from sklearn.utils import class_weight
-import pandas as pd
 
 
 y = pd.read_table(TRAINING_DATASET_CSV, sep=',')
@@ -73,6 +73,7 @@ print(f'Class weight: {weight}')
 
 model = DMF()
 # model = DMFTransformer()
+# model = DMCLSTM()
 
 logger.watch(model, log='all')
 
@@ -80,29 +81,22 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 trainer = pl.Trainer(
     accelerator='gpu',
     precision=16,
-    max_epochs=500,
+    max_epochs=100,
     default_root_dir=LOG_DIR,
     logger=logger,
     callbacks=[
         ModelCheckpoint(
-            dirpath=CHECKPOINT_DIR,
+            # dirpath=CHECKPOINT_DIR,
             filename='{epoch}-{step}-{val_f1:.3f}-{val_acc:.3f}',
             monitor='val_loss',
-            save_top_k=-1, mode='min', every_n_epochs=10, save_last=True
+            # save_top_k=-1,
+            mode='min',
+            every_n_epochs=10, 
+            save_last=True
             )
         ],
     # benchmark=True,
     )
-
-from SequenceData import SequenceDataset
-from torch.utils.data import default_collate
-def custom_collate(batch, contig_len:Union[list, int, None]=None):
-    batch = list(filter(lambda x: x is not None, batch))
-    # possible_contig_len = [500, 1000, 2000, 3000, 5000]
-    # contig_len = possible_contig_len[np.random.randint(0, len(possible_contig_len))]
-    contig_len = 5000
-    batch = list((utils.sample_onehot(sample[0], contig_len)[None, :, :], sample[1]) for sample in batch)
-    return default_collate(batch)
 
 train_dataset = SequenceDataset(TRAINING_DATASET_CSV, ONEHOT_PATH, preload=False)
 val_dataset = SequenceDataset(VAL_DATASET_CSV, ONEHOT_PATH, preload=False)
@@ -112,7 +106,7 @@ train_dataloaders = DataLoader(
     batch_size=BATCH_SIZE,
     # shuffle=True,
     num_workers=16,
-    collate_fn=custom_collate,
+    collate_fn=SequenceDataset.custom_collate,
     sampler=torch.utils.data.sampler.WeightedRandomSampler(training_weight, BATCH_SIZE * 256)
 )
 
@@ -121,7 +115,7 @@ val_dataloaders = DataLoader(
     batch_size=BATCH_SIZE,
     # shuffle=True,
     num_workers=16,
-    collate_fn=custom_collate,
+    collate_fn=SequenceDataset.custom_collate,
     sampler=torch.utils.data.sampler.WeightedRandomSampler(val_weight, BATCH_SIZE * 32)
 )
 

@@ -3,6 +3,10 @@ import torch
 import pandas as pd
 import os
 import numpy as np
+from typing import Optional, Union
+from torch.utils.data import default_collate
+
+import utils
 
 class SequenceDataset(Dataset):
     def __init__(self, sequence_info, root_dir, preload=False):
@@ -31,6 +35,15 @@ class SequenceDataset(Dataset):
             sequence = np.load(os.path.join(self.root_dir, f'{id}.fasta.npy'))
             sequence = torch.from_numpy(sequence).float()
         return sequence, class_
+
+    @staticmethod
+    def custom_collate(batch, contig_len:Optional[Union[list, int]]=None):
+        batch = list(filter(lambda x: x is not None, batch))
+        # possible_contig_len = [500, 1000, 2000, 3000, 5000]
+        # contig_len = possible_contig_len[np.random.randint(0, len(possible_contig_len))]
+        contig_len = 5000
+        batch = list((utils.sample_onehot(sample[0], contig_len)[None, :, :], sample[1]) for sample in batch)
+        return default_collate(batch)
 
 class SequenceDataset_tfidf(Dataset):
     def __init__(self, sequence_info, root_dir, tfidf_dir, preload=False):
