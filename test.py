@@ -4,7 +4,7 @@ from Bio.Seq import Seq
 import numpy as np
 
 import pytorch_lightning as pl
-from model.DeepMicroClass import DMF, LightningDMF
+from model.DeepMicroClass import DeepMicroClass, LightningDMF
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -23,10 +23,10 @@ from model.SequenceData import SequenceDataset
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DMF(), map_location=device)
+model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DeepMicroClass(), map_location=device)
 model.eval()
 model.to(device)
-model_cpu = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DMF())
+model_cpu = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DeepMicroClass())
 model_cpu.eval()
 batch_size = 32
 

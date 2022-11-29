@@ -14,7 +14,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader, TensorDataset
-from model.DeepMicroClass import DMF, DMFTransformer, LightningDMF, DMCLSTM
+from model.DeepMicroClass import DeepMicroClass, DMFTransformer, LightningDMF, DMCLSTM
 from pytorch_lightning import seed_everything, loggers
 from sklearn.utils import class_weight
 import pandas as pd
@@ -73,7 +73,7 @@ val_weight = torch.from_numpy(val_weight).float().to(device)
 weight = torch.tensor(weight, dtype=torch.float).to(device)
 print(f'Class weight: {weight}')
 
-model = DMF()
+model = DeepMicroClass()
 # model = DMFTransformer()
 # model = DMCLSTM()
 

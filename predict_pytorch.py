@@ -8,7 +8,7 @@ import multiprocessing
 import argparse
 
 import pytorch_lightning as pl
-from model.DeepMicroClass import DMF, LightningDMF, DMFTransformer
+from model.DeepMicroClass import DeepMicroClass, LightningDMF, DMFTransformer
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -89,12 +89,12 @@ contig_length = args.contig_length
 print("Step 1/3: Loading models from {}".format(options.modelDir))
 models = {}
 
-model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DMF())
+model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DeepMicroClass())
 # model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint_new/epoch=729-step=186880-val_f1=0.948-val_acc=0.948.ckpt', model=DMF(), map_location=device)
 model.to(device)
 model.eval()
 
-model_cpu = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DMF())
+model_cpu = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DeepMicroClass())
 model_cpu.eval()
 
 models['500'] = model

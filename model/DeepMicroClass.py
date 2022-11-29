@@ -10,7 +10,7 @@ from torch import Tensor
 # Channel configuration
 # Res layer number
 
-class DMF(nn.Module):
+class DeepMicroClass(nn.Module):
     def __init__(self) -> None:
         super().__init__()
 
