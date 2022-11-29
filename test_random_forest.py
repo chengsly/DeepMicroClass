@@ -18,8 +18,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.utils import class_weight
 import pandas as pd
 
-from SequenceData import SequenceDataset
-from DMF import KMerTransformer
+from model.SequenceData import SequenceDataset
+from model.DeepMicroClass import KMerTransformer
 
 import wandb
 

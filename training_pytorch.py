@@ -14,11 +14,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader, TensorDataset
-from DMF import DMF, DMFTransformer, LightningDMF, DMCLSTM
+from model.DeepMicroClass import DMF, DMFTransformer, LightningDMF, DMCLSTM
 from pytorch_lightning import seed_everything, loggers
 from sklearn.utils import class_weight
 import pandas as pd
-from SequenceData import SequenceDataset
+from model.SequenceData import SequenceDataset
 
 
 ####################################################################################################################################
@@ -29,9 +29,11 @@ seed_everything(42)
 parser = argparse.ArgumentParser()
 parser.add_argument('--input', dest='input')
 parser.add_argument('-l', '--log_prefix', dest='log_prefix', default='log')
+parser.add_argument('--group', dest='group', default=None)
 
 args = parser.parse_args()
 log_prefix = args.log_prefix
+group = args.group
 
 if torch.cuda.is_available():
     device = torch.device("cuda")
@@ -50,7 +52,7 @@ CHECKPOINT_DIR = f'{LOG_DIR}/checkpoint'
 # if not os.path.exists(CHECKPOINT_DIR):
 #     os.makedirs(CHECKPOINT_DIR)
 
-logger = loggers.WandbLogger(project='deepmicroclass', log_model=True)
+logger = loggers.WandbLogger(project='deepmicroclass', log_model=True, group=group)
 
 ############################################################################################################################
 #                                             Training                                                                     #

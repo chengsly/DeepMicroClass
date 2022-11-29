@@ -4,7 +4,7 @@ from Bio.Seq import Seq
 import numpy as np
 
 import pytorch_lightning as pl
-from DMF import DMF, LightningDMF
+from model.DeepMicroClass import DMF, LightningDMF
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -19,7 +19,7 @@ from tqdm import tqdm
 import copy
 
 import utils
-from SequenceData import SequenceDataset
+from model.SequenceData import SequenceDataset
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
