@@ -1,4 +1,4 @@
-name: DeepMicrobeFinder
+name: DeepMicroClass
 
 channels:
   - conda-forge
