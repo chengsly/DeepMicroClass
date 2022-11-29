@@ -17,13 +17,10 @@ class DMF(nn.Module):
         self.codon_transformer = CodonTransformer()
 
         self.fc = nn.Sequential(
-            # nn.LazyLinear(512),
-            # nn.ReLU(inplace=True),
-            # nn.Dropout(p=0.1),
-            # nn.Linear(512, 256),
             nn.Linear(1024, 256),
+            # nn.Linear(512, 256),
             nn.PReLU(),
-            nn.Dropout(p=0.2),
+            nn.Dropout(p=0.2, inplace=True),
             nn.Linear(256, 5)
         )
 
@@ -31,12 +28,10 @@ class DMF(nn.Module):
             nn.Conv2d(1, 64, (6, 4)),
             nn.PReLU(),
             nn.Flatten(start_dim=2),
-            # nn.MaxPool1d(3),
             nn.AvgPool1d(3),
             nn.BatchNorm1d(64),
             nn.Conv1d(64, 128, 3),
             nn.PReLU(),
-            # nn.MaxPool1d(3),
             nn.AvgPool1d(3),
             nn.BatchNorm1d(128),
             nn.Conv1d(128, 256, 3),
@@ -61,6 +56,7 @@ class DMF(nn.Module):
             nn.Conv1d(128, 256, 3),
             nn.PReLU(),
             nn.BatchNorm1d(256),
+            # nn.Conv1d(256, 5, 1),
             nn.AdaptiveAvgPool1d(1),
             nn.Flatten(),
         )
@@ -76,9 +72,18 @@ class DMF(nn.Module):
         codon_backward = self.codon_transformer(rev)
         codon_backward = self.codon_channel(codon_backward)
         z = torch.cat((interm_forward, codon, interm_backward, codon_backward, ), dim=1)
+        # z = torch.cat((codon, codon_backward, ), dim=1)
+        # z = torch.cat((interm_forward, interm_backward, ), dim=1)
         z = self.dropout(z)
         z = self.fc(z)
+        # z = (codon + codon_backward) / 2
+        # z = codon
         return z
+
+class DeepMicroClass_base(nn.Module):
+    def __init__(self, lr=1e-3, ) -> None:
+        super().__init__()
+
 
 class CodonTransformer(nn.Module):
     def __init__(self) -> None:
@@ -146,7 +151,7 @@ class LightningDMF(pl.LightningModule):
         self.lr = lr
         self.weight_decay = weight_decay
 
-        self.save_hyperparameters()
+        self.save_hyperparameters(ignore=['model'])
 
     def forward(self, x):
         return self.model(x)
@@ -159,11 +164,6 @@ class LightningDMF(pl.LightningModule):
         self.log('train_acc_epoch', accuracy(y_hat, y.int(), average='macro', num_classes=self.num_classes), on_step=False, on_epoch=True, prog_bar=True)
         self.log('train_f1_epoch', f1_score(y_hat, y.int(), average='macro', num_classes=self.num_classes), on_step=False, on_epoch=True, prog_bar=True)
         return loss
-    
-    # def training_epoch_end(self, outputs) -> None:
-    #     avg_acc = torch.stack([x["train_acc_step"] for x in outputs]).mean()
-    #     self.log("train_acc_epoch", avg_acc, prog_bar=True)
-    #     return super().training_epoch_end(outputs)
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
@@ -190,6 +190,100 @@ class LightningDMF(pl.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
+
+class DMFTransformer(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+
+        # self.embeddings = [nn.Embedding(4 ** 4, 32), nn.Embedding(4 ** 5, 128), nn.Embedding(4 ** 6, 512)]
+        # self.pos_encoders = [PositionalEncoding(32, 0.1), PositionalEncoding(128, 0.1), PositionalEncoding(512, 0.1)]
+        # self.embedding_5 = nn.Embedding(4 ** 5, 128)
+        # self.embedding_6 = nn.Embedding(4 ** 6, 512)
+        self.k = 6
+        self.kmer_transformer = KMerTransformer(k=self.k, rearrange=True)
+        self.embed_d = 128
+        self.embedding = nn.Embedding(4 ** self.k, self.embed_d)
+        self.pos_encoder = PositionalEncoding(self.embed_d, 0.1)
+
+        self.encoder_layer = nn.TransformerEncoderLayer(d_model=self.embed_d, nhead=4, dim_feedforward=512, dropout=0.1)
+        self.transformer_encoder = nn.TransformerEncoder(self.encoder_layer, num_layers=2)
+        self.decoder = nn.Linear(self.embed_d, 5)
+
+        # self.transformer = nn.Transformer(
+        #     d_model=self.embed_d,
+        #     nhead=4, 
+        #     num_encoder_layers=2, 
+        #     num_decoder_layers=2, 
+        #     dim_feedforward=512, 
+        #     dropout=0.1
+        # )
+
+        self.init_weights()
+
+    def init_weights(self) -> None:
+        initrange = 0.1
+        self.embedding.weight.data.uniform_(-initrange, initrange)
+        self.decoder.bias.data.zero_()
+        self.decoder.weight.data.uniform_(-initrange, initrange)
+    
+    def forward(self, x):
+        x = self.kmer_transformer(x,)
+        x = torch.argmax(x, dim=1).long()
+        x = self.embedding(x) * math.sqrt(self.embed_d)
+        x = self.pos_encoder(x)
+        output = self.transformer_encoder(x)
+        output = output.mean(dim=1)
+        output = self.decoder(output)
+        return output
+
+def generate_square_subsequent_mask(sz: int) -> Tensor:
+    """Generates an upper-triangular matrix of -inf, with zeros on diag."""
+    return torch.triu(torch.ones(sz, sz) * float('-inf'), diagonal=1)
+
+class PositionalEncoding(nn.Module):
+
+    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 5000):
+        super().__init__()
+        self.dropout = nn.Dropout(p=dropout)
+
+        position = torch.arange(max_len).unsqueeze(1)
+        div_term = torch.exp(torch.arange(0, d_model, 2) * (-math.log(10000.0) / d_model))
+        pe = torch.zeros(max_len, 1, d_model)
+        pe[:, 0, 0::2] = torch.sin(position * div_term)
+        pe[:, 0, 1::2] = torch.cos(position * div_term)
+        self.register_buffer('pe', pe)
+
+    def forward(self, x: Tensor) -> Tensor:
+        """
+        Args:
+            x: Tensor, shape [seq_len, batch_size, embedding_dim]
+        """
+        x = x + self.pe[:x.size(0)]
+        return self.dropout(x)
+
+class DMCLSTM(nn.Module):
+    def __init__(self, k=3) -> None:
+        super().__init__()
+        self.k = k
+        self.kmer_transformer = KMerTransformer(k=self.k, rearrange=False)
+        self.embed_d = 128
+        self.embedding = nn.Embedding(4 ** self.k, self.embed_d)
+        self.lstm_hidden = 128
+        self.lstm = nn.LSTM(self.embed_d, self.lstm_hidden, num_layers=2, batch_first=True, bidirectional=True)
+        self.fc = nn.Linear(256, 5)
+        self.dropout = nn.Dropout(p=0.5, inplace=True)
+
+    def forward(self, x):
+        x = self.kmer_transformer(x)
+        x = torch.argmax(x, dim=1).long()
+        x = self.embedding(x)# * math.sqrt(self.embed_d)
+        _, (x, _) = self.lstm(x)
+        # x = x.view(x.size(0), -1)
+        x = torch.cat((x[-2], x[-1]), dim=1)
+        x = self.dropout(x)
+        x = self.fc(x)
+        return x
+
 
 class DMF_tfidf(nn.Module):
     def __init__(self) -> None:
@@ -254,78 +348,3 @@ class DMF_tfidf(nn.Module):
         z = self.dropout(z)
         z = self.fc(z)
         return z
-
-class DMFTransformer(nn.Module):
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.kmer_transformer = KMerTransformer(k=4)
-
-        # self.embeddings = [nn.Embedding(4 ** 4, 32), nn.Embedding(4 ** 5, 128), nn.Embedding(4 ** 6, 512)]
-        # self.pos_encoders = [PositionalEncoding(32, 0.1), PositionalEncoding(128, 0.1), PositionalEncoding(512, 0.1)]
-        # self.embedding_5 = nn.Embedding(4 ** 5, 128)
-        # self.embedding_6 = nn.Embedding(4 ** 6, 512)
-        self.k = 5
-        self.embed_d = 128
-        self.embedding = nn.Embedding(4 ** 4, self.embed_d)
-        self.pos_encoder = PositionalEncoding(self.embed_d, 0.1)
-
-        self.encoder_layer = nn.TransformerEncoderLayer(d_model=self.embed_d, nhead=4, dim_feedforward=512, dropout=0.1)
-        self.transformer_encoder = nn.TransformerEncoder(self.encoder_layer, num_layers=2)
-        self.decoder = nn.Linear(self.embed_d, 5)
-
-        self.init_weights()
-
-    def init_weights(self) -> None:
-        initrange = 0.1
-        self.embedding.weight.data.uniform_(-initrange, initrange)
-        self.decoder.bias.data.zero_()
-        self.decoder.weight.data.uniform_(-initrange, initrange)
-    
-    def forward(self, src):
-        src = self.kmer_transformer(src)
-        src = torch.argmax(src, dim=1).long()
-        src = self.embedding(src) * math.sqrt(self.embed_d)
-        src = self.pos_encoder(src)
-        output = self.transformer_encoder(src)
-        output = output.mean(dim=1)
-        output = self.decoder(output)
-        return output
-
-def generate_square_subsequent_mask(sz: int) -> Tensor:
-    """Generates an upper-triangular matrix of -inf, with zeros on diag."""
-    return torch.triu(torch.ones(sz, sz) * float('-inf'), diagonal=1)
-
-class PositionalEncoding(nn.Module):
-
-    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 5000):
-        super().__init__()
-        self.dropout = nn.Dropout(p=dropout)
-
-        position = torch.arange(max_len).unsqueeze(1)
-        div_term = torch.exp(torch.arange(0, d_model, 2) * (-math.log(10000.0) / d_model))
-        pe = torch.zeros(max_len, 1, d_model)
-        pe[:, 0, 0::2] = torch.sin(position * div_term)
-        pe[:, 0, 1::2] = torch.cos(position * div_term)
-        self.register_buffer('pe', pe)
-
-    def forward(self, x: Tensor) -> Tensor:
-        """
-        Args:
-            x: Tensor, shape [seq_len, batch_size, embedding_dim]
-        """
-        x = x + self.pe[:x.size(0)]
-        return self.dropout(x)
-
-class DMCLSTM(nn.Module):
-    def __init__(self) -> None:
-        super().__init__()
-        self.lstm = nn.LSTM(128, 128, num_layers=2, batch_first=True, bidirectional=True)
-        self.fc = nn.Linear(256, 5)
-        self.dropout = nn.Dropout(p=0.5, inplace=True)
-
-    def forward(self, x):
-        x, _ = self.lstm(x)
-        x = self.dropout(x)
-        x = self.fc(x)
-        return x

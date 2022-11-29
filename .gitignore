@@ -5,6 +5,7 @@ tempFolder/
 archive/
 result*
 wandb/
+deepmicroclass/
 
 *history.md
 tmp*
