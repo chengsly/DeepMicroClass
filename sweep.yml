@@ -1,0 +1,15 @@
+program: training_pytorch.py
+method: bayes
+metric:
+  goal: minimize
+  name: val_loss
+parameters:
+  lr:
+    type: double
+    min: 1e-4
+    max: 1e-2
+  batch_size:
+    type: int
+    min: 16
+    max: 128
+  
