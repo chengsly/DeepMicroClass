@@ -1,19 +1,41 @@
-# Data downloading
+# Data preprocessing
+This directory contains the scripts used to download and preprocess the data used in this project.
+## Data downloading
 The dataset we used to train and evaluate the project consists of five classes: 
 
 - Prokaryote
-    - Archaea 
-    - Bacteria
+    - Archaea (RefSeq)
+    - Bacteria (RefSeq)
+- Eukaryote
+    - RefSeq
+    - MMETSP
 - Plasmid
+    - PLSDB
 - Virus
-    - Prokaryotic virus
-    - Eukaryotic virus
+    - Virus-Host DB
+        - Prokaryotic virus
+        - Eukaryotic virus
+    - IMG/VR
 
-In the paper the 
+The Archaea, Bacteria were downloaded with [genome_updater](https://github.com/pirovc/genome_updater).
+Archaea were downloaded from RefSeq and Genbank, and bacteria were downloaded only from RefSeq or the dataset would be too large.
+Microbial eukaryotes were downloaded from RefSeq, and additional marine eukaryotic host re-assemblies were downloaded from the [MMETSP](https://zenodo.org/record/1212585) project.
+Plasmid sequences and metadata were downloaded from [PLSDB](https://ccb-microbe.cs.uni-saarland.de/plsdb).
+Virus sequences and metadata were downloaded from [Virus-Host DB](https://www.genome.jp/ftp/db/virushostdb/).
+In addition to the experimentally verified virus genomes, we also retrived the IMG/VR virome dataset.
 
-# Plasmid cleaning
-The bacteria and archaea genomes can have plasmid sequences, to remove the plasmid from the 
+The whole downloading scripts can be found in `download_sequence.sh`.
 
-# Mash distance calculation
+## Plasmid cleaning
+The bacteria and archaea genomes can have plasmid sequences, to remove the plasmid from the genomes, run `python remove_plasmid.py`.
+The script first checks the sequence description, and removes any sequence with "plasmid" in it, then the sequence ids of bacteria and archaea are cross compared with the sequence ids of plasmids in PLSDB, and any sequences with overlapping ids were removed.
 
-# Splitting training, validation and test set
+## Mash distance calculation
+To avoid 
+
+## Splitting training, validation and test set
+
+For sequences from NCBI, `download_sequence.sh` downloads the archaea, bacteria and eukaryote sequences separated by submission date 01/01/2020, and stored into different directories.
+For PLSDB, the plasmid sequences are separated by submission date 01/01/2020 according to the metadata, and output to two separate fasta files.
+
+## Converting sequences into onehot
