@@ -48,7 +48,7 @@ class EncodingScheme:
         #         seq_code.append(constants.ENCODE_UNK)
         # # return seq_code
         # return np.vstack(seq_code)
-        return utils.seq2onehot(seq)[:, :4]
+        return utils.seq2onehot(seq, num_classes=5)[:, :4]
 
  
     def encodeOneHotProtein(self, seq):
