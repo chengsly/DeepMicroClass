@@ -54,7 +54,7 @@ def int2onehot(array, num_classes=None):
     return output
 
 
-def seq2onehot(seq, contig_length=None):
+def seq2onehot(seq, contig_length=None, num_classes=None):
     """Convert genome sequence into one-hot matrix
 
     :param seq: genome sequence
@@ -66,7 +66,7 @@ def seq2onehot(seq, contig_length=None):
     """
     seq = str(seq)
     int_seq = seq2intseq(seq, contig_length)
-    onehot = int2onehot(int_seq)
+    onehot = int2onehot(int_seq, num_classes)
     return onehot.astype(np.uint8)
 
 def sample_onehot(genome_onehot, length):
