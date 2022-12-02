@@ -10,6 +10,57 @@ from torch import Tensor
 # Channel configuration
 # Res layer number
 
+class LightningDMF(pl.LightningModule):
+    def __init__(self, model, lr=1e-3, weight_decay=1e-5, weight=None, num_classes=5, **kwargs):
+        super().__init__()
+        self.model = model
+        # self.weight = weight
+        self.num_classes = num_classes
+
+        self.lr = lr
+        self.weight_decay = weight_decay
+
+        self.save_hyperparameters(ignore=['model'])
+
+    def forward(self, x):
+        return self.model(x)
+
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self.model(x)
+        loss = F.cross_entropy(y_hat, y)
+        self.log("train_loss", loss)
+        self.log('train_acc_epoch', accuracy(y_hat, y.int(), average='macro', num_classes=self.num_classes), on_step=False, on_epoch=True, prog_bar=True)
+        self.log('train_f1_epoch', f1_score(y_hat, y.int(), average='macro', num_classes=self.num_classes), on_step=False, on_epoch=True, prog_bar=True)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self.model(x)
+        val_loss = F.cross_entropy(y_hat, y)
+        self.log("val_loss", val_loss, prog_bar=True)
+        self.log('val_acc', accuracy(y_hat, y.int(), average='macro', num_classes=self.num_classes), prog_bar=True)
+        self.log('val_f1', f1_score(y_hat, y.int(), average='macro', num_classes=self.num_classes), prog_bar=True)
+        return val_loss
+    
+    def test_step(self, batch, batch_idx):
+        loss, acc, auc = self._shared_eval_step(batch, batch_idx)
+        metrics = {"test_acc": acc, "test_loss": loss}
+        self.log_dict(metrics)
+        return metrics
+
+    def _shared_eval_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self.model(x)
+        loss = F.cross_entropy(y_hat, y)
+        acc = accuracy(y_hat, y)
+        auc = auroc(y_hat, y, num_classes=self.num_classes, average=None)
+        return loss, acc, auc
+
+    def configure_optimizers(self):
+        return torch.optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
+
+
 class DeepMicroClass(nn.Module):
     def __init__(self) -> None:
         super().__init__()
@@ -81,8 +132,82 @@ class DeepMicroClass(nn.Module):
         return z
 
 class DeepMicroClass_base(nn.Module):
-    def __init__(self, lr=1e-3, ) -> None:
+    def __init__(self, lr=1e-3, k=6) -> None:
         super().__init__()
+
+        self.lr = lr
+        self.k = k
+        
+        self.fc = nn.Sequential(
+            nn.Linear(512, 256),
+            nn.PReLU(),
+            nn.Dropout(p=0.2, inplace=True),
+            nn.Linear(256, 5)
+        )
+
+        self.base_channel = nn.Sequential(
+            nn.Conv2d(1, 64, (6, 4)),
+            nn.PReLU(),
+            nn.Flatten(start_dim=2),
+            nn.AvgPool1d(3),
+            nn.BatchNorm1d(64),
+            nn.Conv1d(64, 128, 3),
+            nn.PReLU(),
+            nn.AvgPool1d(3),
+            nn.BatchNorm1d(128),
+            nn.Conv1d(128, 256, 3),
+            nn.PReLU(),
+            nn.BatchNorm1d(256),
+            nn.AdaptiveAvgPool1d(1),
+            nn.Flatten(),
+        )
+
+    def forward(self, x):
+        interm_forward = self.base_channel(x)
+        rev = torch.flip(x, dims=[-1, -2])
+        interm_backward = self.base_channel(rev)
+        z = torch.cat((interm_forward, interm_backward, ), dim=1)
+        z = self.fc(z)
+        return z
+
+class DeepMicroClass_kmer(nn.Module):
+    def __init__(self, lr=1e-3, k=3) -> None:
+        super().__init__()
+        
+        self.lr = lr
+        self.k = k
+
+        self.fc = nn.Sequential(
+            nn.Linear(512, 256),
+            nn.PReLU(),
+            nn.Dropout(p=0.2, inplace=True),
+            nn.Linear(256, 5)
+        )
+
+        self.kmer_channel = nn.Sequential(
+            nn.Conv2d(1, 64, (2, 64)),
+            nn.PReLU(),
+            nn.Flatten(start_dim=2),
+            nn.AvgPool1d(3),
+            nn.BatchNorm1d(64),
+            nn.Conv1d(64, 128, 3),
+            nn.PReLU(),
+            nn.AvgPool1d(3),
+            nn.BatchNorm1d(128),
+            nn.Conv1d(128, 256, 3),
+            nn.PReLU(),
+            nn.BatchNorm1d(256),
+            nn.AdaptiveAvgPool1d(1),
+            nn.Flatten(),
+        )
+
+    def forward(self, x):
+        kmer = self.kmer_channel(x)
+        rev = torch.flip(x, dims=[-1, -2])
+        kmer_backward = self.kmer_channel(rev)
+        z = torch.cat((kmer, kmer_backward, ), dim=1)
+        z = self.fc(z)
+        return z
 
 
 class CodonTransformer(nn.Module):
@@ -141,64 +266,10 @@ class KMerTransformer(nn.Module):
             x = x.reshape(-1, 1, self.kmer_channel_num, x.shape[-1]*self.k).transpose(2, 3)
         return x
 
-class LightningDMF(pl.LightningModule):
-    def __init__(self, model, weight=None, num_classes=5, lr=1e-3, weight_decay=1e-5, **kwargs):
-        super().__init__()
-        self.model = model
-        self.weight = weight
-        self.num_classes = num_classes
-
-        self.lr = lr
-        self.weight_decay = weight_decay
-
-        self.save_hyperparameters(ignore=['model'])
-
-    def forward(self, x):
-        return self.model(x)
-
-    def training_step(self, batch, batch_idx):
-        x, y = batch
-        y_hat = self.model(x)
-        loss = F.cross_entropy(y_hat, y)
-        self.log("train_loss", loss)
-        self.log('train_acc_epoch', accuracy(y_hat, y.int(), average='macro', num_classes=self.num_classes), on_step=False, on_epoch=True, prog_bar=True)
-        self.log('train_f1_epoch', f1_score(y_hat, y.int(), average='macro', num_classes=self.num_classes), on_step=False, on_epoch=True, prog_bar=True)
-        return loss
-
-    def validation_step(self, batch, batch_idx):
-        x, y = batch
-        y_hat = self.model(x)
-        loss = F.cross_entropy(y_hat, y)
-        self.log("val_loss", loss, prog_bar=True)
-        self.log('val_acc', accuracy(y_hat, y.int(), average='macro', num_classes=self.num_classes), prog_bar=True)
-        self.log('val_f1', f1_score(y_hat, y.int(), average='macro', num_classes=self.num_classes), prog_bar=True)
-        return loss
-    
-    def test_step(self, batch, batch_idx):
-        loss, acc, auc = self._shared_eval_step(batch, batch_idx)
-        metrics = {"test_acc": acc, "test_loss": loss}
-        self.log_dict(metrics)
-        return metrics
-
-    def _shared_eval_step(self, batch, batch_idx):
-        x, y = batch
-        y_hat = self.model(x)
-        loss = F.cross_entropy(y_hat, y)
-        acc = accuracy(y_hat, y)
-        auc = auroc(y_hat, y, num_classes=self.num_classes, average=None)
-        return loss, acc, auc
-
-    def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
-
 class DMFTransformer(nn.Module):
     def __init__(self) -> None:
         super().__init__()
 
-        # self.embeddings = [nn.Embedding(4 ** 4, 32), nn.Embedding(4 ** 5, 128), nn.Embedding(4 ** 6, 512)]
-        # self.pos_encoders = [PositionalEncoding(32, 0.1), PositionalEncoding(128, 0.1), PositionalEncoding(512, 0.1)]
-        # self.embedding_5 = nn.Embedding(4 ** 5, 128)
-        # self.embedding_6 = nn.Embedding(4 ** 6, 512)
         self.k = 6
         self.kmer_transformer = KMerTransformer(k=self.k, rearrange=True)
         self.embed_d = 128
@@ -208,15 +279,6 @@ class DMFTransformer(nn.Module):
         self.encoder_layer = nn.TransformerEncoderLayer(d_model=self.embed_d, nhead=4, dim_feedforward=512, dropout=0.1)
         self.transformer_encoder = nn.TransformerEncoder(self.encoder_layer, num_layers=2)
         self.decoder = nn.Linear(self.embed_d, 5)
-
-        # self.transformer = nn.Transformer(
-        #     d_model=self.embed_d,
-        #     nhead=4, 
-        #     num_encoder_layers=2, 
-        #     num_decoder_layers=2, 
-        #     dim_feedforward=512, 
-        #     dropout=0.1
-        # )
 
         self.init_weights()
 
@@ -231,10 +293,10 @@ class DMFTransformer(nn.Module):
         x = torch.argmax(x, dim=1).long()
         x = self.embedding(x) * math.sqrt(self.embed_d)
         x = self.pos_encoder(x)
-        output = self.transformer_encoder(x)
-        output = output.mean(dim=1)
-        output = self.decoder(output)
-        return output
+        z = self.transformer_encoder(x)
+        z = z.mean(dim=1)
+        z = self.decoder(z)
+        return z
 
 def generate_square_subsequent_mask(sz: int) -> Tensor:
     """Generates an upper-triangular matrix of -inf, with zeros on diag."""
