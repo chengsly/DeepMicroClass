@@ -88,7 +88,7 @@ val_X = np.concatenate(val_X, axis=0)
 val_y = np.concatenate(val_y, axis=0)
 val_X = val_X.reshape(val_X.shape[0], -1)
 
-model = RandomForestClassifier(n_estimators=100, max_depth=10, class_weight='balanced', n_jobs=16)
+model = RandomForestClassifier(n_estimators=10000, max_depth=10, class_weight='balanced', n_jobs=16)
 
 model.fit(train_X, train_y)
 pred = model.predict(val_X)
