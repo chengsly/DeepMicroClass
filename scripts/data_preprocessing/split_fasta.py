@@ -3,8 +3,8 @@ import os
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('--input', dest='input')
-parser.add_argument('--output_dir', dest='output_dir')
+parser.add_argument('--input', '-i', dest='input')
+parser.add_argument('--output_dir', '-o', dest='output_dir')
 
 args = parser.parse_args()
 
