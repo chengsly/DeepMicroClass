@@ -10,7 +10,16 @@ from torch import Tensor
 # Channel configuration
 # Res layer number
 
-class LightningDMF(pl.LightningModule):
+class LightningDMC(pl.LightningModule):
+    # Docstring in reST format defining the model
+    """
+    DeepMicroClass model
+    :param model: A model instance of the DeepMicroClass model
+    :param lr: Learning rate
+    :param weight_decay: Weight decay
+    :param weight: Weight for the loss function
+    :param num_classes: Number of classes
+    """
     def __init__(self, model, lr=1e-3, weight_decay=1e-5, weight=None, num_classes=5, **kwargs):
         super().__init__()
         self.model = model

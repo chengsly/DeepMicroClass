@@ -8,7 +8,7 @@ import multiprocessing
 import argparse
 
 import pytorch_lightning as pl
-from model.DeepMicroClass import DeepMicroClass, LightningDMF, DMFTransformer
+from model.DeepMicroClass import DeepMicroClass, LightningDMC, DMFTransformer
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -63,23 +63,23 @@ if not os.path.exists(outputDir):
 encoding = options.encoding
 mode = options.predictionMode
 
-parser = argparse.ArgumentParser(
-    description='DeepMicrobeFinder: a deep learning tool for predicting contig origin',
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter
-)
-parser.add_argument("-i", "--input", dest="input_file", type=str, required=True, help="Input fasta file")
-parser.add_argument("-o", "--output", dest="output_dir", type=str, required=False, default="DeepMicrobeFinder_results", help="Output directory for predicted results")
-parser.add_argument("--model", dest="model_path", type=str, required=False, default="model.ckpt", help="Path to the model")
-parser.add_argument('--contig_length', dest="contig_length", type=int, required=False, default=5000, help="Contig length for prediction")
+# parser = argparse.ArgumentParser(
+#     description='DeepMicrobeFinder: a deep learning tool for predicting contig origin',
+#     formatter_class=argparse.ArgumentDefaultsHelpFormatter
+# )
+# parser.add_argument("-i", "--input", dest="input_file", type=str, required=True, help="Input fasta file")
+# parser.add_argument("-o", "--output", dest="output_dir", type=str, required=False, default="DeepMicrobeFinder_results", help="Output directory for predicted results")
+# parser.add_argument("--model", dest="model_path", type=str, required=False, default="model.ckpt", help="Path to the model")
+# parser.add_argument('--contig_length', dest="contig_length", type=int, required=False, default=5000, help="Contig length for prediction")
 
-args = parser.parse_args()
+# args = parser.parse_args()
 
-input_file = args.input_file
-output_dir = args.output_dir
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
-model_path = args.model_path
-contig_length = args.contig_length
+# input_file = args.input_file
+# output_dir = args.output_dir
+# if not os.path.exists(output_dir):
+#     os.makedirs(output_dir)
+# model_path = args.model_path
+# contig_length = args.contig_length
 
 ####################################################################################################
 #                                      STEP 1                                                      #
@@ -89,12 +89,12 @@ contig_length = args.contig_length
 print("Step 1/3: Loading models from {}".format(options.modelDir))
 models = {}
 
-model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DeepMicroClass())
+model = LightningDMC.load_from_checkpoint('/home/tianqi/project/DeepMicrobeFinder/data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DeepMicroClass())
 # model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint_new/epoch=729-step=186880-val_f1=0.948-val_acc=0.948.ckpt', model=DMF(), map_location=device)
 model.to(device)
 model.eval()
 
-model_cpu = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DeepMicroClass())
+model_cpu = LightningDMC.load_from_checkpoint('/home/tianqi/project/DeepMicrobeFinder/data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DeepMicroClass())
 model_cpu.eval()
 
 models['500'] = model
@@ -123,13 +123,9 @@ def predict(encodedSeqfw):
     for i in range(len(encodedSeqfw)):
         scores=[]
         fwdarr = np.array([encodedSeqfw[i]])
-        # print(fwdarr.shape)
         # fwdarr = utils.mutate_onehot(fwdarr, 0, 0.005)
-        # fwdarr = fwdarr[None, :, :]
         with torch.no_grad():
             fwdarr = torch.from_numpy(fwdarr).float()[:,None,:,:].to(device)
-            # fwdarr = fwdarr[:,:,:,np.newaxis]
-            # bwdarr = bwdarr[:,:,:,np.newaxis]
             if (len(encodedSeqfw[i]) == 5000):
                 scores = 5 * F.softmax(models["5000"](fwdarr), dim=1)[0]
             elif len(encodedSeqfw[i]) == 3000:
@@ -184,36 +180,36 @@ def predict_single(seq, length):
 scores = []
 names = []
 
-for record in SeqIO.parse(inputFile, "fasta"):
-    seq = record.seq
+# for record in SeqIO.parse(inputFile, "fasta"):
+#     seq = record.seq
 
-    head = record.id
+#     head = record.id
 
-    seq = seq.upper()
-    countN = seq.count("N")
-    if countN / len(seq) > 0.3:
-        print("{} has >30% Ns, skipping it".format(head))
-        names.append(head)
-        scores.append([0, 0, 0, 0, 0])
-    elif len(seq) < 500:
-        print("{} is too short(<500 bps), skipping it".format(head))
-        names.append(head)
-        scores.append([0, 0, 0, 0, 0])
-    else:
-        onehot = utils.seq2onehot(seq)
-        if onehot.shape[0] < contig_length:
-            continue
-        else:
-            onehot = onehot[:onehot.shape[0]//contig_length*contig_length, :4].reshape(-1, contig_length, 4)
-        onehot = onehot[:, np.newaxis, :, :]
-        onehot = torch.from_numpy(onehot).float()
-        with torch.no_grad():
-            try:
-                pred = model(onehot.to(device))
-                pred = pred.cpu().numpy()
-            except:
-                pred = model_cpu(onehot.to('cpu'))
-                pred = pred.numpy()
+#     seq = seq.upper()
+#     countN = seq.count("N")
+#     if countN / len(seq) > 0.3:
+#         print("{} has >30% Ns, skipping it".format(head))
+#         names.append(head)
+#         scores.append([0, 0, 0, 0, 0])
+#     elif len(seq) < 500:
+#         print("{} is too short(<500 bps), skipping it".format(head))
+#         names.append(head)
+#         scores.append([0, 0, 0, 0, 0])
+#     else:
+#         onehot = utils.seq2onehot(seq)
+#         if onehot.shape[0] < contig_length:
+#             continue
+#         else:
+#             onehot = onehot[:onehot.shape[0]//contig_length*contig_length, :4].reshape(-1, contig_length, 4)
+#         onehot = onehot[:, np.newaxis, :, :]
+#         onehot = torch.from_numpy(onehot).float()
+#         with torch.no_grad():
+#             try:
+#                 pred = model(onehot.to(device))
+#                 pred = pred.cpu().numpy()
+#             except:
+#                 pred = model_cpu(onehot.to('cpu'))
+#                 pred = pred.numpy()
         
         
 
@@ -235,7 +231,7 @@ with open(inputFile, 'r') as faLines :
             seq = seq + line.strip()
             flag += 1
         elif flag > 0 and line[0] == '>' :
-            countN = seq.count("N")
+            countN = seq.upper().count("N")
             if countN/len(seq) <= 0.3:
                 # single mode prediction
                 if mode == "single":

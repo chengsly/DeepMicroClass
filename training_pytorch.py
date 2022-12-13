@@ -1,7 +1,6 @@
 import numpy as np
 import constants
 import sklearn
-import optparse
 import utils
 import os, sys
 from sklearn import preprocessing
@@ -13,12 +12,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import pytorch_lightning as pl
-from torch.utils.data import DataLoader, TensorDataset
-from model.DeepMicroClass import DeepMicroClass, DMFTransformer, LightningDMF, DMCLSTM
+from torch.utils.data import DataLoader
+from model.DeepMicroClass import DeepMicroClass, DMFTransformer, LightningDMC, DMCLSTM
 from pytorch_lightning import seed_everything, loggers
 from sklearn.utils import class_weight
 import pandas as pd
+import wandb
 from model.SequenceData import SequenceDataset
+from pytorch_lightning.callbacks import ModelCheckpoint
 
 
 ####################################################################################################################################
@@ -77,9 +78,10 @@ model = DeepMicroClass()
 # model = DMFTransformer()
 # model = DMCLSTM()
 
+model = torch.compile(model)
+
 logger.watch(model, log='all')
 
-from pytorch_lightning.callbacks import ModelCheckpoint
 trainer = pl.Trainer(
     accelerator='gpu',
     precision=16,
@@ -122,7 +124,7 @@ val_dataloaders = DataLoader(
 )
 
 trainer.fit(
-    LightningDMF(model, weight=weight),
+    LightningDMC(model, weight=weight),
     train_dataloaders=train_dataloaders,
     val_dataloaders=val_dataloaders,
     # ckpt_path='data/pt_logs/checkpoint/epoch=1499-step=384000-val_f1=0.906-val_acc=0.907.ckpt'
