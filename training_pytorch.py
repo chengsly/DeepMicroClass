@@ -19,7 +19,7 @@ from sklearn.utils import class_weight
 import pandas as pd
 import wandb
 from model.SequenceData import SequenceDataset
-from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 
 
 ####################################################################################################################################
@@ -31,6 +31,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--input', dest='input')
 parser.add_argument('-l', '--log_prefix', dest='log_prefix', default='log')
 parser.add_argument('--group', dest='group', default=None)
+parser.add_argument('--lr', dest='lr', default=1e-3, type=float)
 
 args = parser.parse_args()
 log_prefix = args.log_prefix
@@ -46,14 +47,26 @@ else:
 TRAINING_DATASET_CSV = 'data/train.csv'
 VAL_DATASET_CSV = 'data/val.csv'
 ONEHOT_PATH = 'data/single_onehot'
-BATCH_SIZE=128
+BATCH_SIZE = 128
 LOG_DIR = f'data/pt_logs/{log_prefix}_{time.strftime("%Y-%m-%d-%H_%M", time.localtime())}'
 CHECKPOINT_DIR = f'{LOG_DIR}/checkpoint'
 
 # if not os.path.exists(CHECKPOINT_DIR):
 #     os.makedirs(CHECKPOINT_DIR)
 
-logger = loggers.WandbLogger(project='deepmicroclass', log_model=True, group=group)
+hyperparams_defaults = dict(
+    batch_size = BATCH_SIZE,
+    lr = 1e-3,
+    )
+
+# logger = loggers.WandbLogger(project='deepmicroclass', log_model=True, group=group, config=hyperparams_defaults)
+logger = loggers.WandbLogger(project='dmc_sweep', log_model=True, group=group, config=hyperparams_defaults)
+
+# config = wandb.config
+# batch_size = config.batch_size
+# lr = config.lr
+lr = args.lr
+batch_size = 64
 
 ############################################################################################################################
 #                                             Training                                                                     #
@@ -74,11 +87,11 @@ val_weight = torch.from_numpy(val_weight).float().to(device)
 weight = torch.tensor(weight, dtype=torch.float).to(device)
 print(f'Class weight: {weight}')
 
-model = DeepMicroClass()
-# model = DMFTransformer()
+# model = DeepMicroClass()
+model = DMFTransformer()
 # model = DMCLSTM()
 
-model = torch.compile(model)
+# model = torch.compile(model)
 
 logger.watch(model, log='all')
 
@@ -97,6 +110,11 @@ trainer = pl.Trainer(
             mode='min',
             every_n_epochs=10, 
             save_last=True
+            ),
+        EarlyStopping(
+            monitor='val_loss',
+            patience=10, 
+            mode='min'
             )
         ],
     # benchmark=True,
@@ -124,7 +142,7 @@ val_dataloaders = DataLoader(
 )
 
 trainer.fit(
-    LightningDMC(model, weight=weight),
+    LightningDMC(model, lr=lr, batch_size=batch_size),
     train_dataloaders=train_dataloaders,
     val_dataloaders=val_dataloaders,
     # ckpt_path='data/pt_logs/checkpoint/epoch=1499-step=384000-val_f1=0.906-val_acc=0.907.ckpt'
