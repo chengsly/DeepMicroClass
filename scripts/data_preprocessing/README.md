@@ -31,11 +31,11 @@ The bacteria and archaea genomes can have plasmid sequences, to remove the plasm
 The script first checks the sequence description, and removes any sequence with "plasmid" in it, then the sequence ids of bacteria and archaea are cross compared with the sequence ids of plasmids in PLSDB, and any sequences with overlapping ids were removed.
 
 ## Mash distance calculation
-To avoid 
+To avoid sequences too similar to each other in training and testing set, we use [Mash](https://github.com/marbl/Mash/releases) to calculate the Mash distances between each pairs of sequences within a particular class.
 
 ## Splitting training, validation and test set
 
 For sequences from NCBI, `download_sequence.sh` downloads the archaea, bacteria and eukaryote sequences separated by submission date 01/01/2020, and stored into different directories.
-For PLSDB, the plasmid sequences are separated by submission date 01/01/2020 according to the metadata, and output to two separate fasta files.
+For PLSDB, the plasmid sequences are separated by submission date 01/01/2020 according to the metadata, and output to two separate fasta file, the corresponding script is in `process_plsdb.py`.
 
 ## Converting sequences into onehot
