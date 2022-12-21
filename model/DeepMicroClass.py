@@ -13,21 +13,24 @@ from torch import Tensor
 class LightningDMC(pl.LightningModule):
     # Docstring in reST format defining the model
     """
-    DeepMicroClass model
-    :param model: A model instance of the DeepMicroClass model
+    Lightning wrapper for DeepMicroClass model
+    :param model: A model instance of the DeepMicroClass model, can be of different types
     :param lr: Learning rate
     :param weight_decay: Weight decay
     :param weight: Weight for the loss function
     :param num_classes: Number of classes
     """
-    def __init__(self, model, lr=1e-3, weight_decay=1e-5, weight=None, num_classes=5, **kwargs):
+    def __init__(self, model, lr=1e-3, weight_decay=1e-5, batch_size=128, weight=None, num_classes=5, **kwargs):
         super().__init__()
         self.model = model
-        # self.weight = weight
-        self.num_classes = num_classes
+        self.model_name = model.__class__.__name__
 
         self.lr = lr
         self.weight_decay = weight_decay
+        self.batch_size=batch_size
+
+        self.weight = weight
+        self.num_classes = num_classes
 
         self.save_hyperparameters(ignore=['model'])
 
@@ -280,7 +283,8 @@ class DMFTransformer(nn.Module):
         super().__init__()
 
         self.k = 6
-        self.kmer_transformer = KMerTransformer(k=self.k, rearrange=True)
+        # self.kmer_transformer = KMerTransformer(k=self.k, rearrange=True)
+        self.kmer_transformer = KMerTransformer(k=self.k, rearrange=False)
         self.embed_d = 128
         self.embedding = nn.Embedding(4 ** self.k, self.embed_d)
         self.pos_encoder = PositionalEncoding(self.embed_d, 0.1)
