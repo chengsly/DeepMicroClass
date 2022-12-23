@@ -90,7 +90,7 @@ for f in results_fn:
     # print(f'{f1}\t{1-idx.sum()/len(idx)}')
     # print(f'{1-idx.sum()/len(idx)}')
     # print(f1_score(target, result), balanced_accuracy_score(target, result), average_precision_score(target, result), matthews_corrcoef(target, result), acc)
-    # print(confusion_matrix(target, result, normalize='true'))
+    print(confusion_matrix(target, result, normalize='true'))
     # print('')
 
 # df = pd.DataFrame(f1_scores, columns=['Euk', 'EukVir', 'Plasmid', 'Prok', 'ProkVir'])
@@ -100,4 +100,4 @@ for f in results_fn:
 # print(', '.join([str(i) for i in accs]))
 # print(', '.join([str(i) for i in f1s]))
 
-summary_df.to_csv(f'perf_summary/dmf.csv', index=False)
+# summary_df.to_csv(f'perf_summary/dmf.csv', index=False)
