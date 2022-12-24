@@ -30,6 +30,8 @@ def construct_vir_array(array):
     return euk_array
 
 def construct_array(array, target_idx):
+    """Construct a one-hot array for the class given by target_idx.
+    """
     target_array = np.zeros((array.shape[0], 2))
     target_array[array==target_idx, 1] = 1
     target_array[array!=target_idx, 0] = 1
@@ -39,6 +41,8 @@ f1_scores = []
 
 summary_df = pd.DataFrame(columns=['filename', 'category', 'f1_score', 'accuracy'])
 categories = ['eukaryote', 'eukaryote_virus', 'plasmid', 'prokaryote', 'prokaryote_virus', 'virus', 'multiclass']
+
+mistakes = []
 
 accs = []
 f1s = []
@@ -77,21 +81,26 @@ for f in results_fn:
     target_prok = target[np.logical_or.reduce((target==2, target==3, target==4))]
     summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums_str), 'prok_groups', f1_score(target_prok, result_prok, average='weighted'), (target_prok==result_prok).sum()/len(result_prok)]], columns=['filename', 'category', 'f1_score', 'accuracy'])])
 
-    result = construct_vir_array(result)
-    result = result.argmax(axis=1)
+    # result = construct_vir_array(result)
+    # result = result.argmax(axis=1)
 
-    target = construct_vir_array(target)
-    target = target.argmax(axis=1)
+    # target = construct_vir_array(target)
+    # target = target.argmax(axis=1)
 
-    summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums_str), 'virus', f1_score(target, result), (result==target).sum()/len(result)]], columns=['filename', 'category', 'f1_score', 'accuracy'])])
+    # summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums_str), 'virus', f1_score(target, result), (result==target).sum()/len(result)]], columns=['filename', 'category', 'f1_score', 'accuracy'])])
 
 
     # print(f1[0], f1[1], f1[2], f1[3], f1[4])
     # print(f'{f1}\t{1-idx.sum()/len(idx)}')
     # print(f'{1-idx.sum()/len(idx)}')
     # print(f1_score(target, result), balanced_accuracy_score(target, result), average_precision_score(target, result), matthews_corrcoef(target, result), acc)
-    print(confusion_matrix(target, result, normalize='true'))
-    # print('')
+    # print(confusion_matrix(target, result).flatten())
+    conf_mat = confusion_matrix(target, result)
+    # print(conf_mat.shape)
+    # delete diagonal elements from conf_mat
+    conf_mat = conf_mat[~np.eye(conf_mat.shape[0], dtype=bool)].reshape(conf_mat.shape[0], -1)
+    mistakes.append(conf_mat.flatten())
+
 
 # df = pd.DataFrame(f1_scores, columns=['Euk', 'EukVir', 'Plasmid', 'Prok', 'ProkVir'])
 # df.to_csv(f'results/{RESULT_DIR}.csv', index=False)
@@ -101,3 +110,10 @@ for f in results_fn:
 # print(', '.join([str(i) for i in f1s]))
 
 # summary_df.to_csv(f'perf_summary/dmf.csv', index=False)
+
+label = ['Euk', 'EukVir', 'Plasmid', 'Prok', 'ProkVir']
+from itertools import product
+label = [f'{label[i]}->{label[j]}' for i in range(5) for j in range(5) if i!=j]
+
+misclass_df = pd.DataFrame(mistakes, columns=label)
+misclass_df.to_csv(f'perf_summary/misclassified_dmc.csv', index=False)

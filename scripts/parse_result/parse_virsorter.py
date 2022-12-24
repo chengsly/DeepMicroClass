@@ -4,7 +4,7 @@ import os
 import re
 from sklearn.metrics import f1_score
 
-RESULT_DIR = 'data/result_virsorter2'
+RESULT_DIR = 'data/result_others/result_virsorter2'
 
 results_fn = os.listdir(RESULT_DIR)
 results_fn.sort()
@@ -21,6 +21,8 @@ def construct_result(df):
     return np.array(result)
 
 summary_df = pd.DataFrame(columns=['filename', 'f1_score', 'accuracy'])
+
+mistakes = []
 
 for f in results_fn:
     result = pd.read_table(os.path.join(RESULT_DIR, f, 'final-viral-score.tsv'), index_col=0)
@@ -56,9 +58,15 @@ for f in results_fn:
     nums = re.findall(r'\d+', f)[1:]
     summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums), f1, acc]], columns=['filename', 'f1_score', 'accuracy'])])
 
+    mistake = [(target[result==1]==3).sum(), (target[result==1]==0).sum(),(target[result==1]==2).sum(), (target[result==0]==4).sum(), (target[result==0]==1).sum()]
+    mistakes.append(mistake)
+
     # print(f)
     # print(f'Acc: {acc}\tF1: {f1}\tUnknown: {(result==-1).sum()/len(result)}')
     # print(acc, end=', ')
     # print(f1, end=', ')
 
-summary_df.to_csv('perf_summary/virsorter2.csv', index=False)
+# summary_df.to_csv('perf_summary/virsorter2.csv', index=False)
+
+misclass_df = pd.DataFrame(mistakes, columns=['Prok->Vir', 'Euk->Vir', 'Plas->Vir', 'ProkVir->NonVir', 'EukVir->NonVir'])
+misclass_df.to_csv('perf_summary/misclassified_virsorter2.csv', index=False)

@@ -4,7 +4,7 @@ import os
 import re
 from sklearn.metrics import f1_score, confusion_matrix
 
-RESULT_DIR = 'data/result_ppr'
+RESULT_DIR = 'data/result_others/result_ppr'
 # RESULT_DIR = 'result_other_2000/result_ppr'
 
 results_fn = os.listdir(RESULT_DIR)
@@ -25,6 +25,12 @@ def construct_result(df, target):
         else:
             result.append(0)
     return np.array(result)
+
+result_mapping = {
+    'chromosome': 0,
+    'plasmid': 1,
+    'phage': 2,
+}
 
 misclassified = pd.DataFrame(columns=['Prok->Plas', 'ProkVir->Plas', 'Euk->Plas', 'EukVir->Plas', 'Plas->NonPlas'])
 mistakes = []
@@ -70,6 +76,13 @@ for f in results_fn:
     result = np.concatenate((result, np.zeros(missed)))
     plasmid_summary_df = pd.concat([plasmid_summary_df, pd.DataFrame([['_'.join(nums), f1_score(target_binary, result), (result==target_binary).sum()/len(result)]], columns=['filename', 'f1_score', 'accuracy'])])
 
+    ppr_target = np.zeros(len(target))
+    ppr_target[target==2] = 1
+    ppr_target[target==4] = 2
+    result = list(org_result['Possible_source'])
+    result = [result_mapping[i] for i in result]
+    result = np.array(result)
+    result = np.concatenate((result, np.zeros(missed)))
     multiclass_summary_df = pd.concat([multiclass_summary_df, pd.DataFrame([['_'.join(nums), f1_score(target, result, average='weighted'), (result==target).sum()/len(result)]], columns=['filename', 'f1_score', 'accuracy'])])
 
     # try:
@@ -83,16 +96,19 @@ for f in results_fn:
     # accs.append(acc)
     # f1s.append(f1)
     
-    # mistake = [(target[result==1]==3).sum(), (target[result==1]==4).sum(), (target[result==1]==0).sum(), (target[result==1]==1).sum()]
-    # mistake.append((target_binary[result==0]==1).sum())
-    # mistakes.append(mistake)
+    # mistake = [(target[result==1]==3).sum(), (target[result==1]==4).sum(), (target[result==1]==0).sum(), (target[result==1]==1).sum(), (target_binary[result==0]==1).sum()] # For plasmid
+    result = construct_result(org_result, 'phage')
+    result = np.concatenate((result, np.zeros(missed)))
+    mistake = [(target[result==1]==3).sum(), (target[result==1]==0).sum(), (target[result==1]==1).sum(), (target[result==1]==2).sum(), (target[result==0]==4).sum()] # For prokaryotic virus
+    mistakes.append(mistake)
 
     # misclassified = pd.concat([misclassified, pd.DataFrame([mistake], columns=['Prok->Plas', 'ProkVir->Plas', 'Euk->Plas', 'EukVir->Plas', 'Plas->NonPlas'])], ignore_index=True)
-# misclassified = pd.DataFrame(mistakes, columns=['Prok->Plas', 'ProkVir->Plas', 'Euk->Plas', 'EukVir->Plas', 'Plas->NonPlas'])
-# misclassified.to_csv('results/misclassified_ppr.csv', index=False)
+# misclassified = pd.DataFrame(mistakes, columns=['Prok->Plas', 'ProkVir->Plas', 'Euk->Plas', 'EukVir->Plas', 'Plas->NonPlas']) # For plasmid
+misclassified = pd.DataFrame(mistakes, columns=['Prok->ProkVir', 'Euk->ProkVir', 'EukVir->ProkVir', 'Plas->ProkVir', 'ProkVir->NonProkVir']) # For prokaryotic virus
+misclassified.to_csv('perf_summary/misclassified_ppr_prokvir.csv', index=False)
 
 # print(', '.join([str(i) for i in accs]))
 # print(', '.join([str(i) for i in f1s]))
-plasmid_summary_df.to_csv('perf_summary/ppr_plasmid.csv', index=False)
-prokvirus_summary_df.to_csv('perf_summary/ppr_vir.csv', index=False)
+# plasmid_summary_df.to_csv('perf_summary/ppr_plasmid.csv', index=False)
+# prokvirus_summary_df.to_csv('perf_summary/ppr_vir.csv', index=False)
 multiclass_summary_df.to_csv('perf_summary/ppr_multiclass.csv', index=False)

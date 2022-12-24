@@ -4,7 +4,7 @@ import os
 import re
 from sklearn.metrics import f1_score
 
-RESULT_DIR = 'data/result_whokaryote'
+RESULT_DIR = 'data/result_others/result_whokaryote'
 
 results_fn = os.listdir(RESULT_DIR)
 results_fn = [f'{f}/whokaryote_predictions_T.tsv' for f in results_fn if not f.startswith('log')]
@@ -29,6 +29,8 @@ def construct_result(df):
         else:
             result.append(0)
     return np.array(result)
+
+mistakes = []
 
 summary_df = pd.DataFrame(columns=['filename', 'f1_score', 'accuracy'])
 
@@ -66,7 +68,13 @@ for f in results_fn:
     except:
         print(f)
 
+    mistake = [(target[result==1]==3).sum(), (target[result==1]==4).sum(), (target[result==0]==0).sum(), (target[result==1]==1).sum(), (target[result==1]==2).sum()]
+    mistakes.append(mistake)
+
     # print(acc, end=', ')
     # print(f1, end=', ')
-    summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums), f1, acc]], columns=['filename', 'f1_score', 'accuracy'])], axis=0)
-summary_df.to_csv('perf_summary/whokaryote.csv', index=False)
+    # summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums), f1, acc]], columns=['filename', 'f1_score', 'accuracy'])], axis=0)
+# summary_df.to_csv('perf_summary/whokaryote.csv', index=False)
+
+misclassified = pd.DataFrame(mistakes, columns=['Prok->Euk', 'ProkVir->Euk', 'Euk->Non-Euk', 'EukVir->Euk', 'Plas->Euk'])
+misclassified.to_csv('perf_summary/misclassified_whokaryote.csv', index=False)

@@ -4,7 +4,7 @@ import os
 import re
 from sklearn.metrics import f1_score, matthews_corrcoef, confusion_matrix, average_precision_score, balanced_accuracy_score
 
-RESULT_DIR = 'data/result_tiara'
+RESULT_DIR = 'data/result_others/result_tiara'
 
 results_fn = os.listdir(RESULT_DIR)
 results_fn = [f for f in results_fn if not f.startswith('log')]
@@ -38,20 +38,23 @@ def construct_euk_array(array):
     euk_array[array==0, 1] = 1
     return euk_array
 
+mistakes = []
+
 summary_df = pd.DataFrame(columns=['filename', 'f1_score', 'accuracy'])
 
 for f in results_fn:
-    nums = re.findall(r'\d+', f)[1:]
-    result = pd.read_table(os.path.join(RESULT_DIR, f), index_col=0)
+    nums = re.findall(r'\d+', f)[1:] # get the numbers in the filename
+    result = pd.read_table(os.path.join(RESULT_DIR, f), index_col=0) # read the result
     
     index = list(result.index)
-    index = [i.split()[0] for i in index]
-    result.index = index
+    index = [i.split()[0] for i in index] # get the sequence name
+    result.index = index # set the sequence name as index
     
-    target_pkl = pd.read_pickle(os.path.join(TARGET_DIR, f'{f[:-4]}.fa.pkl'))
-    target = np.array([target_pkl.loc[i, 0] for i in index]).flatten()
-    missed = len(target) - len(target_pkl)
+    target_pkl = pd.read_pickle(os.path.join(TARGET_DIR, f'{f[:-4]}.fa.pkl')) # read the target
+    target = np.array([target_pkl.loc[i, 0] for i in index]).flatten() # get the target sequence name
+    missed = len(target) - len(target_pkl) # get the number of missed sequences
 
+    # add the missed sequences to the target
     missed_label = []
     for i in target_pkl.index:
         if i not in result.index:
@@ -59,13 +62,14 @@ for f in results_fn:
     missed_label = np.array(missed_label).flatten()
     target = np.concatenate((target, missed_label))
 
+    # convert the target to binary
     target_binary = np.zeros(len(target))
     target_binary[target==0] = 1
     # target_binary[np.logical_or(target==0, target==1)] = 1
     # target_binary = np.concatenate((target_binary, np.ones(missed)))
 
     result = construct_result(result)
-    result = np.concatenate((result, np.zeros(missed)))
+    result = np.concatenate((result, np.zeros(missed))) # add the missed sequences as 0 to the result
 
     try:
         acc = (result==target_binary).sum() / len(target_binary)
@@ -76,6 +80,9 @@ for f in results_fn:
         print(f)
 
     summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums), f1, acc]], columns=['filename', 'f1_score', 'accuracy'])])
+
+    mistake = [(target[result==1]==3).sum(), (target[result==1]==4).sum(), (target[result==0]==0).sum(), (target[result==1]==1).sum(), (target[result==1]==2).sum()]
+    mistakes.append(mistake)
 
     # print(f)
     # print(f'Acc: {acc}\tF1: {f1}\tUnknown: {(result==-1).sum()/len(result)}')
@@ -104,4 +111,7 @@ for f in results_fn:
 # from scipy.stats import mannwhitneyu
 # mannwhitneyu(a, b)
 
-summary_df.to_csv('perf_summary/tiara.csv', index=False)
+# summary_df.to_csv('perf_summary/tiara.csv', index=False)
+
+misclassified = pd.DataFrame(mistakes, columns=['Prok->Euk', 'ProkVir->Euk', 'Euk->Non-Euk', 'EukVir->Euk', 'Plas->Euk'])
+misclassified.to_csv('perf_summary/misclassified_tiara.csv', index=False)
