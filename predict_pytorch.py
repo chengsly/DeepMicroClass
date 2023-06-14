@@ -22,7 +22,7 @@ prog_base = os.path.split(sys.argv[0])[1]
 parser = optparse.OptionParser()
 
 parser.add_option("-i", "--in", action = "store", type="string", dest="inputFile", help="input fasta file")
-parser.add_option("-d", "--modelDir", action="store", type="string", dest="modelDir", help="model directory for prediction")
+parser.add_option("-d", "--model", action="store", type="string", dest="model", help="model directory for prediction", default="model.ckpt")
 parser.add_option("-e", "--encode", action="store", type="string", dest="encoding", help="encoding type, one-hot or codon")
 parser.add_option("-m", "--mode", action="store", type="string", dest="predictionMode", help="prediction mode: single or hybrid")
 parser.add_option("-l", "--length", action="store", type="int", dest="modelLength", help="in single mode, optionally choose one model with length")
@@ -30,7 +30,7 @@ parser.add_option("-o", "--outputDir", action="store", type="string", dest="outp
 
 (options, args) = parser.parse_args()
 
-if (options.inputFile is None or options.modelDir is None or 
+if (options.inputFile is None or options.model is None or 
     options.encoding is None or options.predictionMode is None):
     sys.stderr.write(prog_base + "ERROR: missing command line argument\n")
     parser.print_help()
@@ -86,15 +86,16 @@ mode = options.predictionMode
 ####################################################################################################
 
 
-print("Step 1/3: Loading models from {}".format(options.modelDir))
+print("Step 1/3: Loading models from {}".format(options.model))
 models = {}
 
-model = LightningDMC.load_from_checkpoint('/home/tianqi/project/DeepMicrobeFinder/data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DeepMicroClass())
-# model = LightningDMF.load_from_checkpoint('data/pt_logs/checkpoint_new/epoch=729-step=186880-val_f1=0.948-val_acc=0.948.ckpt', model=DMF(), map_location=device)
+model_path = options.model
+
+model = LightningDMC.load_from_checkpoint(model_path, model=DeepMicroClass())
 model.to(device)
 model.eval()
 
-model_cpu = LightningDMC.load_from_checkpoint('/home/tianqi/project/DeepMicrobeFinder/data/pt_logs/checkpoint/epoch=2999-step=768000-val_f1=0.906-val_acc=0.907.ckpt', model=DeepMicroClass())
+model_cpu = LightningDMC.load_from_checkpoint(model_path, model=DeepMicroClass())
 model_cpu.eval()
 
 models['500'] = model
