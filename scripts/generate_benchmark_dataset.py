@@ -7,12 +7,13 @@ import math
 from random import sample
 
 PROK_PATH = "data/filtered_fasta/prokaryote.fa"
-EUK_PATH = "data/filtered_fasta/eukaryote.fa"
-PLASMID_PATH = "data/filtered_fasta/plasmid.fa"
+EUK_PATH = "data/filtered_fasta/euk_MMETSP.fa"
+# PLASMID_PATH = "data/filtered_fasta/plasmid.fa"
+PLASMID_PATH = "data/plasmid/post20_plasmid.fa"
 PROKVIR_PATH = "data/filtered_fasta/prok_vir.fa"
 EUKVIR_PATH = "data/filtered_fasta/euk_vir.fa"
 
-PATHS = [PROK_PATH, EUK_PATH, PLASMID_PATH, PROKVIR_PATH, EUKVIR_PATH]
+PATHS = [PROK_PATH, PROKVIR_PATH, PLASMID_PATH, EUK_PATH, EUKVIR_PATH]
 
 TARGET_PATH = "data/sampled_sequence"
 os.makedirs(TARGET_PATH, exist_ok=True)
@@ -44,17 +45,11 @@ EUK_EUKVIR_RATIO = np.array([
 ], dtype=float)
 EUK_EUKVIR_RATIO /= EUK_EUKVIR_RATIO.sum(axis=1, keepdims=True)
 
-# for i in range(len(PROK_EUK_RATIO)):
-#     for j in range(len(PROK_PROKVIR_PLASMID_RATIO)):
-
-#         # prok_total = math.floor(PROK_EUK_RATIO[i, 0] * TOTAL_SEQ_NUM)
-#         # euk_total = math.floor(PROK_EUK_RATIO[i, 1] * TOTAL_SEQ_NUM)
-
 ratio = np.concatenate([np.concatenate([PROK_EUK_RATIO[i, 0] * PROK_PROKVIR_PLASMID_RATIO, PROK_EUK_RATIO[i, 1] * EUK_EUKVIR_RATIO], axis=1) for i in range(PROK_EUK_RATIO.shape[0])], axis=0)
 seq_num = np.round(ratio * TOTAL_SEQ_NUM).astype(int)
 print(seq_num)
 
-records = [list(SeqIO.parse(path, 'fasta')) for path in PATHS]
+records = [[record for record in SeqIO.parse(path, 'fasta') if len(record) > 5000] for path in PATHS]
 
 for i in range(seq_num.shape[0]):
     sampled_records = [sample(records[j], seq_num[i, j]) for j in range(seq_num.shape[1])]

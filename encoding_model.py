@@ -1,7 +1,7 @@
 # from dna2vec.multi_k_model import MultiKModel
 from itertools import product
 from numpy import array
-from keras.utils import to_categorical
+# from keras.utils import to_categorical
 import sys
 import constants
 from Bio.Data import CodonTable
@@ -9,7 +9,7 @@ from Bio.Seq import Seq
 import numpy as np
 import os
 import utils
-import pgzip
+# import pgzip
 
 class EncodingScheme:
     def __init__(self,encode, seqType,  modelurl=None):
@@ -17,8 +17,10 @@ class EncodingScheme:
         self.seqType = seqType
         self.codons = [''.join(item) for item in list(product(constants.ALLOWED_CHARS_DNA, repeat = 3))]
         self.codonmap = CodonTable.unambiguous_dna_by_id[1].forward_table
-        self.codonencode = dict(zip(constants.CODON_ENCODED, to_categorical([i for i in range(len(constants.CODON_ENCODED))])))
-        self.proteinmap = dict(zip(constants.ALLOWED_CHARS_PROTEIN, to_categorical([i for i in range(len(constants.ALLOWED_CHARS_PROTEIN))])))
+        # self.codonencode = dict(zip(constants.CODON_ENCODED, to_categorical([i for i in range(len(constants.CODON_ENCODED))])))
+        # self.proteinmap = dict(zip(constants.ALLOWED_CHARS_PROTEIN, to_categorical([i for i in range(len(constants.ALLOWED_CHARS_PROTEIN))])))
+        self.codonencode = 'a'
+        self.proteinmap = 'b'
 
     def encodeCodon(self, seq):
         seq_code = list()
@@ -46,7 +48,7 @@ class EncodingScheme:
         #         seq_code.append(constants.ENCODE_UNK)
         # # return seq_code
         # return np.vstack(seq_code)
-        return utils.seq2onehot(seq)[:, :4]
+        return utils.seq2onehot(seq, num_classes=5)[:, :4]
 
  
     def encodeOneHotProtein(self, seq):
@@ -84,8 +86,9 @@ class EncodingScheme:
             chunk = seq[pos: posEnd]
             chunk_code = self.encodeSeq(chunk)
             seqEncode.append(chunk_code)
-            chunkR = Seq(chunk).reverse_complement()
-            chunkR_code = self.encodeSeq(chunkR)
+            # chunkR = Seq(chunk).reverse_complement()
+            # chunkR_code = self.encodeSeq(chunkR)
+            chunkR_code = chunk_code[::-1, ::-1]
             seqEncodeR.append(chunkR_code)
             pos = posEnd
             posEnd += contigLength

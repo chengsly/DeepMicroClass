@@ -1,6 +1,19 @@
 data/
 DeepMicrobeFinder_results*/
 log
+tempFolder/
+archive/
+result*
+wandb/
+deepmicroclass/
+*_sweep
+Virome/
+
+.DS_Store
+
+*history.md
+tmp*
+slurm*
 
 .vscode/
 

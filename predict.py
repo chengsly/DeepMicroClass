@@ -1,5 +1,5 @@
 import os, sys, optparse
-import keras
+# import keras
 from tensorflow.keras.models import load_model
 from encoding_model import EncodingScheme
 from Bio import SeqIO
@@ -7,6 +7,13 @@ from Bio.Seq import Seq
 import numpy as np
 import constants
 import multiprocessing
+import tensorflow as tf
+
+tf.config.threading.set_inter_op_parallelism_threads(16)
+gpus = tf.config.experimental.list_physical_devices('GPU')
+for gpu in gpus:
+  tf.config.experimental.set_memory_growth(gpu, True)
+tf.compat.v1.disable_eager_execution()
 
 
 prog_base = os.path.split(sys.argv[0])[1]
@@ -119,6 +126,8 @@ def predict(encodedSeqfw, encodedSeqbw):
         scores=[]
         fwdarr = np.array([encodedSeqfw[i]])
         bwdarr = np.array([encodedSeqbw[i]])
+        # fwdarr = fwdarr[:,:,:,np.newaxis]
+        # bwdarr = bwdarr[:,:,:,np.newaxis]
         if (len(encodedSeqfw[i]) == 5000):
             scores = 5 * models["5000"].predict([fwdarr,bwdarr], batch_size=1)[0]
         elif len(encodedSeqfw[i]) == 3000:
@@ -199,6 +208,8 @@ with open(inputFile, 'r') as faLines :
                 if mode == "single":
                     if len(seq) < 500:
                         print("contig {} length less than 500: ignore...".format(head))
+                        scores.append([0, 0, 0, 0, 0])
+                        names.append(head)
                     else:
                         score = predict_single(seq, options.modelLength)
                         scores.append(score)
@@ -208,6 +219,8 @@ with open(inputFile, 'r') as faLines :
                 if mode == "hybrid":
                     if (len(seq) < 500):
                         print("contig {} length less than 500: ignore...".format(head))
+                        scores.append([0, 0, 0, 0, 0])
+                        names.append(head)
                     else:
                         encodefw, encodebw = encodingModel.encodeContig(seq)
                         pred_score = predict(encodefw, encodebw)
@@ -216,6 +229,8 @@ with open(inputFile, 'r') as faLines :
             else :
                 if countN/len(seq) > 0.3 :
                     print("   {} has >30% Ns, skipping it".format(head))
+                    scores.append([0, 0, 0, 0, 0])
+                    names.append(head)
             
             flag = 0
             seq = ''
@@ -228,6 +243,8 @@ with open(inputFile, 'r') as faLines :
             if mode == "single":
                 if len(seq) < 500:
                     print("contig {} length less than 500: ignore...".format(head))
+                    scores.append([0, 0, 0, 0, 0])
+                    names.append(head)
                 else: 
                     score = predict_single(seq, options.modelLength)
                     scores.append(score)
@@ -237,6 +254,8 @@ with open(inputFile, 'r') as faLines :
             if mode == "hybrid":
                 if len(seq) < 500:
                     print("contig length {} less than 500: ignore...".format(head))
+                    scores.append([0, 0, 0, 0, 0])
+                    names.append(head)
                 else:
                     encodefw, encodebw = encodingModel.encodeContig(seq)
                     pred_score = predict(encodefw, encodebw)

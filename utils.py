@@ -44,19 +44,29 @@ def seq2intseq(seq, contig_length=None):
         return np.array(list(map(nt2index, str(seq))))
 
 
-def int2onehot(array):
-    # n = np.max(array) + 1
-    n = 5
+def int2onehot(array, num_classes=None):
+    if num_classes is None:
+        n = np.max(array) + 1
+    else:
+        n = num_classes
     output = np.eye(int(n))[array.astype(int)]
     output[output[:, 4] == 1, :] = 0.25
     return output
 
 
-def seq2onehot(seq, contig_length=None):
-    # assert isinstance(seq, str), "Input should be str"
+def seq2onehot(seq, contig_length=None, num_classes=None):
+    """Convert genome sequence into one-hot matrix
+
+    :param seq: genome sequence
+    :type seq: str or Bio.Seq.Seq
+    :param contig_length: If designated, sample a subsequence with length contig_length from the original sequence, defaults to None
+    :type contig_length: int, optional
+    :return: A one-hot matrix
+    :rtype: np.ndarray
+    """
     seq = str(seq)
     int_seq = seq2intseq(seq, contig_length)
-    onehot = int2onehot(int_seq)
+    onehot = int2onehot(int_seq, num_classes)
     return onehot.astype(np.uint8)
 
 def sample_onehot(genome_onehot, length):
@@ -78,3 +88,35 @@ def sample_onehot(genome_onehot, length):
         # onehot_sampled = np.vstack((genome_onehot, np.zeros((length - genome_length, genome_onehot.shape[1]))))
         onehot_sampled = torch.nn.functional.pad(genome_onehot, (0, 0, 0, length - genome_length), "constant", 0)
     return onehot_sampled
+
+def mutate_onehot(org_onehot, mu, delta):
+    from numpy.random import default_rng
+    onehot = np.copy(org_onehot)
+    if len(onehot.shape) == 3:
+        onehot = np.squeeze(onehot)
+        org_onehot = np.squeeze(org_onehot)
+    # print(onehot.shape)
+    rng = default_rng()
+    possible_mutation = [
+        [1, 2, 3],
+        [0, 2, 3],
+        [0, 1, 3],
+        [0, 1, 2]
+    ]
+
+    for i in range(4):
+        mutation_indicator = np.logical_and(org_onehot[:, i]==1, rng.random(size=org_onehot.shape[0]) < delta)
+        mutation_target = rng.choice(possible_mutation[i], size=np.sum(mutation_indicator))
+        onehot[mutation_indicator, :] = 0
+        onehot[np.where(mutation_indicator)[0], mutation_target] = 1
+    
+    if mu != 0:
+        insertion_indicator = rng.random(size=onehot.shape[0]) < 0.5 * mu
+        if np.sum(insertion_indicator) > 0:
+            insertion_sequence = rng.integers(0, 4, np.sum(insertion_indicator))
+            insertion_sequence = np.eye(4)[insertion_sequence]
+            onehot = np.insert(onehot, np.where(insertion_indicator)[0], insertion_sequence, axis=0)
+
+        deletion_indicator = rng.random(size=onehot.shape[0]) > 0.5 * mu
+        onehot = onehot[deletion_indicator, :]
+    return onehot

@@ -1,0 +1,21 @@
+name: DeepMicroClass
+
+channels:
+  - conda-forge
+  - etetoolkit
+  - bioconda
+  - pytorch
+
+dependencies:
+  - cudatoolkit=11.3
+  - pandas
+  - numpy
+  - biopython
+  - ete3
+  - pytorch
+  - pytorch-lightning
+  - torchmetrics
+  - tensorboard
+  - tqdm
+  - scikit-learn
+  - keras

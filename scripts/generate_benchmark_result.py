@@ -13,7 +13,7 @@ TARGET_DIR = 'data/sampled_sequence_target'
 os.makedirs(TARGET_DIR, exist_ok=True)
 
 def construct_target(nums):
-    order = [[3], [0], [2], [4], [1]]
+    order = [[3], [4], [2], [0], [1]]
     return np.array(sum([order[i]*nums[i] for i in range(5)], []))
 
 for f in results_fn:
@@ -25,4 +25,5 @@ for f in results_fn:
 
     df = pd.DataFrame(target, index=ids)
 
+    df.to_pickle(os.path.join(TARGET_DIR, f'{f}.pkl'))
     df.to_pickle(os.path.join(TARGET_DIR, f'{f}.pkl'))
