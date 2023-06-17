@@ -5,11 +5,20 @@ metric:
   name: val_loss
 parameters:
   lr:
-    type: double
-    min: 1e-4
+    # type: double
+    distribution: uniform
+    min: 1e-10
     max: 1e-2
-  batch_size:
-    type: int
-    min: 16
-    max: 128
-  
+  # batch_size:
+  #   type: int
+  #   distribution: categorical
+  #   values:
+  #     - 16
+  #     - 32
+  #     - 64
+  #     - 128
+  # random_seed:
+  #   type: int
+  #   values: [0, 42, 666, 810, 893, 114514]
+  # wandb agent deepmicroclass/transformer_sweep/vdti8qd3 --count 50
+  # wandb agent deepmicroclass/lstm_sweep/iyj5b77x --count 50
