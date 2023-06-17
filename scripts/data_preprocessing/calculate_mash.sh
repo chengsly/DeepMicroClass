@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Process input options
+while getopts "d:" opt; do
+    case $opt in
+        d) working_dir=$OPTARG;;
+        no_sketch) no_sketch=1;;
+        \?) echo "Invalid option -$OPTARG" >&2
+            exit 1
+            ;;
+    esac
+done
+
 working_dir=/home/tianqi/project/DeepMicrobeFinder/data
 cd $working_dir
 
@@ -15,10 +26,8 @@ if [ ! -d "$dist_dir" ]; then
     mkdir -p $dist_dir
 fi
 
-sketch_switch=0
-dist_switch=0
 
-if [ sketch_switch ]; then
+if [ ! $no_sketch ]; then
 
     mash sketch -o $sketch_dir/pre20_archaea -p 16 -i $working_dir/clean_pre20/pre20_archaea.fa
     mash sketch -o $sketch_dir/post20_archaea -p 16 -i $working_dir/clean_post20/post20_archaea.fa

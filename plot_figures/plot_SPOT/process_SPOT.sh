@@ -18,7 +18,7 @@ DEF_RESULTS=result_SPOT/01_DeepEukFinder
 mkdir -p ${DEF_RESULTS}
 
 model_dir="/home/shengwei/GitHub/DeepEukFinder/models/one-hot-models/"
-# :<<"COMMENT"
+:<<"COMMENT"
 # source activate def
 for f in `ls /home/shengwei/VirEncAct/ESPAE/assembly/*.fa`; do
     input_scaffold=$f
@@ -44,7 +44,7 @@ for f in `ls /home/shengwei/VirEncAct/ESPAE/assembly/*.fa`; do
     #fi
 done
 # conda deactivate
-# COMMENT
+COMMENT
 
 
 # ------------------- #
@@ -250,7 +250,8 @@ COMMENT
 # count DEF reads
 # ---------------
 
-DEF_COUNTS=result_SPOT/04_DEF_Counts_ID98
+# DEF_COUNTS=result_SPOT/04_DEF_Counts_ID98
+DEF_COUNTS=result_SPOT/04_DEF_Counts_ID70
 #DEF_COUNTS=DEF_Counts_ID75
 mkdir -p ${DEF_COUNTS}
 
@@ -281,11 +282,12 @@ COMMENT
 
 #
 #READ_COUNT_RESULTS=03_coverM_readcnts_ID70
-READ_COUNT_RESULTS=/home/shengwei/VirEncAct/ESPAE/03_coverM_readcnts_ID98
-
+# READ_COUNT_RESULTS=/home/shengwei/VirEncAct/ESPAE/03_coverM_readcnts_ID98
+READ_COUNT_RESULTS=/home/shengwei/VirEncAct/ESPAE/03_coverM_readcnts_ID70
 
 #SeqType_COUNTS=04_SeqType_Counts_ID70_coverM
-SeqType_COUNTS=result_SPOT/04_DEF_Counts_ID98
+# SeqType_COUNTS=result_SPOT/04_DEF_Counts_ID98
+SeqType_COUNTS=result_SPOT/04_DEF_Counts_ID70
 
 mkdir -p ${SeqType_COUNTS}
 
@@ -293,7 +295,7 @@ kaiju_contig2type="def_kaiju_metaeuk/ESPDTS_kaiju.names_contig2type.tsv"
 def_contig2type="/home/tianqi/project/DeepMicrobeFinder/result_SPOT/01_DeepEukFinder/ESP_AEAM_DuraAMPM_MG_min_2000_newbler_toAmos_minimus2_id0.98_renamed.fa_pred_one-hot_hybrid_contig2type.tsv"
 metaeuk_contig2type="def_kaiju_metaeuk/metaeuk_tax_results_tax_per_contig_contig2type.tsv"
 
-:<<"COMMENT"
+# :<<"COMMENT"
 # source activate py37
 for name_len_cnt_file in `ls ${READ_COUNT_RESULTS}/*_name2len2reads.tsv`; do
     BASENAME=$(basename "$name_len_cnt_file")
@@ -319,7 +321,7 @@ for name_len_cnt_file in `ls ${READ_COUNT_RESULTS}/*_name2len2reads.tsv`; do
     # done
 done
 # conda deactivate
-COMMENT
+# COMMENT
 
 
 
@@ -327,14 +329,15 @@ COMMENT
 # merge counts
 # ------------
 
-#SeqType_COUNTS=04_SeqType_Counts_ID70_coverM
-SeqType_COUNTS=result_SPOT/04_DEF_Counts_ID98
+# SeqType_COUNTS=04_SeqType_Counts_ID70_coverM
+# SeqType_COUNTS=result_SPOT/04_DEF_Counts_ID98
+SeqType_COUNTS=result_SPOT/04_DEF_Counts_ID70
 
 #MERGED_SeqType_COUNTS=05_MERGED_SeqType_Counts_ID70
-MERGED_SeqType_COUNTS=result_SPOT/05_MERGED_SeqType_Counts_ID70_pair
+MERGED_SeqType_COUNTS=result_SPOT/05_MERGED_SeqType_Counts_ID70
 mkdir -p ${MERGED_SeqType_COUNTS}
 
-metadata="data/ESPAE_metadata_CTD.tsv"
+# metadata="data/ESPAE_metadata_CTD.tsv"
 # :<<"COMMENT"
 # source activate py3k
 for l in 500 1000 2000 3000 4000 5000; do

@@ -11,7 +11,18 @@ if [ ! -f "genome_updater.sh" ]; then
     wget --quiet --show-progress https://raw.githubusercontent.com/pirovc/genome_updater/master/genome_updater.sh
     chmod +x genome_updater.sh
 fi
+
+# A function named combine_fasta with parameters $input_dir and $output_file
+combine_fasta () {
+    input_dir=$1
+    output_file=$2
+    # gunzip decompress all *.gz files under any subdirectory of $input_dir
+    gzip -dr $input_dir
+    cat $input_dir/*.fa > $output_file
+}
+
 ./genome_updater.sh -d "refseq,genbank" -l "complete genome" -f "genomic.fna.gz" -t 12 -o "sequence/pre20_archaea" -T '2157' -E 20191230 -R 10 
+
 ./genome_updater.sh -d "refseq,genbank" -l "complete genome" -f "genomic.fna.gz" -t 12 -o "sequence/post20_archaea" -T '2157' -D 20200101 -R 10 
 ./genome_updater.sh -d "refseq" -l "complete genome" -f "genomic.fna.gz" -t 12 -o "sequence/pre20_bacteria" -T '2' -E 20191230 -R 10 
 ./genome_updater.sh -d "refseq" -l "complete genome" -f "genomic.fna.gz" -t 12 -o "sequence/post20_bacteria" -T '2' -D 20200101 -R 10 
@@ -27,6 +38,9 @@ cd $vhdb_dir
 wget -q --show-progress https://www.genome.jp/ftp/db/virushostdb/virushostdb.formatted.genomic.fna.gz
 wget -q --show-progress https://www.genome.jp/ftp/db/virushostdb/virushostdb.tsv
 gzip -d virushostdb.formatted.genomic.fna.gz
+
+cd $working_dir
+ln -sf $vhdb_dir vhdb
 
 ############################################################################################################
 # Download PLSDB
