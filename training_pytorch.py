@@ -87,8 +87,8 @@ val_weight = torch.from_numpy(val_weight).float().to(device)
 weight = torch.tensor(weight, dtype=torch.float).to(device)
 print(f'Class weight: {weight}')
 
-# model = DeepMicroClass()
-model = DMFTransformer()
+model = DeepMicroClass()
+# model = DMFTransformer()
 # model = DMCLSTM()
 
 # model = torch.compile(model)
