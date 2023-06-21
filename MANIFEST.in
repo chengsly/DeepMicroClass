@@ -1,7 +1,6 @@
 include setup.cfg
 include setup.py
 include pyproject.toml
-graft src
-graft tests
-graft utils
-graft model
+graft srcs
+global-exclude */__pycache__/*
+global-exclude *.py[co]
