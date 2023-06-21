@@ -8,6 +8,8 @@ wandb/
 deepmicroclass/
 *_sweep
 Virome/
+viral_analysis/
+*.bak
 
 .DS_Store
 

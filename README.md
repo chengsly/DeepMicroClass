@@ -1,45 +1,61 @@
-### Installation
+# DeepMicroClass
 
-dependencies: install using anaconda, using the tentative name, "DeepMicrobeFinder".
+This is the repository for DeepMicroClass, a deep learning based method that classifies metagenomic contigs into five sequence classes, e.g., viruses infecting prokaryotic or eukaryotic hosts, eukaryotic or prokaryotic chromosomes.
+
+The paper corresponding to this repository is available at [bioRxiv](https://www.biorxiv.org/content/10.1101/2021.10.26.466018v1).
+
+Please direct any questions to [Dr. Fengzhu Sun](mailto:fsun@usc.edu).
+
+## Installation
+
+The software package can be installed using the following command:
 
 ```sh
-conda env create -f DeepMicroClass.yml
+pip install DeepMicroClass
 ```
 
-### Running Prediction
+Consider using `virtualenv` or `conda` to create a virtual environment for clean environment.
 
-Several command line options are available for prediction:
+## Usage
 
-* `-i`: input fasta file for prediction
-* `-e`: encoding mode, currently support "one-hot"
-* `-d`: directory for models, currently use "models/one-hot-models"
-* `-m`: prediction mode, "hybrid" or "single"
-* `-l`: (optional), if choosing single mode, specify a length for model to use
+### Prediction
 
-A set of pretrained model with different lengths locate in the folder `model`.
+``` text
+usage: DeepMicroClass predict [-h] --input INPUT --output_dir OUTPUT_DIR [--model MODEL] [--encoding {onehot,embedding}] [--mode {hybrid,single}] [--single-len SINGLE_LEN] [--device {cpu,cuda}]
 
-Example usage:
+options:
+  -h, --help            show this help message and exit
+  --input INPUT, -i INPUT
+                        Path to the input fasta file
+  --output_dir OUTPUT_DIR, -o OUTPUT_DIR
+                        Path to the output directory
+  --model MODEL, -m MODEL
+                        Path to the trained model
+  --encoding {onehot,embedding}, -e {onehot,embedding}
+                        Encoding method
+  --mode {hybrid,single}, -md {hybrid,single}
+                        Prediction mode
+  --single-len SINGLE_LEN, -sl SINGLE_LEN
+                        Length to use in the single mode
+  --device {cpu,cuda}, -d {cpu,cuda}
+                        Device to use
+```
+
+The most straight forward way to run the prediction is to use the following command:
 
 ```sh
-python predict_pytorch.py -i test.fasta -e one-hot -d models/one-hot-models/ -m single -l 500 
-python predict_pytorch.py -i test.fasta -e one-hot -d models/one-hot-models/ -m single -l 1000
-python predict_pytorch.py -i test.fasta -e one-hot -d models/one-hot-models/ -m single -l 2000
-python predict_pytorch.py -i test.fasta -e one-hot -d models/one-hot-models/ -m single -l 3000
-python predict_pytorch.py -i test.fasta -e one-hot -d models/one-hot-models/ -m single -l 5000
-python predict_pytorch.py -i test.fasta -e one-hot -d models/one-hot-models/ -m single
-python predict_pytorch.py -i test.fasta -e one-hot -d models/one-hot-models/ -m hybrid
+DeepMicroClass predict -i <input_fasta> -o <output_dir>
 ```
 
 ### Prediction File Format
 
 Each row of the output prediction file contains the scores from the neural network for class label assignment. The higher the score, the more likely the class label for a given sequence.  
-
-* Sequence Name: the name of the sequence in the input fasta file
-* Eukaryote: the score the neural network model assigns to this sequence being Eukaryote.
-* EukaryoteVirus: the score for this sequence being EukaryoteVirus
-* Plasmid: the score for this sequence being Plasmid
-* Prokaryote: the score for this sequence being prokaryote
-* ProkaryoteVirus: the score for this sequence being ProkaryoteVirus  
+- Sequence Name: the name of the sequence in the input fasta file 
+- Eukaryote: the score the neural network model assigns to this sequence being Eukaryote. 
+- EukaryoteVirus: the score for this sequence being EukaryoteVirus 
+- Plasmid: the score for this sequence being Plasmid 
+- Prokaryote: the score for this sequence being prokaryote
+- ProkaryoteVirus: the score for this sequence being ProkaryoteVirus  
 
 As an example:
 
