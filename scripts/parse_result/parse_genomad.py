@@ -64,10 +64,14 @@ for f in results_fn:
     result_binary[result==2] = 1
     prokvirus_summary_df = pd.concat([prokvirus_summary_df, pd.DataFrame([['_'.join(nums), f1_score(target_binary, result_binary), (target_binary==result_binary).sum()/len(target_binary)]], columns=['filename', 'f1_score', 'accuracy'])])
 
-    # genomad_target = np.zeros(len(target)) + 3
-    # genomad_target[target==2] = 1
-    # genomad_target[target==4] = 2
-    # genomad_target[target==3] = 0
+    prok_idx = np.logical_and(target!=0, target!=1)
+    genomad_target = np.zeros(len(target))
+    genomad_target[target==2] = 1
+    genomad_target[target==4] = 2
+    genomad_target[target==3] = 0
+    genomad_target = genomad_target[prok_idx]
+    multi_result = result[prok_idx]
+    multiclass_summary_df = pd.concat([multiclass_summary_df, pd.DataFrame([['_'.join(nums), f1_score(genomad_target, multi_result, average='weighted'), (genomad_target==multi_result).sum()/len(genomad_target)]], columns=['filename', 'f1_score', 'accuracy'])])
 
 
 
@@ -91,6 +95,8 @@ for f in results_fn:
 # prokvirus_summary_df.to_csv('perf_summary/genomad_vir.csv', index=False)
 
 misclassified = pd.DataFrame(mistakes, columns=['Prok->Plas', 'ProkVir->Plas', 'Euk->Plas', 'EukVir->Plas', 'Plas->NonPlas']) # For plasmid
-misclassified.to_csv('perf_summary/misclassified_genomad_plasmid.csv', index=False)
+# misclassified.to_csv('perf_summary/misclassified_genomad_plasmid.csv', index=False)
 # misclassified = pd.DataFrame(mistakes, columns=['Prok->ProkVir', 'Euk->ProkVir', 'EukVir->ProkVir', 'Plas->ProkVir', 'ProkVir->NonProkVir']) # For prokaryotic virus
 # misclassified.to_csv('perf_summary/misclassified_genomad_prokvir.csv', index=False)
+
+multiclass_summary_df.to_csv('perf_summary/genomad_multiclass.csv', index=False)

@@ -50,12 +50,13 @@ DeepMicroClass predict -i <input_fasta> -o <output_dir>
 ### Prediction File Format
 
 Each row of the output prediction file contains the scores from the neural network for class label assignment. The higher the score, the more likely the class label for a given sequence.  
-- Sequence Name: the name of the sequence in the input fasta file 
-- Eukaryote: the score the neural network model assigns to this sequence being Eukaryote. 
-- EukaryoteVirus: the score for this sequence being EukaryoteVirus 
-- Plasmid: the score for this sequence being Plasmid 
-- Prokaryote: the score for this sequence being prokaryote
-- ProkaryoteVirus: the score for this sequence being ProkaryoteVirus  
+
+* Sequence Name: the name of the sequence in the input fasta file
+* Eukaryote: the score the neural network model assigns to this sequence being Eukaryote.
+* EukaryoteVirus: the score for this sequence being EukaryoteVirus
+* Plasmid: the score for this sequence being Plasmid
+* Prokaryote: the score for this sequence being prokaryote
+* ProkaryoteVirus: the score for this sequence being ProkaryoteVirus  
 
 As an example:
 

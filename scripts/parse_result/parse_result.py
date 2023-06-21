@@ -5,9 +5,10 @@ import re
 from sklearn.metrics import f1_score, matthews_corrcoef, confusion_matrix, average_precision_score, balanced_accuracy_score
 from scipy.special import softmax
 
-# RESULT_DIR = 'DeepMicrobeFinder_results'
+RESULT_DIR = 'DeepMicrobeFinder_results'
 # RESULT_DIR = 'results_mu0_delta0.005'
-RESULT_DIR = 'results_2000'
+# RESULT_DIR = 'results_2000'
+# RESULT_DIR = 'data/new_pred'
 
 results_fn = os.listdir(RESULT_DIR)
 results_fn.sort()
@@ -52,6 +53,7 @@ for f in results_fn:
     # print(f[:-27])
     # if not f.endswith('_single_2000.txt'):
     if not f.endswith('_hybrid.txt'):
+    # if not f.endswith('_hybrid.tsv'):
         continue
     result = pd.read_table(os.path.join(RESULT_DIR, f))
     result = result.iloc[:, 1:].to_numpy()
