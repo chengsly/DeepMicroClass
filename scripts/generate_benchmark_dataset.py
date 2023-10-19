@@ -8,8 +8,7 @@ from random import sample
 
 PROK_PATH = "data/filtered_fasta/prokaryote.fa"
 EUK_PATH = "data/filtered_fasta/euk_MMETSP.fa"
-# PLASMID_PATH = "data/filtered_fasta/plasmid.fa"
-PLASMID_PATH = "data/plasmid/post20_plasmid.fa"
+PLASMID_PATH = "data/filtered_fasta/plasmid.fa"
 PROKVIR_PATH = "data/filtered_fasta/prok_vir.fa"
 EUKVIR_PATH = "data/filtered_fasta/euk_vir.fa"
 
