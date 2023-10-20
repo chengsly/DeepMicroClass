@@ -31,7 +31,7 @@ combine_fasta "raw_sequence/post20_archaea" "raw_sequence/post20_archaea.fa"
 
 # Download bacteria from RefSeq and GenBank
 ./genome_updater.sh -d "genbank" -l "complete genome" -f "genomic.fna.gz" -t 8 -o "raw_sequence/pre20_bacteria" -T '2' -E 20191230 -R 10 
-./genome_updater.sh -d "genbank" -l "complete genome" -f "genomic.fna.gz" -t 8 -o "sequence/post20_bacteria" -T '2' -D 20200101 -R 10 
+./genome_updater.sh -d "genbank" -l "complete genome" -f "genomic.fna.gz" -t 8 -o "raw_sequence/post20_bacteria" -T '2' -D 20200101 -R 10 
 # Combine all bacteria genomes into one file
 combine_fasta "raw_sequence/pre20_bacteria" "raw_sequence/pre20_bacteria.fa"
 combine_fasta "raw_sequence/post20_bacteria" "raw_sequence/post20_bacteria.fa"
