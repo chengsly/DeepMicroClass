@@ -52,12 +52,19 @@ for i, row in metadata.iterrows():
 #     SeqIO.write(record, output_path, "fasta")
 
 # Separate viruses according to 2020/01/01 update date
-def get_update_date(refseq_id):
-    Entrez.email = "tianqit@usc.edu"
-    handle = Entrez.esummary(db="nucleotide", id=refseq_id)
-    record = Entrez.read(handle)
-    handle.close()
-    print(f"{refseq_id}: {record[0]['UpdateDate']}", flush=True, end="\r")
+def get_update_date(refseq_id, retry=0):
+    try: 
+        Entrez.email = "tianqit@usc.edu"
+        handle = Entrez.esummary(db="nucleotide", id=refseq_id)
+        record = Entrez.read(handle)
+        handle.close()
+        print(f"{refseq_id}: {record[0]['UpdateDate']}", flush=True, end="\r")
+    except RuntimeError as e:
+        if retry < 5:
+            print(f"retrying {refseq_id} {retry}", flush=True, end="\r")
+            return get_update_date(refseq_id, retry+1)
+        else:
+            raise e
     return record[0]["UpdateDate"]
 
 prok_pre20 = []
