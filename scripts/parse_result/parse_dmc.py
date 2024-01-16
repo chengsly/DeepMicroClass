@@ -5,12 +5,14 @@ import re
 from sklearn.metrics import f1_score, matthews_corrcoef, confusion_matrix, average_precision_score, balanced_accuracy_score
 from scipy.special import softmax
 
-RESULT_DIR = 'DeepMicrobeFinder_results'
+# RESULT_DIR = 'DeepMicrobeFinder_results'
 # RESULT_DIR = 'results_mu0_delta0.005'
 # RESULT_DIR = 'results_2000'
+RESULT_DIR = 'dmc_pred'
 
 results_fn = os.listdir(RESULT_DIR)
 results_fn.sort()
+print(results_fn)
 
 def construct_target(nums):
     order = [[3], [4], [2], [0], [1]]
@@ -49,7 +51,7 @@ f1s = []
 for f in results_fn:
     # print(f[:-27])
     # if not f.endswith('_single_2000.txt'):
-    if not f.endswith('_hybrid.txt'):
+    if not f.endswith('_hybrid.tsv'):
         continue
     result = pd.read_table(os.path.join(RESULT_DIR, f))
     result = result.iloc[:, 1:].to_numpy()
@@ -77,19 +79,18 @@ for f in results_fn:
 
     summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums_str), 'multiclass', f1_score(target, result, average='weighted'), (target==result).sum()/len(result)]], columns=['filename', 'category', 'f1_score', 'accuracy'])])
 
-    result_prok = result[np.logical_or.reduce((target==2, target==3, target==4))]
-    target_prok = target[np.logical_or.reduce((target==2, target==3, target==4))]
-    summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums_str), 'prok_groups', f1_score(target_prok, result_prok, average='weighted'), (target_prok==result_prok).sum()/len(result_prok)]], columns=['filename', 'category', 'f1_score', 'accuracy'])])
+    # result_prok = result[np.logical_or.reduce((target==2, target==3, target==4))]
+    # target_prok = target[np.logical_or.reduce((target==2, target==3, target==4))]
+    # summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums_str), 'prok_groups', f1_score(target_prok, result_prok, average='weighted'), (target_prok==result_prok).sum()/len(result_prok)]], columns=['filename', 'category', 'f1_score', 'accuracy'])])
 
-    # result = construct_vir_array(result)
-    # result = result.argmax(axis=1)
+    result = construct_vir_array(result)
+    result = result.argmax(axis=1)
 
-    # target = construct_vir_array(target)
-    # target = target.argmax(axis=1)
+    target = construct_vir_array(target)
+    target = target.argmax(axis=1)
 
-    # summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums_str), 'virus', f1_score(target, result), (result==target).sum()/len(result)]], columns=['filename', 'category', 'f1_score', 'accuracy'])])
-
-
+    summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums_str), 'virus', f1_score(target, result), (result==target).sum()/len(result)]], columns=['filename', 'category', 'f1_score', 'accuracy'])])
+    print(f1)
     # print(f1[0], f1[1], f1[2], f1[3], f1[4])
     # print(f'{f1}\t{1-idx.sum()/len(idx)}')
     # print(f'{1-idx.sum()/len(idx)}')
@@ -109,11 +110,11 @@ for f in results_fn:
 # print(', '.join([str(i) for i in accs]))
 # print(', '.join([str(i) for i in f1s]))
 
-# summary_df.to_csv(f'perf_summary/dmf.csv', index=False)
+summary_df.to_csv(f'perf_summary/dmc.csv', index=False)
 
-label = ['Euk', 'EukVir', 'Plasmid', 'Prok', 'ProkVir']
-from itertools import product
-label = [f'{label[i]}->{label[j]}' for i in range(5) for j in range(5) if i!=j]
+# label = ['Euk', 'EukVir', 'Plasmid', 'Prok', 'ProkVir']
+# from itertools import product
+# label = [f'{label[i]}->{label[j]}' for i in range(5) for j in range(5) if i!=j]
 
-misclass_df = pd.DataFrame(mistakes, columns=label)
-misclass_df.to_csv(f'perf_summary/misclassified_dmc.csv', index=False)
+# misclass_df = pd.DataFrame(mistakes, columns=label)
+# misclass_df.to_csv(f'perf_summary/misclassified_dmc.csv', index=False)

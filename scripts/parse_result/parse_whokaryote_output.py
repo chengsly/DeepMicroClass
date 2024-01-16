@@ -73,8 +73,8 @@ for f in results_fn:
 
     # print(acc, end=', ')
     # print(f1, end=', ')
-    # summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums), f1, acc]], columns=['filename', 'f1_score', 'accuracy'])], axis=0)
-# summary_df.to_csv('perf_summary/whokaryote.csv', index=False)
+    summary_df = pd.concat([summary_df, pd.DataFrame([['_'.join(nums), f1, acc]], columns=['filename', 'f1_score', 'accuracy'])], axis=0)
+summary_df.to_csv('perf_summary/whokaryote.csv', index=False)
 
 misclassified = pd.DataFrame(mistakes, columns=['Prok->Euk', 'ProkVir->Euk', 'Euk->Non-Euk', 'EukVir->Euk', 'Plas->Euk'])
 misclassified.to_csv('perf_summary/misclassified_whokaryote.csv', index=False)

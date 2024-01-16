@@ -108,10 +108,10 @@ for f in results_fn:
     # misclassified = pd.concat([misclassified, pd.DataFrame([mistake], columns=['Prok->Plas', 'ProkVir->Plas', 'Euk->Plas', 'EukVir->Plas', 'Plas->NonPlas'])], ignore_index=True)
 # misclassified = pd.DataFrame(mistakes, columns=['Prok->Plas', 'ProkVir->Plas', 'Euk->Plas', 'EukVir->Plas', 'Plas->NonPlas']) # For plasmid
 misclassified = pd.DataFrame(mistakes, columns=['Prok->ProkVir', 'Euk->ProkVir', 'EukVir->ProkVir', 'Plas->ProkVir', 'ProkVir->NonProkVir']) # For prokaryotic virus
-# misclassified.to_csv('perf_summary/misclassified_ppr_prokvir.csv', index=False)
+misclassified.to_csv('perf_summary/misclassified_ppr_prokvir.csv', index=False)
 
 # print(', '.join([str(i) for i in accs]))
 # print(', '.join([str(i) for i in f1s]))
-# plasmid_summary_df.to_csv('perf_summary/ppr_plasmid.csv', index=False)
-# prokvirus_summary_df.to_csv('perf_summary/ppr_vir.csv', index=False)
-multiclass_summary_df.to_csv('perf_summary/ppr_multiclass_230617.csv', index=False)
+plasmid_summary_df.to_csv('perf_summary/ppr_plasmid.csv', index=False)
+prokvirus_summary_df.to_csv('perf_summary/ppr_vir.csv', index=False)
+multiclass_summary_df.to_csv('perf_summary/ppr_multiclass.csv', index=False)

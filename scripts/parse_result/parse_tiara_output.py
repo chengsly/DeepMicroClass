@@ -111,7 +111,7 @@ for f in results_fn:
 # from scipy.stats import mannwhitneyu
 # mannwhitneyu(a, b)
 
-# summary_df.to_csv('perf_summary/tiara.csv', index=False)
+summary_df.to_csv('perf_summary/tiara.csv', index=False)
 
 misclassified = pd.DataFrame(mistakes, columns=['Prok->Euk', 'ProkVir->Euk', 'Euk->Non-Euk', 'EukVir->Euk', 'Plas->Euk'])
 misclassified.to_csv('perf_summary/misclassified_tiara.csv', index=False)

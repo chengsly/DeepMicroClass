@@ -4,7 +4,7 @@ import os
 import re
 from sklearn.metrics import f1_score
 
-RESULT_DIR = 'data/result_others_10000/result_genomad'
+RESULT_DIR = 'data/result_others/result_genomad'
 
 results_fn = os.listdir(RESULT_DIR)
 results_fn = [f for f in results_fn if f.endswith('aggregated_classification')]
@@ -91,8 +91,8 @@ for f in results_fn:
 # print(', '.join([str(i) for i in f1s]))
 # summary_df.to_csv('perf_summary/plasflow.csv', index=False)
 
-# plasmid_summary_df.to_csv('perf_summary/genomad_plasmid.csv', index=False)
-# prokvirus_summary_df.to_csv('perf_summary/genomad_vir.csv', index=False)
+plasmid_summary_df.to_csv('perf_summary/genomad_plasmid.csv', index=False)
+prokvirus_summary_df.to_csv('perf_summary/genomad_vir.csv', index=False)
 
 misclassified = pd.DataFrame(mistakes, columns=['Prok->Plas', 'ProkVir->Plas', 'Euk->Plas', 'EukVir->Plas', 'Plas->NonPlas']) # For plasmid
 # misclassified.to_csv('perf_summary/misclassified_genomad_plasmid.csv', index=False)

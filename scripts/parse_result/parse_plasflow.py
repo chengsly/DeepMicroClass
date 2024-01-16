@@ -79,7 +79,7 @@ for f in results_fn:
     # f1s.append(f1)
 # print(', '.join([str(i) for i in accs]))
 # print(', '.join([str(i) for i in f1s]))
-# summary_df.to_csv('perf_summary/plasflow.csv', index=False)
+summary_df.to_csv('perf_summary/plasflow.csv', index=False)
 
 misclass_df = pd.DataFrame(mistakes, columns=['Prok->Plas', 'ProkVir->Plas', 'Euk->Plas', 'EukVir->Plas', 'Plas->Non-Plas'])
 misclass_df.to_csv('perf_summary/misclassified_plasflow.csv', index=False)
