@@ -15,6 +15,7 @@ from . import utils
 from pathlib import Path
 import pkgutil
 import pandas as pd
+import logging
 
 
 def predict(input_path, model_path, output_dir, encoding="one-hot", mode="hybrid", device="cuda"):
@@ -22,13 +23,17 @@ def predict(input_path, model_path, output_dir, encoding="one-hot", mode="hybrid
 
     print("Step 1/3: Loading models from {}".format(model_path))
 
-    model = LightningDMC.load_from_checkpoint(model_path, model=DeepMicroClass())
+    model = LightningDMC.load_from_checkpoint(model_path, model=DeepMicroClass(), map_location=device)
     model.to(device)
     model.eval()
 
-    model_cpu = LightningDMC.load_from_checkpoint(model_path, model=DeepMicroClass())
+    model_cpu = LightningDMC.load_from_checkpoint(model_path, model=DeepMicroClass(), map_location='cpu')
     model_cpu.to("cpu")
     model_cpu.eval()
+
+    if not os.path.exists(output_dir):
+        logging.info("Creating output directory {}".format(output_dir))
+        os.makedirs(output_dir)
 
     print("Step 2/3: Loading input sequences from {}".format(input_path))
 
@@ -58,7 +63,7 @@ def predict(input_path, model_path, output_dir, encoding="one-hot", mode="hybrid
                 continue
 
             if mode == "hybrid":
-                score = predict_hybrid(seq, model, model_cpu, encoding, prediction_scores)
+                score = predict_hybrid(seq, model, model_cpu, encoding, prediction_scores, device=device)
                 prediction_scores.append([record.id] + score.tolist())
             elif mode == "single":
                 pass
