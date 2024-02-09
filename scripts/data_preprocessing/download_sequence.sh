@@ -43,6 +43,9 @@ combine_fasta "raw_sequence/post20_bacteria" "raw_sequence/post20_bacteria.fa"
 combine_fasta "raw_sequence/pre20_eukaryote" "raw_sequence/pre20_eukaryote.fa"
 combine_fasta "raw_sequence/post20_eukaryote" "raw_sequence/post20_eukaryote.fa"
 
+# Download virus genomes from genbank
+# ./genome_updater.sh -d "genbank" -g "viral" -f "genomic.fna.gz" -t 8
+
 
 ############################################################################################################
 # Download virus-host db
