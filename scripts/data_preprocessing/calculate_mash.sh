@@ -36,13 +36,22 @@ if [ ! $no_sketch ]; then
     mash sketch -o $sketch_dir/pre20_bacteria -p $threads -i $working_dir/clean_pre20/pre20_bacteria.fa
     mash sketch -o $sketch_dir/post20_bacteria -p $threads -i $working_dir/clean_post20/post20_bacteria.fa
 
-    mash sketch -o $sketch_dir/pre20_eukaryote -p $threads -i $working_dir/clean_pre20/pre20_euk.fa
-    mash sketch -o $sketch_dir/post20_eukaryote -p $threads -i $working_dir/clean_post20/post20_euk.fa
+    mash sketch -o $sketch_dir/pre20_eukaryote -p $threads -i $working_dir/clean_pre20/pre20_eukaryote.fa
+    mash sketch -o $sketch_dir/post20_eukaryote -p $threads -i $working_dir/clean_post20/post20_eukaryote.fa
 
-    mash sketch -o $sketch_dir/euk_vir -p $threads -i $working_dir/vhdb_euk_vir.fa
+    mash sketch -o $sketch_dir/pre20_plasmid -p $threads -i $working_dir/plasmid/pre20_plasmid.fa
+    mash sketch -o $sketch_dir/post20_plasmid -p $threads -i $working_dir/plasmid/post20_plasmid.fa
+
+    mash sketch -o $sketch_dir/pre20_prokvir -p $threads -i $working_dir/vhdb/prokvir_pre20.fa
+    mash sketch -o $sketch_dir/post20_prokvir -p $threads -i $working_dir/vhdb/prokvir_post20.fa
+    mash sketch -o $sketch_dir/pre20_eukvir -p $threads -i $working_dir/vhdb/eukvir_pre20.fa
+    mash sketch -o $sketch_dir/post20_eukvir -p $threads -i $working_dir/vhdb/eukvir_post20.fa
 
 fi
 
 mash dist -p $threads $sketch_dir/pre20_archaea.msh $sketch_dir/post20_archaea.msh -t > $dist_dir/archaea.tsv
 mash dist -p $threads $sketch_dir/pre20_bacteria.msh $sketch_dir/post20_bacteria.msh -t > $dist_dir/bacteria.tsv
 mash dist -p $threads $sketch_dir/pre20_eukaryote.msh $sketch_dir/post20_eukaryote.msh -t > $dist_dir/eukaryote.tsv
+mash dist -p $threads $sketch_dir/pre20_plasmid.msh $sketch_dir/post20_plasmid.msh -t > $dist_dir/plasmid.tsv
+mash dist -p $threads $sketch_dir/pre20_prokvir.msh $sketch_dir/post20_prokvir.msh -t > $dist_dir/prokvir.tsv
+mash dist -p $threads $sketch_dir/pre20_eukvir.msh $sketch_dir/post20_eukvir.msh -t > $dist_dir/eukvir.tsv
