@@ -10,6 +10,8 @@ deepmicroclass/
 Virome/
 viral_analysis/
 *.bak
+*.pdf
+*.svg
 
 .DS_Store
 

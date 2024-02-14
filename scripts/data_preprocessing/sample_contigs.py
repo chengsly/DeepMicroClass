@@ -6,8 +6,8 @@ from ete3 import NCBITaxa
 import numpy as np
 from tqdm import tqdm
 
-INPUT_DIR = 'data/sampled_sequence'
-OUTPUT_DIR = 'data/sampled_sequence_subsampled_2000'
+INPUT_DIR = 'data/sampled_sequence/whole'
+OUTPUT_DIR = 'data/sampled_sequence/10000'
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 parser = argparse.ArgumentParser()

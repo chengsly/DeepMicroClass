@@ -11,6 +11,9 @@ parser.add_argument("--gzip", "-z", dest="use_gzip")
 
 args = parser.parse_args()
 
+# Check if input is same as output
+assert args.input_dir != args.output_dir, "Input and output directory cannot be the same"
+
 os.makedirs(args.output_dir, exist_ok=True)
 
 input_list = [fn for fn in os.listdir(args.input_dir) if fn.endswith(("gz", "fasta", "fna", "fa"))]

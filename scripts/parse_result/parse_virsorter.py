@@ -66,7 +66,7 @@ for f in results_fn:
     # print(acc, end=', ')
     # print(f1, end=', ')
 
-# summary_df.to_csv('perf_summary/virsorter2.csv', index=False)
+summary_df.to_csv('perf_summary/virsorter2.csv', index=False)
 
 misclass_df = pd.DataFrame(mistakes, columns=['Prok->Vir', 'Euk->Vir', 'Plas->Vir', 'ProkVir->NonVir', 'EukVir->NonVir'])
 misclass_df.to_csv('perf_summary/misclassified_virsorter2.csv', index=False)

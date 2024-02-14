@@ -74,7 +74,7 @@ for f in results_fn:
     f1s.append(f1)
 # print(', '.join([str(i) for i in accs]))
 # print(', '.join([str(i) for i in f1s]))
-# summary_df.to_csv('perf_summary/dvf.csv', index=False)
+summary_df.to_csv('perf_summary/dvf.csv', index=False)
 
 misclassified = pd.DataFrame(mistakes, columns=['Prok->ProkVir', 'Euk->ProkVir', 'EukVir->ProkVir', 'Plas->ProkVir', 'ProkVir->NonProkVir'])
 misclassified.to_csv('perf_summary/misclassified_dvf.csv', index=False)

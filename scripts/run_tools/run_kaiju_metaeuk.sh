@@ -122,10 +122,10 @@ echo "The input assembly is: $input_assembly"
 echo "The output directory is: $output_dir"
 mkdir -p $output_dir
 
-# run MetaEuk
-MetaEuk_RESULTS=${output_dir}/MetaEuk
-mkdir -p ${MetaEuk_RESULTS}
-metaeuk_classify $input_assembly $MetaEuk_RESULTS "MetaEuk_" 20
+# # run MetaEuk
+# MetaEuk_RESULTS=${output_dir}/MetaEuk
+# mkdir -p ${MetaEuk_RESULTS}
+# metaeuk_classify $input_assembly $MetaEuk_RESULTS "MetaEuk_" 20
 
 # run kaiju # 
 KAIJU_RESULTS=${output_dir}/kaiju
