@@ -7,14 +7,106 @@ The paper corresponding to this repository is available at [bioRxiv](https://www
 Please direct any questions to [Dr. Fengzhu Sun](mailto:fsun@usc.edu).
 
 ## Installation
+Consider using `virtualenv` or `conda` to create a virtual environment for clean environment. The following workflow works on our tested server with GPU Nvidia Quadro RTX 6000 and CUDA version 11.6. Since DeepMicroClass is using Pytorch, it is possible that the our Pytorch version is not compiled with the version of your CUDA drive. Therefore we suggest you to install Pytorch compiled with your own device.
 
-The software package can be installed using the following command:
+You can find the Pytorch that has been compiled with your version of the CUDA driver from [Previous PyTorch Versions | PyTorch](https://pytorch.org/get-started/previous-versions/). Most Pytorch versions are available only for specific CUDA versions. For example pytorch=1.0.1 is not available for CUDA=9.2
 
+Or, you can update your CUDA driver. To check the CUDA version on your server, you can run:
+```sh
+nvidia-smi
+```
+
+### To use GPU (CPU is also optional)
+
+Create a new environment:
+```sh
+conda create -n DeepMicroClass_python=3.10 python=3.10
+conda activate DeepMicroClass_python=3.10
+```
+
+Check if `pip` is under the new environment:
+```sh
+which pip
+```
+Your `pip` should be under the new environment:
+```text
+/home/xiatian/anaconda3/envs/DeepMicroClass_python=3.10/bin/pip
+```
+If not, install `pip` under the new environment:
+```sh
+conda install pip
+```
+Then check it again.
+
+
+After that, install DeepMicroClass by running:
 ```sh
 pip install DeepMicroClass
 ```
 
-Consider using `virtualenv` or `conda` to create a virtual environment for clean environment.
+
+Then, install Pytorch packages suitable for CUDA=11.6 and python=3.10.13. 
+```sh
+conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cuda=11.6 -c pytorch -c nvidia
+```
+These versions are compatible with some python versions like 3.10.13 and 3.9.18. If you were going to  install Pytorch packages suitable for your CUDA, you may need to try other versions of python in the first step.
+
+If you encountered errors like:
+```text
+LibMambaUnsatisfiableError: Encountered problems while solving:
+  - package torchvision-0.14.1-py310_cpu requires python >=3.10,<3.11.0a0, but none of the providers can be installed
+  - package torchaudio-0.13.1-py310_cpu requires python >=3.10,<3.11.0a0, but none of the providers can be installed
+
+Could not solve for environment specs
+The following packages are incompatible
+...
+```
+You may need to try other versions of python.
+
+### To use CPU ONLY
+CPU mode works for python=3.9-3.12. The workflow is likely the same.
+```sh
+conda create -n DeepMicroClass_python=3.10 python=3.10
+conda activate DeepMicroClass_python=3.10
+```
+
+
+Check if `pip` is under the new environment:
+```sh
+which pip
+```
+Your `pip` should be under the new environment:
+```text
+/home/xiatian/anaconda3/envs/DeepMicroClass_python=3.10/bin/pip
+```
+If not, install `pip` under the new environment:
+```sh
+conda install pip
+```
+Then check it again.
+
+
+After that, install DeepMicroClass by:
+```sh
+pip install DeepMicroClass
+```
+
+Install module `requests`:
+```sh
+pip install requests
+```
+
+### Testing
+To test DeepMicroClass, You can simply run:
+```sh
+DeepMicroClass test
+```
+It will use `test.fa` as input, use all default settings to output a test result in the current working directory. 
+
+To find the expected output, You can run:
+```sh
+DeepMicroClass -h
+```
 
 ## Usage
 
