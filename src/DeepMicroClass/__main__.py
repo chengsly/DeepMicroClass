@@ -2,6 +2,8 @@ import argparse
 from .predict import predict
 from importlib.resources import files
 import requests
+import os
+
 
 
 def download_file(url, destination):
@@ -15,27 +17,53 @@ def download_file(url, destination):
     
 
 def predict_wrapper(input, model, output_dir, encoding="one-hot", mode="hybrid", single_len=1000, device="cuda"):
+    deep_micro_class_dir = os.path.dirname(os.path.abspath(__file__))
+    if not input:
+        test_fasta = os.path.join(deep_micro_class_dir, "demo", "test.fa")
+        input = test_fasta
+
+    if not output_dir:
+        output_dir = "./"
+
     if not model:
-        url = "https://github.com/chengsly/DeepMicroClass/raw/master/src/DeepMicroClass/model.ckpt"
-        local_checkpoint_file = "model.ckpt"
+        # url = "https://github.com/chengsly/DeepMicroClass/raw/master/src/DeepMicroClass/model.ckpt"
+        # local_checkpoint_file = "model.ckpt"
+        #
+        # # Download the file
+        # print(f"Downloading model from {url}")
+        # download_file(url, local_checkpoint_file)
 
-        # Download the file
-        print(f"Downloading model from {url}")
-        download_file(url, local_checkpoint_file)
-
-        model_path = local_checkpoint_file
+        # model_path = local_checkpoint_file
+        default_model = os.path.join(deep_micro_class_dir, "model.ckpt")
+        model_path = default_model
     else:
         model_path = model
+
 
     predict(input, model_path, output_dir, encoding, mode, device)
 
 
 def main():
+    deep_micro_class_dir = os.path.dirname(os.path.abspath(__file__))
     parser = argparse.ArgumentParser(
         prog="DeepMicroClass",
         description="DeepMicroClass: A deep learning framework for classifying metagenomic sequences",
     )
     subparsers = parser.add_subparsers()
+
+    parser_test = subparsers.add_parser("test", help=
+    "Test the prediction function. It will use default settings to test DeepMicroClass. And output the test result in the current working directory.\nThe expected result is in {}".format(os.path.join(deep_micro_class_dir, "demo", "test.fa_pred_one-hot_hybrid.tsv"))
+                                        )
+    parser_test.add_argument(
+        "--input", "-i", dest="input", help="Path to the input fasta file. It will use our test file by default."
+    )
+    parser_test.add_argument(
+        "--output_dir", "-o", dest="output_dir", help="Path to the output directory. It will use the current directory by default."
+    )
+    parser_test.add_argument(
+        "--model", "-m", dest="model", help="Path to the trained model. It will use the our model by default."
+    )
+    parser_test.set_defaults(func=predict_wrapper)
 
     parser_train = subparsers.add_parser("train", help="Train the model")
     parser_train.add_argument("--input", "-i", dest="input", help="Path to the input fasta file")

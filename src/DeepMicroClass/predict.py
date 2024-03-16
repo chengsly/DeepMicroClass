@@ -19,7 +19,12 @@ import logging
 
 
 def predict(input_path, model_path, output_dir, encoding="one-hot", mode="hybrid", device="cuda"):
-    device = torch.device(device if torch.cuda.is_available() else "cpu")
+    if torch.cuda.is_available():
+        device = torch.device(device)
+        print(f"Run DeepMicroClass with {device}.")
+    elif not torch.cuda.is_available():
+        print("GPU is not available on your device. Run DeepMicroClass with CPU.")
+        device = torch.device("cpu")
 
     print("Step 1/3: Loading models from {}".format(model_path))
 
