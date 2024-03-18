@@ -15,6 +15,11 @@ Or, you can update your CUDA driver. To query the CUDA version that matches your
 ```sh
 nvidia-smi
 ```
+To check the CUDA version in your environment variables, which is the CUDA version you are probably using, just run:
+```sh
+nvcc -V
+```
+
 
 ### To use GPU (CPU is also optional)
 
