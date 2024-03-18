@@ -7,7 +7,7 @@ The paper corresponding to this repository is available at [bioRxiv](https://www
 Please direct any questions to [Dr. Fengzhu Sun](mailto:fsun@usc.edu).
 
 ## Installation
-Consider using `virtualenv` or `conda` to create a virtual environment for clean environment. The following workflow works on our tested server with GPU Nvidia Quadro RTX 6000 and CUDA version 11.8. Since DeepMicroClass is using Pytorch, it is possible that our Pytorch version is not compiled with the version of your CUDA drive. Therefore, we suggest you install Pytorch compiled with your own device.
+Consider using `virtualenv` or `conda` to create a virtual environment for clean environment. The following workflow works on our tested server with GPU Nvidia Quadro RTX 6000 and CUDA version 10.1. Since DeepMicroClass is using Pytorch, it is possible that our Pytorch version is not compiled with the version of your CUDA drive. Therefore, we suggest you install Pytorch compiled with your own device.
 
 You can find the Pytorch that has been compiled with your version of the CUDA driver from [Previous PyTorch Versions | PyTorch](https://pytorch.org/get-started/previous-versions/). Most Pytorch versions are available only for specific CUDA versions. For example, pytorch=1.0.1 is not available for CUDA=9.2
 
