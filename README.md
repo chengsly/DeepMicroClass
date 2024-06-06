@@ -2,9 +2,8 @@
 
 This is the repository for DeepMicroClass, a deep learning based method that classifies metagenomic contigs into five sequence classes, e.g., viruses infecting prokaryotic or eukaryotic hosts, eukaryotic or prokaryotic chromosomes.
 
-The paper corresponding to this repository is available at [bioRxiv](https://www.biorxiv.org/content/10.1101/2021.10.26.466018v2). 
-The version used in the manuscript can be found at [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10989619.svg)](https://doi.org/10.5281/zenodo.10989619).
-
+The paper corresponding to this repository has been published at _NAR Genomics and Bioinformatics_. The exact code version used in the paper can be found at [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10989619.svg)](https://doi.org/10.5281/zenodo.10989619). If you find DeepMicroClass useful, please consider to cite: 
+- Shengwei Hou, Tianqi Tang, Siliangyu Cheng, Yuanhao Liu, Tian Xia, Ting Chen, Jed A Fuhrman, Fengzhu Sun, DeepMicroClass sorts metagenomic contigs into prokaryotes, eukaryotes and viruses, NAR Genomics and Bioinformatics, Volume 6, Issue 2, June 2024, lqae044, https://doi.org/10.1093/nargab/lqae044
 
 Please direct any questions to [Dr. Fengzhu Sun](mailto:fsun@usc.edu).
 
@@ -165,3 +164,6 @@ NC_008199#3k#12001#15000        0.0001718740027172454   1.2298997305038642e-05  
 ```
 
 To assign a label to a given sequence, we find the maximum of all the assigned scores. In the above case, `ProkaryoteVirus` has the highest score, so the sequence is assigned as belonging to the class `ProkaryoteVirus`.
+
+
+
