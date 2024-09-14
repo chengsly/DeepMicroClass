@@ -166,4 +166,13 @@ NC_008199#3k#12001#15000        0.0001718740027172454   1.2298997305038642e-05  
 To assign a label to a given sequence, we find the maximum of all the assigned scores. In the above case, `ProkaryoteVirus` has the highest score, so the sequence is assigned as belonging to the class `ProkaryoteVirus`.
 
 
+### Sequence Extraction
+
+You can extract sequences from a given class of your interest with the following command
+
+```sh
+DeepMicroClass extract --tsv <output.tsv> --fasta <input.fa> --class <class of interest> --output <output.fa>
+```
+The naming of class of interest follows the header of the output.
+
 

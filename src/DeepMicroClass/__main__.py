@@ -3,6 +3,8 @@ from .predict import predict
 from importlib.resources import files
 import requests
 import os
+import pandas as pd
+from Bio import SeqIO
 
 
 
@@ -41,6 +43,40 @@ def predict_wrapper(input, model, output_dir, encoding="one-hot", mode="hybrid",
 
 
     predict(input, model_path, output_dir, encoding, mode, device)
+
+def extract_sequences_by_class(fasta_file, sequence_classes, desired_class, output_fasta):
+    with open(output_fasta, "w") as output_handle:
+        for record in SeqIO.parse(fasta_file, "fasta"):
+            sequence_name = record.id
+            if sequence_name in sequence_classes and sequence_classes[sequence_name] == desired_class:
+                SeqIO.write(record, output_handle, "fasta")
+
+def classify_sequences(tsv_file):
+    # Read the TSV file into a dataframe
+    df = pd.read_csv(tsv_file, sep="\t")
+    
+    # Columns corresponding to the classes
+    class_columns = ['Eukaryote', 'EukaryoteVirus', 'Plasmid', 'Prokaryote', 'ProkaryoteVirus']
+    
+    # Function to find the class with the highest score
+    def get_class(row):
+        class_scores = row[class_columns]
+        highest_class = class_scores.idxmax()  # Find the column with the maximum value
+        return highest_class
+
+    # Apply the function to get the class for each sequence
+    df['Class'] = df.apply(get_class, axis=1)
+    
+    # Return a dictionary mapping sequence names to their class
+    return dict(zip(df['Sequence Name'], df['Class']))
+
+def extract_wrapper(tsv_file, fasta_file, desired_class, output_fasta):
+    # First, classify sequences based on the TSV file
+    sequence_classes = classify_sequences(tsv_file)
+    
+    # Now extract sequences of the desired class from the FASTA file
+    extract_sequences_by_class(fasta_file, sequence_classes, desired_class, output_fasta)
+    print(f"Sequences of class {desired_class} have been extracted to {output_fasta}.")
 
 
 def main():
@@ -90,6 +126,16 @@ def main():
         "--device", "-d", dest="device", help="Device to use", choices=["cpu", "cuda"], default="cuda"
     )
     parser_predict.set_defaults(func=predict_wrapper)
+
+
+    # Extract subcommand
+    parser_extract = subparsers.add_parser("extract", help="Extract sequences of a particular class from a FASTA file")
+    parser_extract.add_argument("--tsv", "-t", dest="tsv_file", help="Path to the TSV classification file", required=True)
+    parser_extract.add_argument("--fasta", "-f", dest="fasta_file", help="Path to the input FASTA file", required=True)
+    parser_extract.add_argument("--class", "-c", dest="desired_class", help="Desired class to extract sequences for", required=True)
+    parser_extract.add_argument("--output", "-o", dest="output_fasta", help="Path to the output FASTA file", required=True)
+    parser_extract.set_defaults(func=extract_wrapper)
+
 
     args = parser.parse_args()
     # Convert args to a dictionary
