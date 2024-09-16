@@ -18,13 +18,16 @@ import pandas as pd
 import logging
 
 
-def predict(input_path, model_path, output_dir, encoding="one-hot", mode="hybrid", device="cuda"):
+def predict(input_path, model_path, output_dir, encoding="one-hot", mode="hybrid", device="cuda", cpu_thread=0):
     if torch.cuda.is_available():
         device = torch.device(device)
         print(f"Run DeepMicroClass with {device}.")
     elif not torch.cuda.is_available():
         print("GPU is not available on your device. Run DeepMicroClass with CPU.")
         device = torch.device("cpu")
+
+    if cpu_thread > 0:
+        torch.set_num_threads(cpu_thread)
 
     print("Step 1/3: Loading models from {}".format(model_path))
 

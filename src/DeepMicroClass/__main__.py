@@ -18,7 +18,7 @@ def download_file(url, destination):
         raise Exception(f"Failed to download file: status code {response.status_code}")
     
 
-def predict_wrapper(input, model, output_dir, encoding="one-hot", mode="hybrid", single_len=1000, device="cuda"):
+def predict_wrapper(input, model, output_dir, encoding="one-hot", mode="hybrid", single_len=1000, device="cuda", cpu_thread=0):
     deep_micro_class_dir = os.path.dirname(os.path.abspath(__file__))
     if not input:
         test_fasta = os.path.join(deep_micro_class_dir, "demo", "test.fa")
@@ -42,7 +42,7 @@ def predict_wrapper(input, model, output_dir, encoding="one-hot", mode="hybrid",
         model_path = model
 
 
-    predict(input, model_path, output_dir, encoding, mode, device)
+    predict(input, model_path, output_dir, encoding, mode, device, cpu_thread)
 
 def extract_sequences_by_class(fasta_file, sequence_classes, desired_class, output_fasta):
     with open(output_fasta, "w") as output_handle:
@@ -124,6 +124,9 @@ def main():
     )
     parser_predict.add_argument(
         "--device", "-d", dest="device", help="Device to use", choices=["cpu", "cuda"], default="cuda"
+    )
+    parser_predict.add_argument(
+        "--cpu_thread", "-ct", dest="cpu_thread", help="Number of threads to use for CPU", type=int, default=0
     )
     parser_predict.set_defaults(func=predict_wrapper)
 
