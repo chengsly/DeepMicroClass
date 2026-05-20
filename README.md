@@ -1,5 +1,9 @@
 # DeepMicroClass
 
+---
+Please use the latest [DeepMicroClass2](https://github.com/aiguo-11/DeepMicroClass2)
+---
+
 This is the repository for DeepMicroClass, a deep learning based method that classifies metagenomic contigs into five sequence classes, e.g., viruses infecting prokaryotic or eukaryotic hosts, eukaryotic or prokaryotic chromosomes.
 
 The paper corresponding to this repository has been published at _NAR Genomics and Bioinformatics_. The exact code version used in the paper can be found at [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10989619.svg)](https://doi.org/10.5281/zenodo.10989619). If you find DeepMicroClass useful, please consider to cite: 
